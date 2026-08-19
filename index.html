@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#153923" />
   <meta name="color-scheme" content="light dark" />
-  <title>Plant Daddy — Build 0.4</title>
+  <title>Plant Daddy — Build 0.5</title>
   <style>
     :root {
       --bg: #f3f5f0;
@@ -23,6 +23,7 @@
       --warning: #a86612;
       --warning-soft: #fff3df;
       --danger: #b23b38;
+      --danger-soft: #fde9e8;
       --shadow: 0 18px 55px rgba(32, 64, 42, .10);
       --shadow-soft: 0 8px 26px rgba(32, 64, 42, .07);
       --glass: rgba(247,249,245,.80);
@@ -44,12 +45,26 @@
         --warning: #f0b965;
         --warning-soft: #382b19;
         --danger: #ff8f89;
+        --danger-soft: #3a2020;
         --shadow: none;
         --shadow-soft: none;
         --glass: rgba(17,24,19,.82);
       }
     }
-
+    html[data-theme="light"] {
+      --bg: #f3f5f0; --bg-elevated: rgba(255,255,255,.86); --card: #ffffff; --card-2: #f8faf6;
+      --text: #142018; --sub: #687169; --muted: #929a93; --line: #e1e6df; --accent: #277a49;
+      --accent-strong: #155b32; --accent-soft: #e4f3e8; --accent-softer: #eef7f0; --warning: #a86612;
+      --warning-soft: #fff3df; --danger: #b23b38; --danger-soft: #fde9e8; --shadow: 0 18px 55px rgba(32,64,42,.10);
+      --shadow-soft: 0 8px 26px rgba(32,64,42,.07); --glass: rgba(247,249,245,.80); color-scheme: light;
+    }
+    html[data-theme="dark"] {
+      --bg: #0d130f; --bg-elevated: rgba(23,31,25,.88); --card: #172019; --card-2: #1c271f;
+      --text: #f2f6f2; --sub: #a4afa6; --muted: #78827a; --line: #2b362e; --accent: #7ad59b;
+      --accent-strong: #9ce7b5; --accent-soft: #203d2a; --accent-softer: #172d20; --warning: #f0b965;
+      --warning-soft: #382b19; --danger: #ff8f89; --danger-soft: #3a2020; --shadow: none; --shadow-soft: none;
+      --glass: rgba(17,24,19,.82); color-scheme: dark;
+    }
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
     html { -webkit-text-size-adjust: 100%; }
@@ -58,9 +73,9 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-    button, input { font: inherit; }
+    button, input, select, textarea { font: inherit; color: inherit; }
     button { color: inherit; }
-    input { color: var(--text); }
+    input, select, textarea { color: var(--text); }
     .app { min-height: 100vh; }
     .page-shell { min-height: 100vh; padding-bottom: 102px; }
     .page { width: min(760px, 100%); margin: 0 auto; padding: 24px 20px 38px; }
@@ -79,54 +94,45 @@
     h2 { font-size:clamp(27px,6vw,36px); line-height:1.07; margin:8px 0 0; font-weight:920; letter-spacing:-1.1px; }
     .lead { margin:14px 0 0; color:var(--sub); font-size:17px; line-height:1.52; }
     .tagline { display:inline-flex; align-items:center; gap:8px; margin-top:19px; padding:9px 12px; border-radius:999px; background:var(--accent-soft); color:var(--accent-strong); font-size:13px; font-weight:850; }
-    .actions { display:grid; gap:10px; margin-top:28px; }
+    .actions { display:grid; gap:10px; margin-top:18px; }
+    .actions.inline { grid-template-columns: repeat(2,minmax(0,1fr)); }
     .button { border:0; border-radius:17px; padding:15px 17px; min-height:52px; font-weight:880; cursor:pointer; transition:transform .14s ease, opacity .14s ease; }
     .button:active { transform:scale(.985); }
     .button.primary { background:var(--accent-strong); color:#fff; }
     @media (prefers-color-scheme: dark) { .button.primary { color:#0b1a10; } }
     .button.secondary { background:var(--card); border:1px solid var(--line); }
+    .button.soft { background:var(--accent-soft); color:var(--accent-strong); }
     .button.ghost { background:transparent; color:var(--accent); }
+    .button.small { min-height:42px; padding:10px 12px; border-radius:14px; font-size:13px; }
     .button:disabled { cursor:not-allowed; opacity:.45; }
     .fineprint { margin-top:14px; color:var(--muted); font-size:12px; line-height:1.45; text-align:center; }
-
     .parent-grid { display:grid; gap:11px; margin-top:24px; }
     .parent-choice { width:100%; border:1.5px solid var(--line); background:var(--card); border-radius:21px; padding:15px 16px; display:flex; align-items:center; gap:14px; cursor:pointer; text-align:left; transition:.17s ease; }
-    .parent-choice:hover { transform:translateY(-1px); }
     .parent-choice.active { background:var(--accent-softer); border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
     .parent-avatar { width:50px; height:50px; border-radius:16px; display:grid; place-items:center; font-size:27px; background:var(--card-2); }
     .parent-copy { flex:1; min-width:0; }
-    .parent-name { font-size:17px; font-weight:900; }
-    .parent-pronouns { margin-top:3px; color:var(--sub); font-size:13px; }
-    .parent-line { margin-top:5px; color:var(--sub); font-size:12px; }
+    .parent-name { font-size:17px; font-weight:900; display:block; }
+    .parent-pronouns { margin-top:3px; color:var(--sub); font-size:13px; display:block; }
+    .parent-line { margin-top:5px; color:var(--sub); font-size:12px; display:block; }
     .selection-check { width:25px; height:25px; border-radius:50%; border:1.5px solid var(--line); display:grid; place-items:center; font-size:14px; font-weight:900; color:transparent; }
-    .parent-choice.active .selection-check { background:var(--accent); border-color:var(--accent); color:white; }
-
-    .field-stack { display:grid; gap:17px; margin-top:25px; }
+    .parent-choice.active .selection-check, .mode-card.active .selection-check { background:var(--accent); border-color:var(--accent); color:white; }
+    .field-stack, .edit-form { display:grid; gap:17px; margin-top:18px; }
     .field label { display:block; font-size:12px; font-weight:850; color:var(--sub); margin:0 0 7px 4px; }
-    .field input { width:100%; border:1.5px solid var(--line); background:var(--card); border-radius:17px; min-height:54px; padding:0 16px; outline:none; font-size:16px; transition:.16s border-color,.16s box-shadow; }
-    .field input:focus { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+    .field input, .field select, .field textarea { width:100%; border:1.5px solid var(--line); background:var(--card); border-radius:17px; min-height:54px; padding:12px 16px; outline:none; font-size:16px; transition:.16s border-color,.16s box-shadow; }
+    .field textarea { min-height:110px; resize:vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
     .field-help { color:var(--muted); font-size:12px; line-height:1.45; margin:7px 4px 0; }
     .setup-preview { margin-top:18px; border-radius:20px; padding:16px; background:var(--card-2); border:1px solid var(--line); }
     .crumb { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-weight:850; }
     .crumb span { color:var(--muted); }
-
-    .finish-ring { width:94px; height:94px; border-radius:31px; background:var(--accent-soft); display:grid; place-items:center; font-size:52px; margin-bottom:22px; }
-    .finish-list { display:grid; gap:10px; margin-top:22px; }
-    .finish-item { display:flex; gap:11px; align-items:flex-start; color:var(--sub); font-size:14px; line-height:1.45; }
-    .finish-item b { color:var(--text); }
-    .finish-item .tick { color:var(--accent); font-weight:950; }
-
     .topbar { position:sticky; top:0; z-index:30; background:var(--glass); border-bottom:1px solid color-mix(in srgb,var(--line) 80%,transparent); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
     .topbar-inner { width:min(760px,100%); margin:auto; padding:max(10px,env(safe-area-inset-top)) 20px 10px; display:flex; align-items:center; gap:12px; }
     .topbar .brand { flex:1; }
     .local-pill { display:flex; align-items:center; gap:6px; padding:7px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent-strong); font-size:11px; font-weight:850; }
-    .demo-banner { width:min(760px,100%); margin:15px auto -3px; padding:0 20px; }
-    .demo-inner { display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--warning-soft); color:var(--warning); border:1px solid color-mix(in srgb,var(--warning) 28%,transparent); border-radius:16px; padding:10px 12px; font-size:12px; font-weight:800; }
-    .demo-inner button { border:0; background:transparent; color:inherit; font-weight:900; cursor:pointer; }
-    .screen-title { margin:6px 0 0; font-size:clamp(31px,7vw,43px); }
-    .screen-sub { color:var(--sub); font-size:15px; line-height:1.5; margin:9px 0 23px; }
+    .page-title { margin:6px 0 0; font-size:clamp(31px,7vw,43px); line-height:1.05; }
+    .page-sub { color:var(--sub); font-size:15px; line-height:1.5; margin:9px 0 23px; }
     .summary-row { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:0 0 25px; }
-    .summary { border-radius:19px; background:var(--card); padding:14px; box-shadow:var(--shadow-soft); }
+    .summary { border-radius:19px; background:var(--card); padding:14px; box-shadow:var(--shadow-soft); border:1px solid color-mix(in srgb,var(--line) 80%,transparent); }
     .summary b { display:block; font-size:25px; }
     .summary span { display:block; margin-top:2px; color:var(--sub); font-size:11px; font-weight:800; }
     .section-head { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:20px 0 11px; }
@@ -135,73 +141,33 @@
     .card { background:var(--card); border:1px solid color-mix(in srgb,var(--line) 80%,transparent); border-radius:22px; padding:18px; margin-bottom:11px; box-shadow:var(--shadow-soft); }
     .card-title { font-size:17px; font-weight:900; }
     .card-copy { color:var(--sub); font-size:14px; line-height:1.48; margin-top:5px; }
+    .row { display:flex; align-items:center; gap:13px; }
+    .row-icon { width:44px; height:44px; flex:none; border-radius:14px; background:var(--card-2); display:grid; place-items:center; font-size:23px; }
+    .grow { flex:1; min-width:0; }
+    .muted { color:var(--sub); }
+    .chev { margin-left:auto; color:var(--muted); font-size:24px; }
     .empty { text-align:center; padding:30px 21px 25px; }
     .empty-icon { width:74px; height:74px; margin:0 auto 17px; display:grid; place-items:center; background:var(--accent-soft); border-radius:24px; font-size:39px; }
     .empty h3 { font-size:21px; margin:0; }
-    .empty p { color:var(--sub); font-size:14px; line-height:1.5; margin:8px auto 20px; max-width:440px; }
-    .empty-actions { display:grid; gap:9px; max-width:390px; margin:0 auto; }
-    .plant-card { width:100%; border:0; text-align:left; cursor:pointer; background:var(--card); border-radius:21px; padding:16px; margin-bottom:10px; box-shadow:var(--shadow-soft); }
-    .plant-top { display:flex; align-items:center; gap:12px; }
-    .plant-emoji { font-size:33px; }
-    .grow { flex:1; min-width:0; }
-    .plant-name { font-weight:900; font-size:16px; }
-    .plant-species { color:var(--sub); font-size:12px; margin-top:2px; }
-    .plant-metric { font-size:25px; font-weight:950; color:var(--accent); }
-    .plant-bottom { margin-top:13px; display:flex; align-items:center; justify-content:space-between; gap:12px; color:var(--sub); font-size:12px; }
-    .attention { color:var(--warning); font-weight:850; }
-    .row { display:flex; align-items:center; gap:13px; }
-    .row-icon { width:44px; height:44px; flex:none; border-radius:14px; background:var(--card-2); display:grid; place-items:center; font-size:23px; }
-    .chev { margin-left:auto; color:var(--muted); font-size:24px; }
-    .coming { display:inline-flex; padding:5px 8px; border-radius:999px; background:var(--card-2); color:var(--sub); font-size:10px; font-weight:850; margin-top:8px; }
-    .garden-card { overflow:hidden; padding:0; }
-    .garden-hero { padding:19px; background:linear-gradient(145deg,var(--accent-soft),var(--card)); border-bottom:1px solid var(--line); }
-    .garden-name { font-size:22px; font-weight:930; }
-    .garden-zone { color:var(--sub); font-size:13px; margin-top:5px; }
-    .garden-body { padding:17px 19px 19px; }
-    .garden-stat { display:flex; justify-content:space-between; gap:15px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px; }
-    .garden-stat:last-child { border-bottom:0; }
-    .garden-stat span:first-child { color:var(--sub); }
-    .edit-panel { margin-top:13px; display:none; }
-    .edit-panel.open { display:block; }
-    .danger-button { border:0; background:transparent; color:var(--danger); font-weight:850; padding:10px 0; cursor:pointer; }
+    .empty p { color:var(--sub); font-size:14px; line-height:1.5; margin:8px 0 0; }
     .privacy-card { background:var(--accent-softer); }
     .privacy-title { display:flex; gap:8px; align-items:center; font-weight:900; }
     .privacy-copy { color:var(--sub); font-size:13px; line-height:1.5; margin-top:7px; }
-
     .nav { position:fixed; left:0; right:0; bottom:0; z-index:40; display:grid; grid-template-columns:repeat(5,1fr); background:var(--glass); border-top:1px solid var(--line); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); padding:8px max(8px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left)); }
     .nav button { border:0; background:transparent; color:var(--sub); cursor:pointer; padding:3px 1px; display:flex; flex-direction:column; align-items:center; gap:3px; }
     .nav button.active { color:var(--accent); }
     .nav-icon { font-size:20px; line-height:1.1; }
     .nav-label { font-size:10px; font-weight:820; }
-
     .modal-wrap { position:fixed; inset:0; z-index:100; display:grid; place-items:end center; background:rgba(0,0,0,.33); padding:18px; opacity:0; pointer-events:none; transition:.18s ease; }
     .modal-wrap.show { opacity:1; pointer-events:auto; }
-    .sheet { width:min(560px,100%); background:var(--card); border-radius:28px; padding:22px; box-shadow:0 24px 80px rgba(0,0,0,.25); transform:translateY(25px); transition:.2s ease; }
+    .sheet { width:min(560px,100%); max-height:min(88vh,820px); overflow:auto; background:var(--card); border-radius:28px; padding:22px; box-shadow:0 24px 80px rgba(0,0,0,.25); transform:translateY(25px); transition:.2s ease; }
     .modal-wrap.show .sheet { transform:translateY(0); }
     .sheet-handle { width:42px; height:5px; border-radius:99px; background:var(--line); margin:0 auto 18px; }
-    .sheet-icon { font-size:36px; }
     .sheet h3 { font-size:22px; margin:10px 0 7px; }
     .sheet p { color:var(--sub); line-height:1.5; margin:0; font-size:14px; }
-    .sheet .actions { margin-top:20px; }
     .toast { position:fixed; left:50%; bottom:110px; transform:translateX(-50%) translateY(18px); opacity:0; z-index:120; background:var(--text); color:var(--bg); max-width:calc(100vw - 30px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:11px 15px; border-radius:999px; font-size:13px; font-weight:850; pointer-events:none; transition:.2s ease; }
     .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-    @media (min-width: 640px) {
-      .actions.inline { grid-template-columns:1fr 1fr; }
-    }
-    @media (max-width:480px) {
-      .page { padding-left:14px; padding-right:14px; }
-      .topbar-inner, .demo-banner { padding-left:14px; padding-right:14px; }
-      .onboarding-page { padding-left:14px; padding-right:14px; }
-      .onboarding-card { border-radius:25px; }
-      .summary { padding:12px; }
-      .summary b { font-size:22px; }
-      .local-pill { padding:6px 8px; }
-    }
-
-
-    /* Build 0.3 — real local plant creation */
-    select, textarea { font: inherit; color: var(--text); }
     .search-wrap { position:relative; margin:18px 0 12px; }
     .search-wrap input { width:100%; min-height:52px; padding:0 16px 0 44px; border:1.5px solid var(--line); border-radius:17px; background:var(--card); outline:none; font-size:15px; }
     .search-wrap input:focus { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
@@ -212,7 +178,6 @@
     .chip.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); }
     .library-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:11px; }
     .library-card { border:1px solid var(--line); background:var(--card); border-radius:20px; padding:15px; text-align:left; cursor:pointer; min-height:143px; transition:.15s ease; }
-    .library-card:hover { transform:translateY(-1px); box-shadow:var(--shadow-soft); }
     .library-card.selected { border-color:var(--accent); background:var(--accent-softer); box-shadow:inset 0 0 0 1px var(--accent); }
     .library-emoji { font-size:32px; }
     .library-name { margin-top:10px; font-size:15px; font-weight:900; }
@@ -232,13 +197,11 @@
     .mode-card.active { border-color:var(--accent); background:var(--accent-softer); box-shadow:inset 0 0 0 1px var(--accent); }
     .mode-icon { width:49px; height:49px; border-radius:16px; background:var(--card-2); display:grid; place-items:center; font-size:26px; flex:none; }
     .mode-card .selection-check { margin-left:auto; align-self:center; flex:none; }
-    .mode-card.active .selection-check { background:var(--accent); border-color:var(--accent); color:white; }
     .review-grid { display:grid; gap:9px; margin-top:18px; }
     .review-row { display:flex; gap:12px; justify-content:space-between; background:var(--card-2); border:1px solid var(--line); border-radius:15px; padding:12px 13px; font-size:13px; }
     .review-row span { color:var(--sub); }
     .review-row b { text-align:right; }
     .hardware-note { margin-top:15px; border-radius:17px; background:var(--warning-soft); padding:13px 14px; color:var(--warning); font-size:12px; line-height:1.45; font-weight:720; }
-    .plant-status-new { color:var(--accent); font-weight:850; }
     .plant-actions { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:16px; }
     .detail-hero { background:linear-gradient(145deg,var(--accent-soft),var(--card)); border:1px solid var(--line); border-radius:26px; padding:22px; margin-bottom:12px; }
     .detail-emoji { font-size:51px; }
@@ -246,18 +209,51 @@
     .detail-species { color:var(--sub); margin-top:4px; font-size:13px; font-style:italic; }
     .badge-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; }
     .badge { display:inline-flex; gap:5px; align-items:center; border-radius:999px; padding:7px 10px; background:var(--card); border:1px solid var(--line); font-size:11px; font-weight:800; color:var(--sub); }
+    .tab-row { display:flex; gap:8px; overflow:auto; padding:2px 1px 10px; scrollbar-width:none; }
+    .tab-row::-webkit-scrollbar { display:none; }
+    .tab { white-space:nowrap; border:1px solid var(--line); background:var(--card); color:var(--sub); border-radius:999px; padding:9px 12px; font-size:12px; font-weight:850; cursor:pointer; }
+    .tab.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); }
+    .metrics-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-top:12px; }
+    .metric { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px; }
+    .metric span { display:block; color:var(--sub); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.45px; }
+    .metric b { display:block; margin-top:5px; font-size:19px; }
     .care-profile { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:12px; }
-    .care-metric { background:var(--card-2); border-radius:16px; padding:13px; }
+    .care-metric { background:var(--card-2); border-radius:16px; padding:13px; border:1px solid var(--line); }
     .care-metric span { display:block; color:var(--sub); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; }
     .care-metric b { display:block; margin-top:4px; font-size:14px; }
     .device-chip { margin-top:12px; border:1px dashed var(--line); border-radius:16px; padding:13px; display:flex; align-items:center; gap:10px; }
-    .device-chip .row-icon { width:38px; height:38px; font-size:20px; }
-    .device-copy { flex:1; min-width:0; }
     .device-copy b { font-size:13px; }
     .device-copy span { display:block; color:var(--sub); font-size:11px; margin-top:2px; }
-    .edit-form { display:grid; gap:13px; }
-    .field select { width:100%; min-height:54px; border:1.5px solid var(--line); background:var(--card); border-radius:17px; padding:0 14px; outline:none; font-size:15px; }
-    .field select:focus { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+    .quick-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:12px; }
+    .quick-action { border:1px solid var(--line); background:var(--card); border-radius:18px; padding:14px; text-align:left; cursor:pointer; }
+    .quick-action b { display:block; font-size:14px; }
+    .quick-action span { display:block; color:var(--sub); font-size:12px; margin-top:4px; line-height:1.35; }
+    .timeline { display:grid; gap:10px; margin-top:12px; }
+    .timeline-item { position:relative; padding:0 0 0 18px; }
+    .timeline-item:before { content:''; position:absolute; left:5px; top:8px; bottom:-12px; width:2px; background:var(--line); }
+    .timeline-item:last-child:before { bottom:8px; }
+    .timeline-dot { position:absolute; left:0; top:7px; width:12px; height:12px; border-radius:50%; background:var(--accent); border:2px solid var(--card); box-shadow:0 0 0 1px var(--accent); }
+    .timeline-item.critical .timeline-dot { background:var(--danger); box-shadow:0 0 0 1px var(--danger); }
+    .timeline-head { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .timeline-head b { font-size:14px; }
+    .timeline-head span { color:var(--muted); font-size:12px; }
+    .timeline-copy { color:var(--sub); font-size:13px; line-height:1.45; margin-top:4px; }
+    .chart-card { padding:16px; }
+    .chart-toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .chart-toolbar button { border:1px solid var(--line); background:var(--card-2); color:var(--sub); border-radius:999px; padding:8px 11px; font-size:12px; font-weight:850; cursor:pointer; }
+    .chart-toolbar button.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); }
+    .chart-wrap { background:var(--card-2); border:1px solid var(--line); border-radius:18px; padding:14px; }
+    .chart-empty { text-align:center; color:var(--sub); font-size:13px; padding:22px 10px; }
+    .chart-svg { width:100%; height:190px; display:block; overflow:visible; }
+    .chart-labels { display:flex; justify-content:space-between; gap:8px; margin-top:8px; color:var(--muted); font-size:11px; }
+    .list-compact { display:grid; gap:10px; margin-top:12px; }
+    .compact-item { display:flex; align-items:flex-start; gap:10px; padding:13px; border:1px solid var(--line); border-radius:16px; background:var(--card); }
+    .compact-bullet { width:28px; height:28px; border-radius:10px; display:grid; place-items:center; background:var(--card-2); font-size:16px; flex:none; }
+    .compact-item b { display:block; font-size:14px; }
+    .compact-item span { display:block; color:var(--sub); font-size:12px; line-height:1.4; margin-top:3px; }
+    .status-happy { color: var(--accent); }
+    .status-attention { color: var(--warning); }
+    .status-critical { color: var(--danger); }
     .zone-list { display:grid; gap:9px; margin-top:12px; }
     .zone-row { display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:17px; padding:13px 14px; }
     .zone-row b { flex:1; }
@@ -266,55 +262,112 @@
     .inline-add input { flex:1; min-width:0; border:1.5px solid var(--line); background:var(--card); border-radius:15px; min-height:46px; padding:0 13px; outline:none; }
     .inline-add button { border:0; border-radius:15px; padding:0 15px; background:var(--accent-strong); color:white; font-weight:850; cursor:pointer; }
     @media (prefers-color-scheme: dark) { .inline-add button { color:#0b1a10; } }
-    @media (max-width:520px) { .library-grid { grid-template-columns:1fr; } .plant-actions { grid-template-columns:1fr; } }
-
+    .photo-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .photo-card { border:1px solid var(--line); border-radius:18px; overflow:hidden; background:var(--card); }
+    .photo-card img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; background:var(--card-2); }
+    .photo-card div { padding:10px 12px; color:var(--sub); font-size:12px; line-height:1.35; }
+    .helper { color:var(--muted); font-size:12px; margin-top:8px; }
+    .edit-panel { display:none; margin-top:12px; } .edit-panel.open { display:block; }
+    .danger-button { border:0; background:transparent; color:var(--danger); font-weight:850; padding:10px 0; cursor:pointer; }
+    .demo-callout { margin-top:12px; border-radius:18px; padding:14px; background:var(--warning-soft); color:var(--warning); font-size:13px; line-height:1.45; border:1px solid color-mix(in srgb,var(--warning) 30%,transparent); }
+    .top-actions { display:flex; align-items:center; gap:7px; }
+    .icon-button { width:36px; height:36px; border-radius:12px; border:1px solid var(--line); background:var(--card); display:grid; place-items:center; cursor:pointer; font-size:16px; box-shadow:var(--shadow-soft); }
+    .insight-card { background:linear-gradient(145deg,var(--accent-strong),color-mix(in srgb,var(--accent-strong) 76%,#071c0f)); color:#fff; border:0; overflow:hidden; position:relative; }
+    .insight-card:after { content:'🌿'; position:absolute; right:-8px; bottom:-27px; font-size:92px; opacity:.12; transform:rotate(-10deg); }
+    .insight-card .card-copy, .insight-card .muted { color:rgba(255,255,255,.78); position:relative; z-index:1; }
+    .insight-card .card-title { position:relative; z-index:1; }
+    .insight-card .button { position:relative; z-index:1; }
+    .spotlight { border-left:4px solid var(--warning); }
+    .spotlight.critical { border-left-color:var(--danger); }
+    .dashboard-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin:12px 0 24px; }
+    .dashboard-action { border:1px solid var(--line); background:var(--card); border-radius:19px; padding:15px; text-align:left; cursor:pointer; box-shadow:var(--shadow-soft); }
+    .dashboard-action .da-icon { font-size:22px; display:block; }
+    .dashboard-action b { display:block; margin-top:8px; font-size:14px; }
+    .dashboard-action span { display:block; color:var(--sub); font-size:11px; margin-top:3px; line-height:1.35; }
+    .segmented { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:4px; padding:4px; border-radius:16px; background:var(--card-2); border:1px solid var(--line); margin:14px 0 17px; }
+    .segmented button { border:0; border-radius:12px; background:transparent; color:var(--sub); padding:10px 8px; font-size:12px; font-weight:850; cursor:pointer; }
+    .segmented button.active { background:var(--card); color:var(--text); box-shadow:var(--shadow-soft); }
+    .hierarchy-site { border:1px solid var(--line); border-radius:22px; background:var(--card); padding:16px; box-shadow:var(--shadow-soft); }
+    .hierarchy-title { display:flex; align-items:center; gap:10px; font-weight:900; }
+    .hierarchy-line { margin:10px 0 0 20px; border-left:2px solid var(--line); padding-left:13px; display:grid; gap:8px; }
+    button.zone-row { width:100%; color:inherit; cursor:pointer; text-align:left; }
+    button.zone-row:hover { border-color:var(--accent); }
+    .device-card { border:1px solid var(--line); border-radius:19px; background:var(--card); padding:15px; margin-top:10px; }
+    .device-head { display:flex; gap:12px; align-items:center; }
+    .device-status { width:9px; height:9px; border-radius:50%; background:var(--accent); flex:none; }
+    .device-status.retired { background:var(--muted); }
+    .device-meta { display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; }
+    .device-meta span { border-radius:999px; background:var(--card-2); border:1px solid var(--line); padding:5px 8px; color:var(--sub); font-size:10px; font-weight:800; }
+    .device-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .automation-grid { display:grid; gap:9px; margin-top:13px; }
+    .automation-choice { width:100%; border:1.5px solid var(--line); background:var(--card); border-radius:18px; padding:14px; display:flex; gap:12px; align-items:flex-start; text-align:left; cursor:pointer; }
+    .automation-choice.active { border-color:var(--accent); background:var(--accent-softer); box-shadow:inset 0 0 0 1px var(--accent); }
+    .automation-choice:disabled { opacity:.45; cursor:not-allowed; }
+    .automation-choice .auto-icon { width:38px; height:38px; border-radius:13px; background:var(--card-2); display:grid; place-items:center; flex:none; font-size:20px; }
+    .automation-choice b { display:block; font-size:14px; }
+    .automation-choice span { display:block; color:var(--sub); font-size:12px; line-height:1.4; margin-top:3px; }
+    .safety-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:12px; }
+    .safety-item { border:1px solid var(--line); background:var(--card-2); border-radius:15px; padding:11px; }
+    .safety-item b { display:block; font-size:12px; }
+    .safety-item span { display:block; color:var(--sub); font-size:10px; margin-top:3px; line-height:1.35; }
+    .ultra-card { background:linear-gradient(145deg,#1a3423,var(--accent-strong)); color:#fff; border:0; position:relative; overflow:hidden; }
+    .ultra-card:after { content:'🧠'; position:absolute; right:-10px; top:-18px; font-size:88px; opacity:.12; }
+    .ultra-card .card-copy { color:rgba(255,255,255,.75); position:relative; z-index:1; }
+    .ultra-card .card-title, .ultra-card .button { position:relative; z-index:1; }
+    .ultra-price { font-size:34px; font-weight:950; letter-spacing:-1px; margin-top:12px; position:relative; z-index:1; }
+    .ultra-price span { font-size:13px; font-weight:750; opacity:.72; letter-spacing:0; }
+    .ultra-feature { display:flex; gap:10px; margin-top:10px; align-items:flex-start; }
+    .ultra-feature b { display:block; font-size:13px; }
+    .ultra-feature span { display:block; color:var(--sub); font-size:12px; line-height:1.4; margin-top:2px; }
+    .history-proof { background:var(--accent-softer); border:1px solid var(--accent-soft); border-radius:16px; padding:12px; margin-top:12px; color:var(--sub); font-size:12px; line-height:1.45; }
+    .coming-chip { display:inline-flex; padding:5px 8px; border-radius:999px; background:var(--warning-soft); color:var(--warning); font-size:10px; font-weight:900; }
+    @media (max-width:520px) {
+      .page { padding-left:14px; padding-right:14px; }
+      .topbar-inner { padding-left:14px; padding-right:14px; }
+      .onboarding-page { padding-left:14px; padding-right:14px; }
+      .onboarding-card { border-radius:25px; }
+      .summary-row, .quick-grid, .metrics-grid, .care-profile, .photo-grid, .library-grid, .plant-actions, .dashboard-actions, .safety-grid { grid-template-columns:1fr; }
+      .actions.inline { grid-template-columns:1fr; }
+    }
   </style>
-
-<style id="build04-css">
-  .detail-tabs{display:flex;gap:7px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}.detail-tabs::-webkit-scrollbar{display:none}
-  .detail-tab{border:0;background:var(--card);color:var(--sub);padding:10px 13px;border-radius:999px;font-weight:850;white-space:nowrap;cursor:pointer}.detail-tab.active{background:var(--text);color:var(--bg)}
-  .quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.quick-action{border:0;background:var(--card);border-radius:17px;padding:13px 6px;color:var(--text);font-weight:850;cursor:pointer}.quick-action span{display:block;font-size:22px;margin-bottom:5px}
-  .metric-grid04{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.metric04{background:var(--card);border-radius:18px;padding:14px;box-shadow:var(--shadow-soft)}.metric04 span{display:block;color:var(--sub);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.5px}.metric04 strong{display:block;font-size:24px;margin-top:4px}.metric04 small{display:block;color:var(--sub);margin-top:4px}
-  .timeline{position:relative;margin-top:8px}.timeline-item{display:grid;grid-template-columns:38px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.timeline-item:last-child{border-bottom:0}.timeline-icon{width:36px;height:36px;border-radius:12px;background:var(--card-2);display:flex;align-items:center;justify-content:center;font-size:18px}.timeline-title{font-weight:900}.timeline-meta{font-size:11px;color:var(--sub);margin-top:3px}.timeline-note{font-size:13px;color:var(--sub);margin-top:5px;line-height:1.4}
-  .care-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.care-action{border:0;background:var(--card-2);color:var(--text);border-radius:16px;padding:13px 7px;font-weight:850;cursor:pointer}.care-action span{display:block;font-size:21px;margin-bottom:4px}
-  .segmented{display:inline-flex;background:var(--card-2);padding:4px;border-radius:12px;gap:3px}.segment{border:0;background:transparent;color:var(--sub);padding:7px 10px;border-radius:9px;font-weight:850;cursor:pointer}.segment.active{background:var(--card);color:var(--text);box-shadow:var(--shadow-soft)}
-  .chart-wrap{background:var(--card-2);border-radius:18px;padding:12px;margin-top:12px}.chart-empty{padding:26px 12px;text-align:center;color:var(--sub)}
-  .care-alert{display:flex;gap:12px;align-items:flex-start}.care-dot{width:11px;height:11px;border-radius:50%;margin-top:5px;background:var(--accent)}.care-dot.critical{background:var(--danger)}.care-dot.good{background:var(--success)}
-  .photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.photo-card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-soft)}.photo-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}.photo-info{padding:9px}.photo-info button{border:0;background:transparent;color:var(--danger);font-weight:800;padding:4px 0;cursor:pointer}
-  .upload-box{border:2px dashed var(--line);border-radius:20px;padding:20px;text-align:center;background:var(--card)}.upload-box input{display:none}.upload-label{display:inline-block;background:var(--text);color:var(--bg);padding:11px 15px;border-radius:13px;font-weight:900;cursor:pointer}
-  .event-note{width:100%;min-height:90px;resize:vertical}
-  @media(max-width:520px){.quick-actions{grid-template-columns:repeat(2,1fr)}.care-actions{grid-template-columns:repeat(3,1fr)}}
-</style>
 </head>
 <body>
   <main id="app" class="app"></main>
   <div id="modal" class="modal-wrap" role="dialog" aria-modal="true" aria-hidden="true"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
   <script>
-    const BUILD = '0.4.0';
-    const STORAGE_KEY = 'plantDaddy.build03.state';
-    const OLD_STORAGE_KEY = 'plantDaddy.build02.state';
-
+    const BUILD = '0.5.0';
+    const STORAGE_KEY = 'plantDaddy.build05.state';
+    const MIGRATE_KEYS = ['plantDaddy.build04.state','plantDaddy.build03.state','plantDaddy.build02.state'];
     const caretakers = {
       daddy: { label:'Daddy', pronouns:'He/Him', icon:'💪', line:'Daddy handles the rest.' },
       mama: { label:'Mama', pronouns:'She/Her', icon:'🌺', line:'Mama handles the rest.' },
       buddy: { label:'Buddy', pronouns:'They/Them', icon:'🌱', line:'Buddy handles the rest.' }
     };
-
     const plantLibrary = [{"id":"tomato","name":"Tomato","scientific":"Solanum lycopersicum","category":"Vegetables","emoji":"🍅","moisture":"45–65%","light":"Full sun","temp":"60–90°F","soil":"Compost-rich, well-draining","watering":"Deep, consistent watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Support early, water deeply, feed regularly, and mulch to steady moisture."},{"id":"jalapeno","name":"Jalapeño","scientific":"Capsicum annuum","category":"Vegetables","emoji":"🌶️","moisture":"40–60%","light":"Full sun","temp":"65–90°F","soil":"Rich, well-draining","watering":"Keep moisture even without saturation","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Warm-season pepper; steady water, regular feeding, and frequent harvest encourage production."},{"id":"bell-pepper","name":"Bell Pepper","scientific":"Capsicum annuum","category":"Vegetables","emoji":"🫑","moisture":"40–60%","light":"Full sun","temp":"65–90°F","soil":"Rich, well-draining","watering":"Keep moisture even without saturation","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Warm soil, even watering, support as needed, and feed through the growing season."},{"id":"onion","name":"Onion","scientific":"Allium cepa","category":"Vegetables","emoji":"🧅","moisture":"40–60%","light":"Full sun","temp":"45–80°F","soil":"Loose, compost-rich","watering":"Water evenly while bulbs develop","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Plant shallow, keep moisture even, then ease off watering as tops fall and bulbs finish."},{"id":"carrot","name":"Carrot","scientific":"Daucus carota","category":"Vegetables","emoji":"🥕","moisture":"45–65%","light":"Full sun","temp":"45–75°F","soil":"Deep, sandy, loose","watering":"Keep evenly moist during germination","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Direct sow into loose soil, thin seedlings, and keep germination moisture steady."},{"id":"sweet-corn","name":"Sweet Corn","scientific":"Zea mays","category":"Vegetables","emoji":"🌽","moisture":"45–65%","light":"Full sun","temp":"60–90°F","soil":"Compost-rich","watering":"Consistent deep watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Grow in blocks for pollination, keep water consistent, and feed during vigorous growth."},{"id":"basil","name":"Basil","scientific":"Ocimum basilicum","category":"Herbs","emoji":"🌿","moisture":"45–65%","light":"Full to part sun","temp":"60–90°F","soil":"Well-draining","watering":"Consistent moisture","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Pinch often for bushier growth and harvest regularly."},{"id":"parsley","name":"Parsley","scientific":"Petroselinum crispum","category":"Herbs","emoji":"🌿","moisture":"45–65%","light":"Sun to part shade","temp":"50–80°F","soil":"Well-draining","watering":"Keep evenly moist","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Steady moisture and regular harvesting keep growth productive."},{"id":"chives","name":"Chives","scientific":"Allium schoenoprasum","category":"Herbs","emoji":"🌿","moisture":"40–60%","light":"Sun to part sun","temp":"45–80°F","soil":"Well-draining","watering":"Water when upper soil begins to dry","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Easy perennial herb; harvest outer growth and allow it to regrow."},{"id":"cilantro","name":"Cilantro","scientific":"Coriandrum sativum","category":"Herbs","emoji":"🌿","moisture":"45–65%","light":"Sun to part shade","temp":"45–75°F","soil":"Well-draining","watering":"Keep evenly moist","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Cooler conditions slow bolting; succession sow for a longer harvest window."},{"id":"broccoli","name":"Broccoli","scientific":"Brassica oleracea var. italica","category":"Vegetables","emoji":"🥦","moisture":"50–70%","light":"Full sun","temp":"40–75°F","soil":"Nutrient-rich","watering":"Even watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Cool-season crop; steady water and fertile soil support tight heads."},{"id":"cauliflower","name":"Cauliflower","scientific":"Brassica oleracea var. botrytis","category":"Vegetables","emoji":"🥦","moisture":"50–70%","light":"Full sun","temp":"45–75°F","soil":"Compost-rich","watering":"Keep moisture steady","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Cool-season crop that prefers steady water and regular feeding."},{"id":"cabbage","name":"Cabbage","scientific":"Brassica oleracea var. capitata","category":"Vegetables","emoji":"🥬","moisture":"50–70%","light":"Full sun","temp":"40–75°F","soil":"Well-draining","watering":"Consistent water","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Space for full heads, mulch, and keep water consistent."},{"id":"kale","name":"Kale","scientific":"Brassica oleracea var. sabellica","category":"Vegetables","emoji":"🥬","moisture":"45–65%","light":"Sun to part shade","temp":"35–75°F","soil":"Moist, fertile","watering":"Keep evenly moist","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Cool-weather leafy green; harvest outer leaves and let the center continue growing."},{"id":"zucchini","name":"Zucchini","scientific":"Cucurbita pepo","category":"Vegetables","emoji":"🥒","moisture":"50–70%","light":"Full sun","temp":"60–90°F","soil":"Compost-rich","watering":"Deep watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Give it room, water deeply, and harvest young fruit regularly."},{"id":"summer-squash","name":"Summer Squash","scientific":"Cucurbita pepo","category":"Vegetables","emoji":"🥒","moisture":"50–70%","light":"Full sun","temp":"60–90°F","soil":"Loose, rich soil","watering":"Steady moisture","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Warm-season squash; maintain steady moisture and harvest while fruit is tender."},{"id":"eggplant","name":"Eggplant","scientific":"Solanum melongena","category":"Vegetables","emoji":"🍆","moisture":"40–60%","light":"Full sun","temp":"65–90°F","soil":"Fertile, well-draining","watering":"Even watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Warm-season plant; transplant after soil warms and support plants as fruit develops."},{"id":"lettuce","name":"Lettuce","scientific":"Lactuca sativa","category":"Vegetables","emoji":"🥬","moisture":"50–70%","light":"Sun to part shade","temp":"40–70°F","soil":"Cool, loose soil","watering":"Keep consistently moist","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Cool-season crop; shallow roots benefit from consistent moisture."},{"id":"spinach","name":"Spinach","scientific":"Spinacia oleracea","category":"Vegetables","emoji":"🥬","moisture":"50–70%","light":"Sun to part shade","temp":"35–70°F","soil":"Fertile, well-draining","watering":"Water regularly","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Cool-season leafy green; keep moisture steady and harvest young leaves."},{"id":"brussels-sprouts","name":"Brussels Sprouts","scientific":"Brassica oleracea var. gemmifera","category":"Vegetables","emoji":"🥬","moisture":"50–70%","light":"Full sun","temp":"40–75°F","soil":"Firm, fertile soil","watering":"Steady watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Long-season cool crop; steady water and support help tall plants mature."},{"id":"collard-greens","name":"Collard Greens","scientific":"Brassica oleracea var. viridis","category":"Vegetables","emoji":"🥬","moisture":"50–70%","light":"Full sun to part shade","temp":"40–80°F","soil":"Fertile, well-draining","watering":"Keep evenly moist","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"DCW Grows guide crop; built-in profile ready for care tracking."},{"id":"swiss-chard","name":"Swiss Chard","scientific":"Beta vulgaris subsp. vulgaris","category":"Vegetables","emoji":"🥬","moisture":"45–65%","light":"Sun to part shade","temp":"45–80°F","soil":"Fertile, well-draining","watering":"Keep evenly moist","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"DCW Grows guide crop; built-in profile ready for care tracking."},{"id":"okra","name":"Okra","scientific":"Abelmoschus esculentus","category":"Vegetables","emoji":"🌱","moisture":"40–60%","light":"Full sun","temp":"70–95°F","soil":"Rich, well-draining","watering":"Deep water with partial dry-down","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"DCW Grows guide crop; built-in profile ready for care tracking."},{"id":"watermelon","name":"Watermelon","scientific":"Citrullus lanatus","category":"Fruit","emoji":"🍉","moisture":"40–60%","light":"Full sun","temp":"70–95°F","soil":"Loose, compost-rich","watering":"Deep watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Give vines space, water deeply during fruiting, and ease water before harvest."},{"id":"pumpkin","name":"Pumpkin","scientific":"Cucurbita pepo","category":"Vegetables","emoji":"🎃","moisture":"45–65%","light":"Full sun","temp":"65–90°F","soil":"Rich, composted","watering":"Deep watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Heavy feeder with wide vines; deep root watering and mulch help keep growth steady."},{"id":"cucumber","name":"Cucumber","scientific":"Cucumis sativus","category":"Vegetables","emoji":"🥒","moisture":"50–70%","light":"Full sun","temp":"65–90°F","soil":"Rich, moisture-retentive","watering":"Consistent deep moisture","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Trellis or give room to sprawl; steady watering helps avoid stress and bitter fruit."},{"id":"potato","name":"Potato","scientific":"Solanum tuberosum","category":"Vegetables","emoji":"🥔","moisture":"45–65%","light":"Full sun","temp":"45–80°F","soil":"Loose, compost-rich","watering":"Even, deep watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Hill soil as plants grow, keep tubers covered, and maintain even moisture."},{"id":"fennel","name":"Fennel","scientific":"Foeniculum vulgare","category":"Herbs","emoji":"🌿","moisture":"40–60%","light":"Full sun","temp":"45–80°F","soil":"Compost-rich","watering":"Even moisture","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Keep water even and harvest before heat drives bolting."},{"id":"strawberry","name":"Strawberry","scientific":"Fragaria × ananassa","category":"Fruit","emoji":"🍓","moisture":"40–60%","light":"Full sun","temp":"50–80°F","soil":"Loose, compost-rich","watering":"Regular deep watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Mulch around crowns, keep roots evenly moist, and harvest fully colored fruit."},{"id":"blackberry-raspberry","name":"Blackberry & Raspberry","scientific":"Rubus spp.","category":"Fruit","emoji":"🫐","moisture":"40–60%","light":"Full sun","temp":"45–85°F","soil":"Compost-rich","watering":"Deep water once established","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Use support where needed, mulch roots, and prune spent canes after fruiting."},{"id":"blueberries","name":"Blueberries","scientific":"Vaccinium spp.","category":"Fruit","emoji":"🫐","moisture":"45–65%","light":"Full sun to part sun","temp":"40–80°F","soil":"Acidic, well-draining","watering":"Keep evenly moist","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"DCW Grows guide fruit; built-in profile ready for care tracking."},{"id":"green-beans","name":"Green Beans","scientific":"Phaseolus vulgaris","category":"Vegetables","emoji":"🫘","moisture":"45–65%","light":"Full sun","temp":"55–85°F","soil":"Rich, well-draining","watering":"Even, deep watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Direct sow; pole types need support and regular picking extends production."},{"id":"garlic","name":"Garlic","scientific":"Allium sativum","category":"Vegetables","emoji":"🧄","moisture":"35–55%","light":"Full sun","temp":"35–75°F","soil":"Loose, compost-rich","watering":"Even moisture through active growth","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Plant cloves in cool weather, mulch, and reduce water as bulbs mature."},{"id":"pineapple","name":"Pineapple","scientific":"Ananas comosus","category":"Fruit","emoji":"🍍","moisture":"20–40%","light":"Full sun","temp":"65–95°F","soil":"Free-draining sandy mix","watering":"Light, regular watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Warm, drought-tolerant bromeliad; keep drainage excellent and feed lightly."},{"id":"dragon-fruit","name":"Dragon Fruit","scientific":"Selenicereus undatus","category":"Fruit","emoji":"🐉","moisture":"20–40%","light":"Full sun","temp":"65–95°F","soil":"Cactus / sandy mix","watering":"Moderate watering with dry-down","dcwGuide":true,"fertilizer":"MaxiGro","dcwStore":true,"dcw":true,"dcwName":"Rooted Dragon Fruit Starter Plant","guideSummary":"Trellis climbing stems, keep drainage fast, and feed during active growth."},{"id":"peas","name":"Peas","scientific":"Pisum sativum","category":"Vegetables","emoji":"🫛","moisture":"45–65%","light":"Full sun","temp":"40–70°F","soil":"Rich, well-draining","watering":"Light, even watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Cool-weather vine; direct sow and provide support as plants climb."},{"id":"marigolds","name":"Marigolds","scientific":"Tagetes spp.","category":"Flowers","emoji":"🌼","moisture":"30–50%","light":"Full sun","temp":"50–85°F","soil":"Well-draining","watering":"Water after upper soil dries","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"DCW Grows guide flower; built-in profile ready for care tracking."},{"id":"nasturtiums","name":"Nasturtiums","scientific":"Tropaeolum majus","category":"Flowers","emoji":"🌼","moisture":"30–50%","light":"Full sun to part shade","temp":"45–80°F","soil":"Lean, well-draining","watering":"Moderate water with partial dry-down","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"DCW Grows guide flower; built-in profile ready for care tracking."},{"id":"calandrinia","name":"Calandrinia","scientific":"Calandrinia grandiflora","category":"Succulents","emoji":"🌸","moisture":"10–30%","light":"Full sun to partial shade","temp":"45–90°F","soil":"Well-draining succulent mix","watering":"Light watering; dry between watering","dcwGuide":true,"fertilizer":"MaxiGro","dcwStore":true,"dcw":true,"dcwName":"Calandrinia grandiflora Cuttings","guideSummary":"Easy from cuttings; establish with light weekly water, then reduce sharply once rooted."},{"id":"spiny-texas-prickly-pear","name":"Spiny Texas Prickly Pear","scientific":"Opuntia spp.","category":"Succulents","emoji":"🌵","moisture":"5–20%","light":"Full sun","temp":"35–100°F","soil":"Gritty, well-draining","watering":"Rare watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Let pads cure before planting; once established, water sparingly and keep winter dry."},{"id":"santa-rita-prickly-pear","name":"Santa Rita Prickly Pear","scientific":"Opuntia santa-rita","category":"Succulents","emoji":"🌵","moisture":"5–20%","light":"Full sun","temp":"35–100°F","soil":"Gritty, well-draining","watering":"Occasional watering","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Low-water prickly pear known for stronger purple color in cool weather."},{"id":"purple-iceplant","name":"Drosanthemum Iceplant","scientific":"Drosanthemum spp.","category":"Succulents","emoji":"💜","moisture":"10–30%","light":"Full sun","temp":"40–90°F","soil":"Sandy, well-draining","watering":"Water while establishing, then reduce","dcwGuide":true,"fertilizer":"MaxiGro","dcwStore":true,"dcw":true,"dcwName":"Purple Rosea Iceplant Cuttings","guideSummary":"Root stem cuttings with weekly water, then shift to very low-water maintenance."},{"id":"blue-chalk-sticks","name":"Blue Chalk Sticks","scientific":"Curio repens","category":"Succulents","emoji":"🩵","moisture":"10–30%","light":"Full sun to light shade","temp":"40–90°F","soil":"Well-draining succulent mix","watering":"Light watering with long dry-down","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Water weekly while rooting, then space watering farther apart once established."},{"id":"christmas-fern","name":"Christmas Fern","scientific":"Polystichum acrostichoides","category":"Outdoor","emoji":"🌿","moisture":"50–70%","light":"Partial to full shade","temp":"35–80°F","soil":"Moist, rich, well-draining","watering":"Keep soil evenly moist","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Shade fern that prefers consistently moist soil and mulch around the root zone."},{"id":"solid-green-vine","name":"Solid Green Vine","scientific":"DCW Grows selection","category":"Houseplants","emoji":"🌿","moisture":"35–55%","light":"Bright indirect","temp":"60–85°F","soil":"Well-draining potting mix","watering":"Water when upper inch dries","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Root node cuttings in water, then pot into draining mix and keep lightly moist."},{"id":"variegated-vine","name":"Variegated Vine","scientific":"DCW Grows selection","category":"Houseplants","emoji":"🌿","moisture":"35–55%","light":"Bright indirect","temp":"60–85°F","soil":"Well-draining potting mix","watering":"Water when upper inch dries","dcwGuide":true,"fertilizer":"MaxiGro","guideSummary":"Bright indirect light helps preserve variegation; easy to propagate from node cuttings."},{"id":"red-geranium","name":"Geranium","scientific":"Pelargonium × hortorum","category":"Flowers","emoji":"🌺","moisture":"30–50%","light":"Full sun to partial shade","temp":"50–85°F","soil":"Well-draining","watering":"Let upper soil dry between waterings","dcwGuide":true,"fertilizer":"MaxiGro","dcwStore":true,"dcw":true,"dcwName":"Red Geranium Plant","guideSummary":"Deadhead spent blooms, keep drainage good, and reduce watering during cooler periods."},{"id":"plumeria","name":"Plumeria","scientific":"Plumeria rubra","category":"Tropical","emoji":"🌺","moisture":"25–45%","light":"Full sun","temp":"65–95°F","soil":"Well-draining / cactus mix","watering":"Deep water only after soil dries","dcwGuide":true,"fertilizer":"MaxiGro","dcwStore":true,"dcw":true,"dcwName":"Pink Plumeria Cutting","guideSummary":"Root calloused cuttings with minimal water, then deep-water only after the soil dries."},{"id":"firesticks","name":"Firesticks","scientific":"Euphorbia tirucalli","category":"Succulents","emoji":"🔥","moisture":"8–25%","light":"Full sun","temp":"55–95°F","soil":"Fast-draining succulent mix","watering":"Water deeply only after soil dries","dcwStore":true,"dcw":true,"dcwName":"Firesticks / Spineless Pencil Cactus"},{"id":"cholla","name":"Cholla Cactus","scientific":"Cylindropuntia spp.","category":"Succulents","emoji":"🌵","moisture":"5–20%","light":"Full sun","temp":"35–100°F","soil":"Gritty cactus mix","watering":"Very low water once established","dcwStore":true,"dcw":true,"dcwName":"Cholla Cactus Cuttings"},{"id":"hibiscus","name":"Tropical Hibiscus","scientific":"Hibiscus rosa-sinensis","category":"Tropical","emoji":"🌺","moisture":"40–65%","light":"Bright / sun","temp":"60–90°F","soil":"Rich, well-draining","watering":"Even moisture; avoid soggy soil"},{"id":"coconut","name":"Coconut Palm","scientific":"Cocos nucifera","category":"Tropical","emoji":"🌴","moisture":"40–65%","light":"Full sun","temp":"70–95°F","soil":"Sandy, well-draining","watering":"Consistent moisture while growing"},{"id":"monstera","name":"Monstera","scientific":"Monstera deliciosa","category":"Houseplants","emoji":"🪴","moisture":"35–55%","light":"Bright indirect","temp":"65–85°F","soil":"Chunky aroid mix","watering":"Let upper soil begin to dry"},{"id":"pothos","name":"Pothos","scientific":"Epipremnum aureum","category":"Houseplants","emoji":"🌿","moisture":"30–50%","light":"Low to bright indirect","temp":"60–85°F","soil":"Well-draining potting mix","watering":"Allow partial dry-down"},{"id":"snake","name":"Snake Plant","scientific":"Dracaena trifasciata","category":"Houseplants","emoji":"🪴","moisture":"15–35%","light":"Low to bright indirect","temp":"60–85°F","soil":"Fast draining","watering":"Dry well between watering"},{"id":"philodendron","name":"Heartleaf Philodendron","scientific":"Philodendron hederaceum","category":"Houseplants","emoji":"🌿","moisture":"35–55%","light":"Bright indirect","temp":"65–85°F","soil":"Airy potting mix","watering":"Water after upper layer dries"},{"id":"peace-lily","name":"Peace Lily","scientific":"Spathiphyllum","category":"Houseplants","emoji":"🤍","moisture":"45–65%","light":"Medium indirect","temp":"65–85°F","soil":"Moist, well-draining","watering":"Likes consistent moisture"},{"id":"fiddle","name":"Fiddle Leaf Fig","scientific":"Ficus lyrata","category":"Houseplants","emoji":"🌳","moisture":"30–50%","light":"Bright indirect","temp":"65–85°F","soil":"Well-draining","watering":"Moderate dry-down"},{"id":"rubber","name":"Rubber Plant","scientific":"Ficus elastica","category":"Houseplants","emoji":"🌿","moisture":"30–50%","light":"Bright indirect","temp":"60–85°F","soil":"Well-draining","watering":"Let top soil dry"},{"id":"orchid-phalaenopsis","name":"Phalaenopsis Orchid","scientific":"Phalaenopsis","category":"Orchids","emoji":"🌸","moisture":"25–45%","light":"Bright indirect","temp":"65–85°F","soil":"Orchid bark / airy media","watering":"Water media, then drain fully"},{"id":"cattleya","name":"Cattleya Orchid","scientific":"Cattleya","category":"Orchids","emoji":"🌸","moisture":"20–40%","light":"Bright filtered","temp":"60–85°F","soil":"Coarse orchid media","watering":"Dry somewhat between watering"},{"id":"aloe","name":"Aloe Vera","scientific":"Aloe barbadensis","category":"Succulents","emoji":"🌵","moisture":"10–30%","light":"Bright / some sun","temp":"55–85°F","soil":"Cactus mix","watering":"Soak, then dry thoroughly"},{"id":"jade","name":"Jade Plant","scientific":"Crassula ovata","category":"Succulents","emoji":"🌵","moisture":"10–30%","light":"Bright / sun","temp":"55–85°F","soil":"Fast draining","watering":"Dry between watering"},{"id":"echeveria","name":"Echeveria","scientific":"Echeveria","category":"Succulents","emoji":"🌵","moisture":"8–25%","light":"Bright sun","temp":"50–85°F","soil":"Gritty succulent mix","watering":"Keep leaves dry; deep infrequent water"},{"id":"mint","name":"Mint","scientific":"Mentha","category":"Herbs","emoji":"🌿","moisture":"50–70%","light":"Part to full sun","temp":"55–85°F","soil":"Moist, fertile","watering":"Do not let fully dry"},{"id":"rosemary","name":"Rosemary","scientific":"Salvia rosmarinus","category":"Herbs","emoji":"🌿","moisture":"20–40%","light":"Full sun","temp":"50–85°F","soil":"Fast draining","watering":"Dry between watering"},{"id":"pepper","name":"Pepper","scientific":"Capsicum annuum","category":"Vegetables","emoji":"🌶️","moisture":"40–60%","light":"Full sun","temp":"65–90°F","soil":"Rich, well-draining","watering":"Even moisture; avoid saturation"},{"id":"lemon","name":"Lemon Tree","scientific":"Citrus limon","category":"Fruit","emoji":"🍋","moisture":"30–50%","light":"Full sun","temp":"55–90°F","soil":"Well-draining citrus mix","watering":"Deep water, partial dry-down"},{"id":"banana","name":"Banana","scientific":"Musa","category":"Tropical","emoji":"🍌","moisture":"50–70%","light":"Full / bright sun","temp":"65–95°F","soil":"Rich, draining","watering":"Heavy feeder; consistent moisture"},{"id":"bird-paradise","name":"Bird of Paradise","scientific":"Strelitzia reginae","category":"Tropical","emoji":"🌿","moisture":"35–55%","light":"Bright / sun","temp":"60–90°F","soil":"Rich, well-draining","watering":"Moderate dry-down"},{"id":"bougainvillea","name":"Bougainvillea","scientific":"Bougainvillea","category":"Outdoor","emoji":"🌺","moisture":"20–40%","light":"Full sun","temp":"55–95°F","soil":"Fast draining","watering":"Let dry between deep watering"},{"id":"lavender","name":"Lavender","scientific":"Lavandula","category":"Outdoor","emoji":"💜","moisture":"15–35%","light":"Full sun","temp":"45–85°F","soil":"Lean, fast draining","watering":"Low water once established"},{"id":"rose","name":"Rose","scientific":"Rosa","category":"Flowers","emoji":"🌹","moisture":"35–55%","light":"Full sun","temp":"45–85°F","soil":"Rich, well-draining","watering":"Deep water at root zone"},{"id":"avocado","name":"Avocado Tree","scientific":"Persea americana","category":"Fruit","emoji":"🥑","moisture":"30–50%","light":"Full sun","temp":"55–85°F","soil":"Very well-draining","watering":"Deep water; avoid waterlogged roots"},{"id":"custom","name":"Something else","scientific":"Custom plant","category":"Other","emoji":"🌱","moisture":"Set later","light":"Set later","temp":"Set later","soil":"Set later","watering":"Create your own care profile later"}];
-
-    const demoPlants = [
-      { id:'demo-coconut', libraryId:'coconut', name:'Coconut Palm', species:'Cocos nucifera', variety:'', emoji:'🌴', status:'happy', moisture:46, temp:81, zone:'Tropical Patio', careMode:'sensor' },
-      { id:'demo-plumeria', libraryId:'plumeria', name:'Plumeria Bed West', species:'Plumeria rubra', variety:'', emoji:'🌺', status:'attention', moisture:24, temp:94, zone:'Plumeria Bed', careMode:'sensor' },
-      { id:'demo-hibiscus', libraryId:'hibiscus', name:'Hibiscus Red', species:'Hibiscus rosa-sinensis', variety:'Red', emoji:'🌺', status:'happy', moisture:55, temp:84, zone:'Tropical Patio', careMode:'phone' },
-      { id:'demo-mona', libraryId:'monstera', name:'Mona', species:'Monstera deliciosa', variety:'', emoji:'🪴', status:'happy', moisture:41, temp:76, zone:'Living Room', careMode:'phone' }
-    ];
-
     const defaults = {
       onboarded:false, onboardingStep:1, caretaker:'daddy', draftCaretaker:'daddy',
       siteName:'Home', zoneName:'My Plants', zones:['My Plants'], screen:'plants', demoMode:false,
-      plants:[], devices:[]
+      plants:[], devices:[], logs:[], photos:[], selectedPlantTab:'today', historyWindow:7,
+      appearance:'system', gardenView:'overview', zoneFocus:null, automationPolicies:{}, ultraPreview:false
+    };
+
+    const eventMeta = {
+      added: ['🌱','Added to Plant Daddy'],
+      watered: ['💦','Watered'],
+      fertilized: ['🧪','Fertilized'],
+      repotted: ['🪴','Repotted'],
+      pruned: ['✂️','Pruned'],
+      pest: ['🐞','Pest treatment'],
+      moved: ['📦','Moved'],
+      bloomed: ['🌸','Bloomed'],
+      harvested: ['🧺','Harvested'],
+      note: ['📝','Note'],
+      moisture: ['📊','Manual moisture reading'],
+      photo: ['📸','Photo added'],
+      device_added: ['📡','Device assigned'],
+      device_replaced: ['🔁','Sensor replaced'],
+      automation: ['🤖','Automation mode changed']
     };
 
     let state = loadState();
@@ -324,21 +377,44 @@
 
     function loadState() {
       try {
-        const saved03 = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-        if (saved03) return normalizeState({...defaults, ...saved03, screen:'plants'});
-        const old = JSON.parse(localStorage.getItem(OLD_STORAGE_KEY) || 'null');
-        if (old) {
-          return normalizeState({...defaults, ...old, zones:[old.zoneName || 'My Plants'], plants:[], devices:[], screen:'plants'});
+        const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if (current) return normalizeState({...defaults, ...current});
+        for (const key of MIGRATE_KEYS) {
+          const old = JSON.parse(localStorage.getItem(key) || 'null');
+          if (old) return normalizeState(migrateOldState(old));
         }
       } catch (_) {}
       return normalizeState({...defaults});
     }
 
+    function migrateOldState(old) {
+      const migrated = {...defaults, ...old};
+      migrated.logs = Array.isArray(old.logs) ? old.logs : [];
+      migrated.photos = Array.isArray(old.photos) ? old.photos : [];
+      migrated.selectedPlantTab = 'today';
+      migrated.historyWindow = 7;
+      migrated.plants = (old.plants || []).map(p => ({...p, moisture: p.moisture ?? null, temp: p.temp ?? null}));
+      migrated.logs = migrated.logs.concat(migrated.plants.filter(p => p.createdAt).map(p => ({
+        id: uid('log'), plantId: p.id, type:'added', date: p.createdAt, note:`Added to ${old.siteName || 'Home'}`, value:null
+      })));
+      return migrated;
+    }
+
     function normalizeState(s) {
       s.plants = Array.isArray(s.plants) ? s.plants : [];
       s.devices = Array.isArray(s.devices) ? s.devices : [];
+      s.logs = Array.isArray(s.logs) ? s.logs : [];
+      s.photos = Array.isArray(s.photos) ? s.photos : [];
       s.zones = Array.isArray(s.zones) && s.zones.length ? s.zones : [s.zoneName || 'My Plants'];
       s.zoneName = s.zones[0] || s.zoneName || 'My Plants';
+      s.selectedPlantTab = s.selectedPlantTab || 'today';
+      s.historyWindow = Number(s.historyWindow) || 7;
+      s.appearance = ['system','light','dark'].includes(s.appearance) ? s.appearance : 'system';
+      s.gardenView = ['overview','devices','ultra'].includes(s.gardenView) ? s.gardenView : 'overview';
+      s.zoneFocus = s.zones.includes(s.zoneFocus) ? s.zoneFocus : null;
+      s.automationPolicies = s.automationPolicies && typeof s.automationPolicies === 'object' ? s.automationPolicies : {};
+      s.ultraPreview = Boolean(s.ultraPreview);
+      s.devices = s.devices.map(d => ({current:d.current !== false, simulated:true, battery:d.battery ?? 100, signal:d.signal || 'Good', ...d}));
       return s;
     }
 
@@ -346,7 +422,10 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         onboarded:state.onboarded, onboardingStep:state.onboardingStep, caretaker:state.caretaker,
         draftCaretaker:state.draftCaretaker, siteName:state.siteName, zoneName:state.zoneName,
-        zones:state.zones, demoMode:state.demoMode, plants:state.plants, devices:state.devices
+        zones:state.zones, screen:state.screen, demoMode:state.demoMode, plants:state.plants,
+        devices:state.devices, logs:state.logs, photos:state.photos, selectedPlantTab:state.selectedPlantTab,
+        historyWindow:state.historyWindow, appearance:state.appearance, gardenView:state.gardenView, zoneFocus:state.zoneFocus,
+        automationPolicies:state.automationPolicies, ultraPreview:state.ultraPreview
       }));
     }
 
@@ -357,167 +436,368 @@
     function libraryItem(id) { return plantLibrary.find(p => p.id === id) || plantLibrary[plantLibrary.length-1]; }
     function plantById(id) { return state.plants.find(p => p.id === id); }
     function devicesForPlant(id) { return state.devices.filter(d => d.plantId === id); }
+    function logsForPlant(id) { return state.logs.filter(l => l.plantId === id).sort((a,b) => +new Date(b.date) - +new Date(a.date)); }
+    function photosForPlant(id) { return state.photos.filter(p => p.plantId === id).sort((a,b) => +new Date(b.date)-+new Date(a.date)); }
+    const deviceCatalog = [
+      {id:'mock-soil-gen2', type:'sensor', icon:'📡', label:'Mock Soil Sensor Gen 2', detail:'Moisture + soil temperature • staged only'},
+      {id:'mock-soil-mini', type:'sensor', icon:'🌱', label:'Mock Soil Sensor Mini', detail:'Moisture • staged only'},
+      {id:'mock-irrigation', type:'irrigation', icon:'💦', label:'Mock Smart Watering Controller', detail:'Irrigation approval/auto UX • staged only'},
+      {id:'mock-weather', type:'weather', icon:'🌦️', label:'Mock Garden Weather Sensor', detail:'Temperature + humidity • staged only'}
+    ];
+    function currentDevicesForPlant(id) { return state.devices.filter(d => d.plantId === id && d.current !== false); }
+    function currentDevice(id, type) { return currentDevicesForPlant(id).find(d => d.type === type); }
+    function deviceIcon(type) { return type==='sensor'?'📡':type==='irrigation'?'💦':type==='weather'?'🌦️':'🔌'; }
+    function applyAppearance() { const html=document.documentElement; if(state.appearance==='system') html.removeAttribute('data-theme'); else html.setAttribute('data-theme',state.appearance); }
+    function themeIcon() { if(state.appearance==='light') return '☀️'; if(state.appearance==='dark') return '🌙'; return '◐'; }
+    function cycleAppearance() { state.appearance = state.appearance==='system'?'light':state.appearance==='light'?'dark':'system'; saveState(); applyAppearance(); render(); toast(`Appearance: ${state.appearance}`); }
+    function setAppearance(mode) { if(!['system','light','dark'].includes(mode))return; state.appearance=mode; saveState(); applyAppearance(); render(); }
+    function automationModeFor(id) { return state.automationPolicies[id] || 'observe'; }
+    function hasIrrigation(id) { return Boolean(currentDevice(id,'irrigation')); }
+    function setGardenView(view) { if(!['overview','devices','ultra'].includes(view))return; state.zoneFocus=null; state.gardenView=view; saveState(); render(); scrollTop(); }
+    function openZone(zone) { if(!state.zones.includes(zone))return; state.zoneFocus=zone; state.gardenView='overview'; saveState(); render(); scrollTop(); }
+    function closeZone() { state.zoneFocus=null; saveState(); render(); scrollTop(); }
+    function setAutomationMode(plantId, mode) {
+      const p=plantById(plantId); if(!p || !['observe','recommend','approve','auto'].includes(mode))return;
+      if((mode==='approve'||mode==='auto') && !hasIrrigation(plantId)){ toast('Stage an irrigation device first 💦'); return; }
+      state.automationPolicies[plantId]=mode;
+      state.logs.push({id:uid('log'),plantId,type:'automation',date:nowIso(),note:`Automation preview set to ${mode}. Simulated only.`,value:null});
+      saveState(); render(); toast(`${p.name}: ${mode} preview selected`);
+    }
+    function ultraInsightFor(p) {
+      const readings=logsForPlant(p.id).filter(l=>l.type==='moisture'&&Number.isFinite(Number(l.value))).slice(0,4);
+      if(readings.length<2) return `${parent().label} needs a few moisture readings before there is enough history to spot a useful pattern.`;
+      const newest=Number(readings[0].value), oldest=Number(readings[readings.length-1].value);
+      const hours=Math.max(1,(+new Date(readings[0].date)-+new Date(readings[readings.length-1].date))/36e5);
+      const delta=newest-oldest;
+      if(delta < -6) return `${p.name} dropped ${Math.abs(delta).toFixed(0)} points over about ${Math.round(hours)} hours. Ultra would learn whether that dry-down is normal for this plant.`;
+      if(delta > 6) return `${p.name} gained ${delta.toFixed(0)} moisture points over about ${Math.round(hours)} hours. Ultra would compare that response with prior watering events.`;
+      return `${p.name} has stayed fairly steady across the recent readings. Ultra would keep learning its personal baseline.`;
+    }
     function scrollTop() { window.scrollTo({top:0,behavior:'smooth'}); }
+    function toast(message) { const el=document.getElementById('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(window.__pdToast); window.__pdToast=setTimeout(()=>el.classList.remove('show'), 1900); }
+    function nowIso() { return new Date().toISOString(); }
+    function fmtDate(value) { if(!value) return '—'; const d=new Date(value); return d.toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'}); }
+    function fmtDateTime(value) { if(!value) return '—'; const d=new Date(value); return d.toLocaleString(undefined, {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}); }
+    function daysAgo(value) { if(!value) return null; return Math.floor((Date.now() - +new Date(value))/(1000*60*60*24)); }
+    function parseMoistureRange(text) { const m=String(text||'').match(/(\d+)\D+(\d+)/); return m ? {min:+m[1], max:+m[2]} : {min:null,max:null}; }
+    function lastLog(plantId, type) { return logsForPlant(plantId).find(l => l.type===type) || null; }
+    function lastMoistureReading(plantId) { return logsForPlant(plantId).find(l => l.type==='moisture' && typeof l.value === 'number') || null; }
+    function plantMetrics(plant) {
+      const lib = libraryItem(plant.libraryId);
+      const range = parseMoistureRange(lib.moisture);
+      const moisture = lastMoistureReading(plant.id);
+      const lastWater = lastLog(plant.id, 'watered');
+      const lastFert = lastLog(plant.id, 'fertilized');
+      const lastRepot = lastLog(plant.id, 'repotted');
+      const reasons = [];
+      let status = 'happy';
+      if (moisture && range.min != null) {
+        if (moisture.value < range.min - 5) { status='critical'; reasons.push(`Moisture is below its preferred range at ${moisture.value}%.`); }
+        else if (moisture.value <= range.min + 2) { if (status!=='critical') status='attention'; reasons.push(`Moisture is approaching dry range at ${moisture.value}%.`); }
+      }
+      const waterDays = daysAgo(lastWater?.date);
+      if (waterDays != null && waterDays >= 10) { status='critical'; reasons.push(`It has been ${waterDays} days since this plant was watered.`); }
+      else if (waterDays != null && waterDays >= 6 && status==='happy') { status='attention'; reasons.push(`It has been ${waterDays} days since this plant was watered.`); }
+      if (!lastWater && daysAgo(plant.createdAt) >= 4 && status==='happy') reasons.push('No watering has been logged yet.');
+      const fertDays = daysAgo(lastFert?.date);
+      if (fertDays != null && fertDays >= 45) reasons.push(`Last fertilizer was ${fertDays} days ago.`);
+      return {
+        status,
+        reasons,
+        moistureValue: moisture?.value ?? null,
+        moistureDate: moisture?.date ?? null,
+        range,
+        lastWaterDate: lastWater?.date ?? null,
+        lastFertilizedDate: lastFert?.date ?? null,
+        lastRepotDate: lastRepot?.date ?? null,
+        daysSinceWater: waterDays,
+        daysSinceFertilizer: fertDays,
+        lastWaterLabel: lastWater ? fmtDate(lastWater.date) : 'Never logged',
+        lastFertilizerLabel: lastFert ? fmtDate(lastFert.date) : 'Never logged'
+      };
+    }
 
-    function toast(message) {
-      const el = document.getElementById('toast'); el.textContent = message; el.classList.add('show');
-      clearTimeout(window.__pdToast); window.__pdToast = setTimeout(() => el.classList.remove('show'), 1800);
+    function timelineForPlant(plant) {
+      const items = logsForPlant(plant.id).slice();
+      if (!items.some(i => i.type==='added')) items.push({ id: uid('log'), plantId:plant.id, type:'added', date:plant.createdAt || nowIso(), note:`Added to ${state.siteName}`, value:null, synthetic:true });
+      return items.sort((a,b) => +new Date(b.date) - +new Date(a.date));
     }
 
     function showModal(kind, payload='') {
       const modal = document.getElementById('modal');
       if (kind === 'account') {
-        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="sheet-icon">☁️</div><h3>Accounts come later.</h3><p>Build ${BUILD} is intentionally local-only. There is no sign-in service, cloud sync, or connection to your Mac. You can still build a garden and add real local plants on this device.</p><div class="actions"><button class="button primary" onclick="closeModal(); startOnboarding()">Continue locally</button><button class="button secondary" onclick="closeModal()">Not yet</button></div></div>`;
+        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><h3>Accounts come later.</h3><p>Build ${BUILD} is intentionally local-only. There is no sign-in, cloud sync, or connection to your Mac. You can still build a garden, add plants, and start plant history on this device.</p><div class="actions"><button class="button primary" onclick="closeModal(); startOnboarding()">Continue locally</button><button class="button secondary" onclick="closeModal()">Not yet</button></div></div>`;
       } else if (kind === 'delete') {
         const p = plantById(payload); if (!p) return;
-        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="sheet-icon">🪴</div><h3>Remove ${esc(p.name)}?</h3><p>This deletes this locally created plant and any simulated device assignment from this browser. It does not touch any real hardware or Mac data.</p><div class="actions"><button class="button primary" style="background:var(--danger)" onclick="deletePlant('${p.id}')">Remove plant</button><button class="button secondary" onclick="closeModal()">Keep it</button></div></div>`;
+        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><h3>Remove ${esc(p.name)}?</h3><p>This deletes this locally created plant, its history logs, photos, and any simulated device assignment from this browser only.</p><div class="actions"><button class="button primary" style="background:var(--danger)" onclick="deletePlant('${p.id}')">Remove plant</button><button class="button secondary" onclick="closeModal()">Keep it</button></div></div>`;
       } else if (kind === 'move') {
         const p = plantById(payload); if (!p) return;
-        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="sheet-icon">↔️</div><h3>Move ${esc(p.name)}</h3><p>The plant moves. Its identity stays exactly the same.</p><div class="field-stack"><div class="field"><label>ZONE</label><select id="moveZone">${state.zones.map(z=>`<option ${z===p.zone?'selected':''}>${esc(z)}</option>`).join('')}</select></div></div><div class="actions"><button class="button primary" onclick="movePlant('${p.id}')">Move plant</button><button class="button secondary" onclick="closeModal()">Cancel</button></div></div>`;
+        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><h3>Move ${esc(p.name)}</h3><p>The plant moves Zones. Its identity and history stay exactly the same.</p><div class="field-stack"><div class="field"><label>ZONE</label><select id="moveZone">${state.zones.map(z=>`<option ${z===p.zone?'selected':''}>${esc(z)}</option>`).join('')}</select></div></div><div class="actions"><button class="button primary" onclick="movePlant('${p.id}')">Move plant</button><button class="button secondary" onclick="closeModal()">Cancel</button></div></div>`;
+      } else if (kind === 'log') {
+        const p = plantById(payload.id); if (!p) return;
+        const type = payload.type;
+        const labels = {watered:'Water', fertilized:'Fertilize', repotted:'Repot', pruned:'Prune', pest:'Treat pest', moved:'Move location', bloomed:'Bloom', harvested:'Harvest', note:'Add note', moisture:'Manual moisture'};
+        const helper = {watered:'Example: deep soak, 8 minutes, rain barrel, etc.', fertilized:'Example: MaxiGro half strength.', repotted:'What pot/soil changed?', pruned:'What did you trim?', pest:'What did you treat and with what?', moved:'Where did you move it?', bloomed:'Any bloom notes?', harvested:'What did you harvest?', note:'Anything worth remembering?', moisture:'Enter a number between 0 and 100.'};
+        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><h3>${labels[type]} — ${esc(p.name)}</h3><p>${type==='moisture' ? 'Manual moisture lets Free users still build a data timeline.' : 'This event is stored locally in this browser and added to the plant history.'}</p><div class="field-stack"><div class="field"><label>DATE</label><input id="logDate" type="datetime-local" value="${toDatetimeLocal(nowIso())}" /></div>${type==='moisture' ? `<div class="field"><label>MOISTURE %</label><input id="logValue" type="number" min="0" max="100" placeholder="46" /></div>` : ''}<div class="field"><label>${type==='note' ? 'NOTE' : 'DETAILS / NOTE'}${type==='moisture'?' — OPTIONAL':''}</label><textarea id="logNote" placeholder="${helper[type]}"></textarea></div></div><div class="actions"><button class="button primary" onclick="saveLog('${p.id}','${type}')">Save</button><button class="button secondary" onclick="closeModal()">Cancel</button></div></div>`;
+      } else if (kind === 'deviceAssign') {
+        const fixedPlant = payload ? plantById(payload) : null;
+        const plantOptions = fixedPlant ? `<option value="${fixedPlant.id}">${esc(fixedPlant.name)}</option>` : state.plants.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+        if(!state.plants.length){ toast('Add a plant first 🌱'); return; }
+        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="eyebrow">Simulated hardware</div><h3>Assign a staged device.</h3><p>This tests the Plant → Device experience. Nothing pairs, scans, or contacts real hardware.</p><div class="field-stack"><div class="field"><label>PLANT</label><select id="devicePlant" ${fixedPlant?'disabled':''}>${plantOptions}</select></div><div class="field"><label>DEVICE</label><select id="deviceModel">${deviceCatalog.map(d=>`<option value="${d.id}">${d.label}</option>`).join('')}</select></div></div><div class="actions"><button class="button primary" onclick="assignStagedDevice('${fixedPlant?.id || ''}')">Assign staged device</button><button class="button secondary" onclick="closeModal()">Cancel</button></div></div>`;
+      } else if (kind === 'replaceDevice') {
+        const p=plantById(payload); if(!p)return;
+        const current=currentDevice(p.id,'sensor');
+        if(!current){ showModal('deviceAssign',p.id); return; }
+        const choices=deviceCatalog.filter(d=>d.type==='sensor');
+        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="eyebrow">Plant identity stays put</div><h3>Replace ${esc(current.label)}?</h3><p>${esc(p.name)} keeps every care event, reading, photo, and learned-history placeholder. Only the device assignment changes.</p><div class="field-stack"><div class="field"><label>REPLACEMENT SENSOR</label><select id="replacementModel">${choices.map(d=>`<option value="${d.id}">${d.label}</option>`).join('')}</select></div></div><div class="history-proof">🌱 <b>${esc(p.name)}</b> remains Plant ID ${esc(p.id)}. The old sensor becomes a retired device record instead of becoming the plant.</div><div class="actions"><button class="button primary" onclick="replaceStagedSensor('${p.id}')">Replace sensor</button><button class="button secondary" onclick="closeModal()">Cancel</button></div></div>`;
+      } else if (kind === 'ultra') {
+        const p = payload ? plantById(payload) : state.plants[0];
+        modal.innerHTML = `<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="eyebrow">Ultra preview</div><h3>${parent().label} doesn't just watch. ${parent().label} learns.</h3><p>${p ? esc(ultraInsightFor(p)) : 'Add a plant and readings first, then Ultra can eventually reason over that individual plant history.'}</p><div class="history-proof">This is a deterministic local preview — not AI, not a subscription purchase, and not a network request.</div><div class="actions"><button class="button primary" onclick="enableUltraPreview()">Show Ultra preview cards</button><button class="button secondary" onclick="closeModal()">Close</button></div></div>`;
       }
       modal.classList.add('show'); modal.setAttribute('aria-hidden','false'); modal.onclick = closeModal;
     }
-    function closeModal(){ const m=document.getElementById('modal'); m.classList.remove('show'); m.setAttribute('aria-hidden','true'); setTimeout(()=>m.innerHTML='',180); }
 
-    function startOnboarding(){ state.onboardingStep=2; state.draftCaretaker=state.caretaker; saveState(); render(); scrollTop(); }
-    function onboardingBack(){ if(state.onboardingStep>1){state.onboardingStep--;saveState();render();scrollTop();} }
-    function chooseDraftCaretaker(key){ if(!caretakers[key])return; state.draftCaretaker=key; saveState(); render(); }
-    function caretakerNext(){ state.caretaker=state.draftCaretaker; state.onboardingStep=3; saveState(); render(); scrollTop(); setTimeout(()=>document.getElementById('siteName')?.focus(),50); }
-    function gardenNext(){ const site=document.getElementById('siteName')?.value.trim(); const zone=document.getElementById('zoneName')?.value.trim(); if(!site||!zone){toast('Give your garden and first zone a name 🌱');return;} state.siteName=site.slice(0,60); state.zoneName=zone.slice(0,60); state.zones=[state.zoneName]; state.onboardingStep=4; saveState(); render(); scrollTop(); }
-    function finishOnboarding(){ state.onboarded=true; state.screen='plants'; state.demoMode=false; saveState(); render(); scrollTop(); setTimeout(()=>toast(`${parent().label} is officially on plant duty 🌱`),100); }
+    function closeModal() { const m=document.getElementById('modal'); m.classList.remove('show'); m.setAttribute('aria-hidden','true'); setTimeout(()=>m.innerHTML='',180); }
+    function toDatetimeLocal(iso) { const d = new Date(iso); const pad=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+    function assignStagedDevice(fixedPlantId='') {
+      const plantId=fixedPlantId || document.getElementById('devicePlant')?.value;
+      const modelId=document.getElementById('deviceModel')?.value;
+      const p=plantById(plantId), model=deviceCatalog.find(d=>d.id===modelId);
+      if(!p||!model){ toast('Choose a plant and device'); return; }
+      const existing=currentDevice(p.id,model.type);
+      if(existing){ toast(`${p.name} already has a current ${model.type} device`); return; }
+      state.devices.push({id:uid('device'),plantId:p.id,type:model.type,label:model.label,modelId:model.id,status:'staged',simulated:true,current:true,battery:100,signal:'Excellent',assignedAt:nowIso()});
+      state.logs.push({id:uid('log'),plantId:p.id,type:'device_added',date:nowIso(),note:`${model.label} assigned as a simulated device.`,value:null});
+      if(model.type==='sensor' && p.careMode==='phone') p.careMode='sensor';
+      if(model.type==='irrigation') p.careMode='watering';
+      saveState(); closeModal(); render(); toast(`${model.label} staged for ${p.name} ✓`);
+    }
+    function replaceStagedSensor(plantId) {
+      const p=plantById(plantId), old=currentDevice(plantId,'sensor');
+      const model=deviceCatalog.find(d=>d.id===document.getElementById('replacementModel')?.value);
+      if(!p||!old||!model)return;
+      const historyCount=logsForPlant(plantId).length, photoCount=photosForPlant(plantId).length;
+      old.current=false; old.status='replaced'; old.replacedAt=nowIso();
+      state.devices.push({id:uid('device'),plantId:p.id,type:'sensor',label:model.label,modelId:model.id,status:'staged',simulated:true,current:true,battery:100,signal:'Excellent',assignedAt:nowIso()});
+      state.logs.push({id:uid('log'),plantId:p.id,type:'device_replaced',date:nowIso(),note:`${old.label} → ${model.label}. Plant identity preserved with ${historyCount} existing history item${historyCount===1?'':'s'} and ${photoCount} photo${photoCount===1?'':'s'}.`,value:null});
+      p.careMode='sensor'; saveState(); closeModal(); render(); toast(`Sensor replaced. ${p.name}'s history stayed put 🌱`);
+    }
+    function enableUltraPreview() { state.ultraPreview=true; saveState(); closeModal(); render(); toast('Ultra preview enabled locally 🧠'); }
 
-    function onboardingShell(content,step){ return `<section class="onboarding-page"><div class="brandbar"><div class="brand"><div class="brand-mark">🌱</div><span>Plant Daddy</span></div><div class="build-tag">BUILD ${BUILD}</div></div><div class="progress" aria-label="Setup progress">${[1,2,3,4].map(n=>`<span class="${n<=step?'on':''}"></span>`).join('')}</div>${content}</section>`; }
-    function welcomeScreen(){ return onboardingShell(`<div class="onboarding-card"><div class="hero-icon">🌿</div><div class="eyebrow">Welcome to Plant Daddy</div><h1>Keeping plants alive shouldn't be a full-time job.</h1><p class="lead">Start with nothing but a plant and your phone. Add sensors, intelligence and automation only when you want them.</p><div class="tagline">💦 Keep It Moist. <span>•</span> Daddy handles the rest.</div><div class="actions"><button class="button primary" onclick="startOnboarding()">Get Started</button><button class="button secondary" onclick="showModal('account')">I already have an account</button></div><div class="fineprint">No account required in this build. Nothing leaves this browser.</div></div>`,1); }
-    function caretakerScreen(){ return onboardingShell(`<div class="onboarding-card"><button class="text-button" onclick="onboardingBack()">‹ Back</button><div class="eyebrow">Choose your caretaker</div><h2>Who do you want looking after your plants?</h2><p class="lead">Pick whoever makes you happy. You can switch anytime.</p><div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.draftCaretaker===key?'active':''}" onclick="chooseDraftCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="actions"><button class="button primary" onclick="caretakerNext()">Continue with ${draftParent().label}</button></div><div class="fineprint">Caretaker changes personality and copy — never your plants, history or plan.</div></div>`,2); }
-    function gardenScreenOnboarding(){ return onboardingShell(`<div class="onboarding-card"><button class="text-button" onclick="onboardingBack()">‹ Back</button><div class="eyebrow">Create your garden</div><h2>Give your plants somewhere to live.</h2><p class="lead">A Garden is a property or site. Zones keep plants organized inside it.</p><div class="field-stack"><div class="field"><label for="siteName">GARDEN / SITE NAME</label><input id="siteName" maxlength="60" value="${esc(state.siteName)}" placeholder="Home" autocomplete="off"/><div class="field-help">Examples: Home, Greenhouse, Office, Hawaiʻi Farm.</div></div><div class="field"><label for="zoneName">FIRST ZONE</label><input id="zoneName" maxlength="60" value="${esc(state.zoneName)}" placeholder="My Plants" autocomplete="off"/><div class="field-help">Examples: Living Room, Tropical Patio, Plumeria Bed.</div></div></div><div class="setup-preview"><div class="crumb">🏡 <span id="previewSite">${esc(state.siteName)}</span> <span>›</span> 🌿 <span id="previewZone">${esc(state.zoneName)}</span></div></div><div class="actions"><button class="button primary" onclick="gardenNext()">Create Garden</button></div><div class="fineprint">Stored locally on this device for Build ${BUILD}. No cloud account exists yet.</div></div>`,3); }
-    function finishScreen(){ return onboardingShell(`<div class="onboarding-card"><div class="finish-ring">${parent().icon}</div><div class="eyebrow">You're ready</div><h2>${parent().label}'s got the garden.</h2><p class="lead">Your Plant Daddy space is ready. Add your first real local plant next.</p><div class="finish-list"><div class="finish-item"><span class="tick">✓</span><span><b>${parent().label}</b> selected as your caretaker.</span></div><div class="finish-item"><span class="tick">✓</span><span><b>${esc(state.siteName)}</b> created as your first Garden.</span></div><div class="finish-item"><span class="tick">✓</span><span><b>${esc(state.zoneName)}</b> created as your first Zone.</span></div><div class="finish-item"><span class="tick">✓</span><span>Everything is <b>local-only</b> in this build.</span></div></div><div class="actions"><button class="button primary" onclick="finishOnboarding()">Open Plant Daddy</button></div></div>`,4); }
-    function renderOnboarding(){ if(state.onboardingStep<=1)return welcomeScreen(); if(state.onboardingStep===2)return caretakerScreen(); if(state.onboardingStep===3)return gardenScreenOnboarding(); return finishScreen(); }
+    function startOnboarding() { state.onboardingStep=2; state.draftCaretaker=state.caretaker; saveState(); render(); scrollTop(); }
+    function onboardingBack() { if(state.onboardingStep>1){state.onboardingStep--;saveState();render();scrollTop();} }
+    function chooseDraftCaretaker(key) { if(!caretakers[key]) return; state.draftCaretaker=key; saveState(); render(); }
+    function caretakerNext() { state.caretaker=state.draftCaretaker; state.onboardingStep=3; saveState(); render(); scrollTop(); setTimeout(()=>document.getElementById('siteName')?.focus(),50); }
+    function gardenNext() { const site=document.getElementById('siteName')?.value.trim(); const zone=document.getElementById('zoneName')?.value.trim(); if(!site||!zone){toast('Give your garden and first Zone a name 🌱');return;} state.siteName=site.slice(0,60); state.zoneName=zone.slice(0,60); state.zones=[state.zoneName]; state.onboardingStep=4; saveState(); render(); scrollTop(); }
+    function finishOnboarding() { state.onboarded=true; state.screen='plants'; state.demoMode=false; saveState(); render(); scrollTop(); setTimeout(()=>toast(`${parent().label} is officially on plant duty 🌱`),100); }
 
-    function navButton(screen,icon,label){ return `<button class="${state.screen===screen?'active':''}" onclick="go('${screen}')"><span class="nav-icon">${icon}</span><span class="nav-label">${esc(label)}</span></button>`; }
-    function nav(){ return `<nav class="nav">${navButton('plants','🌱','Plants')}${navButton('care','💧','Care')}${navButton('add','＋','Add')}${navButton('garden','▦','Garden')}${navButton('parent',parent().icon,parent().label)}</nav>`; }
-    function topbar(){ return `<header class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-mark">🌱</div><span>Plant Daddy</span></div><div class="local-pill">● Local only</div></div></header>`; }
-    function demoBanner(){ if(!state.demoMode)return ''; return `<div class="demo-banner"><div class="demo-inner"><span>🧪 DEMO GARDEN • SYNTHETIC DATA ONLY</span><button onclick="toggleDemo(false)">Exit</button></div></div>`; }
-    function shell(content){ return `<div class="page-shell">${topbar()}${demoBanner()}<section class="page">${content}</section>${nav()}</div>`; }
-    function go(screen){ selectedPlantId=null; state.screen=screen; if(screen!=='add') resetAddFlow(false); render(); scrollTop(); }
-    function toggleDemo(on){ state.demoMode=!!on; saveState(); render(); scrollTop(); }
+    function onboardingShell(content,step) { return `<section class="onboarding-page"><div class="brandbar"><div class="brand"><div class="brand-mark">🌱</div><span>Plant Daddy</span></div><div class="build-tag">BUILD ${BUILD}</div></div><div class="progress">${[1,2,3,4].map(n=>`<span class="${n<=step?'on':''}"></span>`).join('')}</div>${content}</section>`; }
+    function welcomeScreen() { return onboardingShell(`<div class="onboarding-card"><div class="hero-icon">🌿</div><div class="eyebrow">Welcome to Plant Daddy</div><h1>Keeping plants alive shouldn't be a full-time job.</h1><p class="lead">Start with a plant and your phone. Add sensors, intelligence and automation only when you want them.</p><div class="tagline">💦 Keep It Moist. <span>•</span> Daddy handles the rest.</div><div class="actions"><button class="button primary" onclick="startOnboarding()">Get Started</button><button class="button secondary" onclick="showModal('account')">I already have an account</button></div><div class="fineprint">Build ${BUILD} is local only. Nothing leaves this browser.</div></div>`,1); }
+    function caretakerScreen() { return onboardingShell(`<div class="onboarding-card"><button class="text-button" onclick="onboardingBack()">‹ Back</button><div class="eyebrow">Choose your caretaker</div><h2>Who do you want looking after your plants?</h2><p class="lead">Pick whoever makes you happy. You can switch anytime.</p><div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.draftCaretaker===key?'active':''}" onclick="chooseDraftCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="actions"><button class="button primary" onclick="caretakerNext()">Continue with ${draftParent().label}</button></div></div>`,2); }
+    function gardenScreenOnboarding() { return onboardingShell(`<div class="onboarding-card"><button class="text-button" onclick="onboardingBack()">‹ Back</button><div class="eyebrow">Create your garden</div><h2>Give your plants somewhere to live.</h2><p class="lead">A Garden is a property or site. Zones keep plants organized inside it.</p><div class="field-stack"><div class="field"><label>GARDEN / SITE NAME</label><input id="siteName" maxlength="60" value="${esc(state.siteName)}" placeholder="Home" autocomplete="off" /></div><div class="field"><label>FIRST ZONE</label><input id="zoneName" maxlength="60" value="${esc(state.zoneName)}" placeholder="My Plants" autocomplete="off" /></div></div><div class="setup-preview"><div class="crumb">🏡 <span>${esc(state.siteName)}</span> <span>›</span> 🌿 <span>${esc(state.zoneName)}</span></div></div><div class="actions"><button class="button primary" onclick="gardenNext()">Create Garden</button></div></div>`,3); }
+    function finishScreen() { return onboardingShell(`<div class="onboarding-card"><div class="hero-icon">${parent().icon}</div><div class="eyebrow">You're ready</div><h2>${parent().label}'s got the garden.</h2><p class="lead">Build ${BUILD} adds dashboard polish, staged devices, sensor replacement, Ultra previews, and simulated automation modes.</p><div class="actions"><button class="button primary" onclick="finishOnboarding()">Open my Garden</button></div></div>`,4); }
+    function renderOnboarding() { return state.onboardingStep===1?welcomeScreen():state.onboardingStep===2?caretakerScreen():state.onboardingStep===3?gardenScreenOnboarding():finishScreen(); }
 
-    function statusFor(p){ if(p.moisture == null)return {key:'new',label:'Ready to track'}; const lib=libraryItem(p.libraryId); const m=String(lib.moisture).match(/(\d+)\D+(\d+)/); if(!m)return {key:'happy',label:'Tracking'}; const low=Number(m[1]), high=Number(m[2]); if(p.moisture<Math.max(0,low-8))return {key:'critical',label:'Critical'}; if(p.moisture<low)return {key:'attention',label:'Needs attention'}; if(p.moisture>high+12)return {key:'attention',label:'Check moisture'}; return {key:'happy',label:'Happy'}; }
-    function plantCard(p,demo=false){ const st=demo?{key:p.status,label:p.status==='attention'?'Needs attention':'Happy'}:statusFor(p); const modeIcon={phone:'📱',sensor:'📡',watering:'💦'}[p.careMode]||'📱'; return `<button class="plant-card" onclick="${demo?"toast('Demo plant — not saved to your Garden')":`openPlant('${p.id}')`}"><div class="plant-top"><span class="plant-emoji">${p.emoji}</span><div class="grow"><div class="plant-name">${esc(p.name)}</div><div class="plant-species">${esc(p.species)} • ${esc(p.zone)}</div></div><div class="plant-metric">${p.moisture==null?modeIcon:p.moisture+'%'}</div></div><div class="plant-bottom"><span>${modeIcon} ${p.careMode==='phone'?'Manual':p.careMode==='sensor'?'Sensor staged':'Watering staged'}</span><span class="${st.key==='attention'?'attention':st.key==='critical'?'attention':'plant-status-new'}">${st.label}</span></div></button>`; }
-
-    function homeScreen(){
-      if(state.demoMode){ const happy=demoPlants.filter(p=>p.status==='happy').length, attention=demoPlants.filter(p=>p.status==='attention').length; return shell(`<div class="eyebrow">${esc(state.siteName)}</div><h1 class="screen-title">${parent().label}'s watching ${demoPlants.length} demo plants.</h1><p class="screen-sub">These plants are synthetic and are not saved into your Garden.</p><div class="summary-row"><div class="summary"><b>${happy}</b><span>Happy</span></div><div class="summary"><b>${attention}</b><span>Attention</span></div><div class="summary"><b>0</b><span>Critical</span></div></div><div class="section-head"><div class="section-title">Demo plants</div><button class="text-button" onclick="toggleDemo(false)">My Garden</button></div>${demoPlants.map(p=>plantCard(p,true)).join('')}`); }
-      if(!state.plants.length){ return shell(`<div class="eyebrow">${esc(state.siteName)}</div><h1 class="screen-title">${parent().label}'s ready for the first plant.</h1><p class="screen-sub">Your Garden is set up. Add a plant from the built-in Care Library — hardware stays optional.</p><div class="summary-row"><div class="summary"><b>0</b><span>Happy</span></div><div class="summary"><b>0</b><span>Attention</span></div><div class="summary"><b>0</b><span>Critical</span></div></div><div class="card empty"><div class="empty-icon">🪴</div><h3>No plants yet. Perfect.</h3><p>Search or browse a plant, name it, choose its Zone and tell Plant Daddy how you want to care for it.</p><div class="empty-actions"><button class="button primary" onclick="go('add')">Add your first plant</button><button class="button secondary" onclick="toggleDemo(true)">Preview with demo plants</button></div></div><div class="card privacy-card"><div class="privacy-title">🔒 Clean-room boundary active</div><div class="privacy-copy">Build ${BUILD} stores plants only in this browser. It cannot discover, import or read Hub #0001, MQTT, Zigbee, SQLite, sensors or files on your Mac.</div></div>`); }
-      const statuses=state.plants.map(statusFor); const happy=statuses.filter(s=>s.key==='happy'||s.key==='new').length, att=statuses.filter(s=>s.key==='attention').length, crit=statuses.filter(s=>s.key==='critical').length;
-      return shell(`<div class="eyebrow">${esc(state.siteName)}</div><h1 class="screen-title">${parent().label}'s watching ${state.plants.length} plant${state.plants.length===1?'':'s'}.</h1><p class="screen-sub">Your locally created Garden. No live hardware is connected in this build.</p><div class="summary-row"><div class="summary"><b>${happy}</b><span>Happy / Ready</span></div><div class="summary"><b>${att}</b><span>Attention</span></div><div class="summary"><b>${crit}</b><span>Critical</span></div></div><div class="section-head"><div class="section-title">Your plants</div><button class="text-button" onclick="go('add')">＋ Add</button></div>${state.plants.map(p=>plantCard(p)).join('')}`);
+    function shell(content) {
+      return `<div class="page-shell"><div class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-mark">🌱</div><span>Plant Daddy</span></div><div class="top-actions"><div class="local-pill">🔒 LOCAL</div><button class="icon-button" aria-label="Change appearance" title="Appearance: ${state.appearance}" onclick="cycleAppearance()">${themeIcon()}</button></div></div></div><section class="page">${content}</section><nav class="nav">${navButton('plants','🌱','Plants')}${navButton('care','💧','Care')}${navButton('add','➕','Add')}${navButton('garden','📊','Garden')}${navButton('parent','👤', parent().label)}</nav></div>`;
     }
 
-    function careScreen(){ if(state.demoMode){const attention=demoPlants.filter(p=>p.status==='attention');return shell(`<div class="eyebrow">Care</div><h1 class="screen-title">Needs Attention</h1><p class="screen-sub">A synthetic preview of how Plant Daddy will surface what matters.</p>${attention.map(p=>`<div class="card"><div class="row"><div class="row-icon">${p.emoji}</div><div class="grow"><div class="card-title">${esc(p.name)}</div><div class="card-copy">Moisture is approaching its demo dry range.</div></div><div class="chev">›</div></div></div>`).join('')}<div class="card"><div class="card-title">${parent().label}'s got the rest. 🌱</div><div class="card-copy">Healthy plants stay out of your way.</div></div>`);}
-      if(!state.plants.length)return shell(`<div class="eyebrow">Care</div><h1 class="screen-title">Nothing needs attention.</h1><p class="screen-sub">Because you haven't added a plant yet — not because we're making up data.</p><div class="card empty"><div class="empty-icon">💧</div><h3>Care starts with a plant.</h3><p>Add one now. Build 0.4 will add full care logging and history.</p><div class="empty-actions"><button class="button primary" onclick="go('add')">Add a plant</button></div></div>`);
-      return shell(`<div class="eyebrow">Care</div><h1 class="screen-title">${state.plants.length} plant${state.plants.length===1?' is':'s are'} ready.</h1><p class="screen-sub">Build 0.3.2 loads the existing DCW Grows Growing Guide into the local Care Library. Watering, fertilizer and timeline logging arrive in 0.4.</p>${state.plants.map(p=>`<button class="plant-card" onclick="openPlant('${p.id}')"><div class="row"><div class="row-icon">${p.emoji}</div><div class="grow"><div class="card-title">${esc(p.name)}</div><div class="card-copy">${p.careMode==='phone'?'Manual care • no hardware required':p.careMode==='sensor'?'Sensor selected • connection intentionally simulated':'Smart watering selected • connection intentionally simulated'}</div></div><div class="chev">›</div></div></button>`).join('')}<div class="card"><div class="card-title">Care history is next 🌱</div><div class="card-copy">Build 0.4 will add Water, Fertilize, Repot, Prune, Pest Treatment, Move, Bloom, Harvest, Notes and manual moisture readings.</div></div>`);
+    function navButton(key, icon, label) { return `<button class="${state.screen===key?'active':''}" onclick="go('${key}')"><span class="nav-icon">${icon}</span><span class="nav-label">${esc(label)}</span></button>`; }
+    function go(screen) { selectedPlantId=null; state.screen=screen; saveState(); render(); scrollTop(); }
+
+    function appSummary() {
+      const counts = {happy:0, attention:0, critical:0};
+      state.plants.forEach(p => counts[plantMetrics(p).status]++);
+      return counts;
+    }
+    function plantCard(p) {
+      const lib = libraryItem(p.libraryId); const m = plantMetrics(p);
+      const statusClass = m.status==='critical' ? 'status-critical' : m.status==='attention' ? 'status-attention' : 'status-happy';
+      const headline = m.status==='critical' ? 'Needs help soon' : m.status==='attention' ? 'Needs attention' : 'Looking good';
+      const sub = m.moistureValue!=null ? `Moisture ${m.moistureValue}%` : `Target ${lib.moisture}`;
+      return `<button class="card" style="width:100%; text-align:left" onclick="openPlant('${p.id}')"><div class="row"><div class="row-icon">${p.emoji}</div><div class="grow"><div class="card-title">${esc(p.name)}</div><div class="card-copy">${esc(p.zone)} • ${sub}</div></div><div class="chev">›</div></div><div class="card-copy ${statusClass}" style="margin-top:10px">${headline}</div>${m.reasons[0]?`<div class="card-copy">${esc(m.reasons[0])}</div>`:''}</button>`;
+    }
+    function loadDemoGarden() {
+      const seeds = [
+        ['coconut-palm','Coconut Palm','Tropical Patio','sensor',46,82],
+        ['plumeria','Plumeria Bed West','Plumeria Bed','phone',31,96],
+        ['hibiscus','Hibiscus Red','Front Pots','sensor',28,88],
+        ['dragon-fruit','Dragon Fruit','Back Fence','watering',53,85]
+      ];
+      state.zones = Array.from(new Set(['Tropical Patio','Plumeria Bed','Front Pots','Back Fence']));
+      state.zoneName = state.zones[0];
+      state.siteName = state.siteName || 'Home';
+      state.demoMode = true;
+      state.plants = [];
+      state.devices = [];
+      state.logs = [];
+      state.photos = [];
+      seeds.forEach(([libraryId,name,zone,mode,moisture,temp]) => {
+        const lib=libraryItem(libraryId); const id=uid('plant');
+        const createdAt = new Date(Date.now() - (5+Math.random()*10)*86400000).toISOString();
+        const plant = {id, libraryId, name, species:lib.scientific, variety:'', emoji:lib.emoji, zone, careMode:mode, moisture:null, temp, createdAt};
+        state.plants.push(plant);
+        if(mode==='sensor') state.devices.push({id:uid('device'), plantId:id, type:'sensor', label:'Demo Soil Sensor', status:'staged', simulated:true});
+        if(mode==='watering') state.devices.push({id:uid('device'), plantId:id, type:'irrigation', label:'Demo Smart Watering', status:'staged', simulated:true});
+        addLog(id,'added',`Added to ${state.siteName}`, null, createdAt, true);
+        addLog(id,'watered','Initial demo watering', null, new Date(Date.now()-3*86400000).toISOString(), true);
+        addLog(id,'moisture','Demo reading', moisture, new Date(Date.now()-1*86400000).toISOString(), true);
+        if(libraryId==='hibiscus') addLog(id,'fertilized','MaxiGro', null, new Date(Date.now()-48*86400000).toISOString(), true);
+        if(libraryId==='plumeria') addLog(id,'note','Soil has been getting hot by 1pm.', null, new Date(Date.now()-2*86400000).toISOString(), true);
+      });
+      saveState(); render(); toast('Demo Garden loaded 🌱');
+    }
+    function homeScreen() {
+      const counts = appSummary();
+      if (!state.plants.length) return shell(`<div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s ready when you are.</h1><p class="page-sub">Start with one plant and your phone. Smart hardware can come later.</p><div class="card empty"><div class="empty-icon">🪴</div><h3>No plants yet.</h3><p>Your Garden is ready. Add your first plant to start care history, or load a synthetic garden to test Build ${BUILD}.</p><div class="actions inline"><button class="button primary" onclick="go('add')">Add a plant</button><button class="button secondary" onclick="loadDemoGarden()">Load Demo Garden</button></div></div><div class="card privacy-card"><div class="privacy-title">🔒 Clean-room build</div><div class="privacy-copy">Everything in this preview stays in this browser. There is no sign-in, cloud backend, live sensor connection, or path to Hub #0001.</div></div>`);
+      const ranked=state.plants.map(p=>[p,plantMetrics(p)]).sort((a,b)=>({critical:0,attention:1,happy:2}[a[1].status]-({critical:0,attention:1,happy:2}[b[1].status])));
+      const spotlight=ranked.find(([,m])=>m.status!=='happy');
+      const recent=state.logs.slice().sort((a,b)=>+new Date(b.date)-+new Date(a.date))[0];
+      const daddyMessage=spotlight ? `${spotlight[0].name}: ${spotlight[1].reasons[0] || 'worth a look.'}` : recent ? `Everything looks calm. Your latest logged activity was ${eventMeta[recent.type]?.[1]?.toLowerCase() || 'plant care'}.` : `Everything looks calm. Add a moisture reading or care event and ${parent().label} will start building context.`;
+      return shell(`<div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s watching ${state.plants.length} plant${state.plants.length===1?'':'s'}.</h1><p class="page-sub">One glance for what matters. Details stay underneath when you want them.</p><div class="summary-row"><div class="summary"><b>${counts.happy}</b><span>Happy</span></div><div class="summary"><b>${counts.attention}</b><span>Needs Attention</span></div><div class="summary"><b>${counts.critical}</b><span>Critical</span></div></div><div class="card insight-card"><div class="card-title">${parent().icon} ${parent().label} Says</div><div class="card-copy">${esc(daddyMessage)}</div>${state.ultraPreview && state.plants[0] ? `<div class="card-copy" style="margin-top:10px"><b>Ultra preview:</b> ${esc(ultraInsightFor(state.plants[0]))}</div>` : ''}<div class="actions"><button class="button secondary small" onclick="showModal('ultra','${state.plants[0]?.id || ''}')">Preview Ultra intelligence</button></div></div>${spotlight ? `<div class="card spotlight ${spotlight[1].status==='critical'?'critical':''}"><div class="row"><div class="row-icon">${spotlight[0].emoji}</div><div class="grow"><div class="card-title">${spotlight[1].status==='critical'?'Critical':'Needs attention'} — ${esc(spotlight[0].name)}</div><div class="card-copy">${esc(spotlight[1].reasons[0] || 'Worth a look.')}</div></div><button class="button secondary small" onclick="openPlant('${spotlight[0].id}')">View</button></div></div>` : `<div class="card"><div class="card-title">🌱 Everything looks okay.</div><div class="card-copy">Nothing is currently flagged by the local rules engine.</div></div>`}<div class="dashboard-actions"><button class="dashboard-action" onclick="go('add')"><span class="da-icon">➕</span><b>Add plant</b><span>Search the DCW-backed care library.</span></button><button class="dashboard-action" onclick="go('care')"><span class="da-icon">💧</span><b>Log care</b><span>Water, fertilize, read moisture, and more.</span></button><button class="dashboard-action" onclick="setGardenView('overview'); go('garden')"><span class="da-icon">🏡</span><b>Garden</b><span>Sites, Zones, and plant organization.</span></button><button class="dashboard-action" onclick="setGardenView('devices'); go('garden')"><span class="da-icon">📡</span><b>Devices</b><span>Test staged hardware assignments.</span></button></div><div class="section-head"><div class="section-title">Your plants</div><button class="text-button" onclick="go('add')">Add another</button></div>${state.plants.map(plantCard).join('')}`);
     }
 
-    function resetAddFlow(renderNow=true){ addFlow={step:1,selectedLibraryId:null,query:'',category:'All',name:'',variety:'',zone:state.zones[0]||state.zoneName,careMode:'phone'}; if(renderNow)render(); }
-    function startPlantFlow(){ resetAddFlow(false); addFlow.zone=state.zones[0]||state.zoneName; state.screen='add'; render(); scrollTop(); }
-    function addBack(){ if(addFlow.step>1){addFlow.step--;render();scrollTop();} else { resetAddFlow(false); state.screen='plants'; render(); scrollTop(); } }
-    function setAddQuery(v){ addFlow.query=v; renderLibraryResults(); }
-    function setCategory(c){ addFlow.category=c; render(); }
-    function filteredLibrary(){ const q=addFlow.query.trim().toLowerCase(); return plantLibrary.filter(p=>((addFlow.category==='All')||(addFlow.category==='DCW Grows'&&(p.dcwGuide||p.dcwStore||p.dcw))||p.category===addFlow.category) && (!q||[p.name,p.scientific,p.category,p.dcwName||'',p.guideSummary||''].join(' ').toLowerCase().includes(q))); }
-    function selectLibrary(id){ addFlow.selectedLibraryId=id; const lib=libraryItem(id); if(!addFlow.name||addFlow.name===libraryItem(addFlow.selectedLibraryId).name)addFlow.name=lib.name; render(); }
-    function libraryNext(){ if(!addFlow.selectedLibraryId){toast('Pick a plant first 🌱');return;} const lib=libraryItem(addFlow.selectedLibraryId); addFlow.name=lib.id==='custom'?'':lib.name; addFlow.zone=state.zones[0]||state.zoneName; addFlow.step=2; render(); scrollTop(); setTimeout(()=>document.getElementById('plantName')?.focus(),50); }
-    function detailsNext(){ const name=document.getElementById('plantName')?.value.trim(), variety=document.getElementById('plantVariety')?.value.trim(), zone=document.getElementById('plantZone')?.value; if(!name){toast('Give this plant a name 🌱');return;} addFlow.name=name.slice(0,60); addFlow.variety=(variety||'').slice(0,60); addFlow.zone=zone||state.zones[0]; addFlow.step=3; render(); scrollTop(); }
-    function chooseCareMode(mode){ if(!['phone','sensor','watering'].includes(mode))return; addFlow.careMode=mode; render(); }
-    function careModeNext(){ addFlow.step=4; render(); scrollTop(); }
-    function saveNewPlant(){ const lib=libraryItem(addFlow.selectedLibraryId); const id=uid('plant'); const plant={id,libraryId:lib.id,name:addFlow.name,species:lib.scientific,variety:addFlow.variety,emoji:lib.emoji,zone:addFlow.zone,careMode:addFlow.careMode,moisture:null,temp:null,createdAt:new Date().toISOString()}; state.plants.push(plant);
-      if(addFlow.careMode==='sensor')state.devices.push({id:uid('device'),plantId:id,type:'sensor',label:'Demo Soil Sensor',status:'staged',simulated:true});
-      if(addFlow.careMode==='watering')state.devices.push({id:uid('device'),plantId:id,type:'irrigation',label:'Demo Smart Watering',status:'staged',simulated:true});
-      saveState(); selectedPlantId=id; resetAddFlow(false); state.screen='plants'; render(); scrollTop(); setTimeout(()=>toast(`${plant.name} is now in ${state.siteName} 🌱`),100); }
+    function careScreen() {
+      if (!state.plants.length) return shell(`<div class="eyebrow">Care</div><h1 class="page-title">Nothing to care for yet.</h1><p class="page-sub">Add a plant first, then Plant Daddy can track watering, moisture, fertilizer, and history.</p><div class="card empty"><div class="empty-icon">💧</div><h3>Your care queue is empty.</h3><p>Once plants exist, this screen surfaces the ones worth your attention.</p><div class="actions"><button class="button primary" onclick="go('add')">Add a plant</button></div></div>`);
+      const issues = state.plants.map(p => [p, plantMetrics(p)]).filter(([,m]) => m.status !== 'happy' || m.reasons.length);
+      const recent = state.logs.slice().sort((a,b)=>+new Date(b.date)-+new Date(a.date)).slice(0,8);
+      return shell(`<div class="eyebrow">Care</div><h1 class="page-title">Needs Attention</h1><p class="page-sub">The things worth looking at — not every number.</p>${issues.length ? issues.map(([p,m]) => `<div class="card"><div class="row"><div class="row-icon">${p.emoji}</div><div class="grow"><div class="card-title">${esc(p.name)}</div><div class="card-copy">${esc(m.reasons[0] || 'Needs attention.')}</div></div><button class="button secondary small" onclick="openPlant('${p.id}')">View</button></div></div>`).join('') : `<div class="card"><div class="card-title">${parent().label}'s got it. 🌱</div><div class="card-copy">Nothing looks urgent right now.</div></div>`}<div class="section-head"><div class="section-title">Recent care activity</div></div><div class="card">${recent.length ? `<div class="timeline">${recent.map(renderTimelineItem).join('')}</div>` : `<div class="card-copy">No care activity logged yet.</div>`}</div>`);
+    }
 
-    function addFlowHeader(){ return `<div class="flow-head"><button class="flow-back" onclick="addBack()">‹</button><div class="mini-progress">${[1,2,3,4].map(n=>`<span class="${n<=addFlow.step?'on':''}"></span>`).join('')}</div><div class="build-tag">${addFlow.step}/4</div></div>`; }
-    function renderLibraryResults(){ const target=document.getElementById('libraryResults'); if(!target)return; const list=filteredLibrary(); target.innerHTML=list.length?list.map(p=>`<button class="library-card ${addFlow.selectedLibraryId===p.id?'selected':''}" onclick="selectLibrary('${p.id}')"><div class="library-emoji">${p.emoji}</div><div class="library-name">${esc(p.name)}</div><div class="library-scientific">${esc(p.scientific)}</div><div class="library-range">💧 ${esc(p.moisture)}</div>${p.dcwStore?'<div class="dcw-badge">🛍 DCW + Shop</div>':p.dcwGuide?'<div class="dcw-badge">🌱 DCW Guide</div>':''}</button>`).join(''):`<div class="card empty" style="grid-column:1/-1"><div class="empty-icon">🔎</div><h3>No match yet.</h3><p>Try a broader search or choose “Something else” under Other.</p></div>`; }
-    function addLibraryStep(){ const categories=['All','DCW Grows',...new Set(plantLibrary.map(p=>p.category))]; return `${addFlowHeader()}<div class="eyebrow">Add a plant</div><h1 class="screen-title">What are we growing?</h1><p class="screen-sub">Search the built-in Care Library or browse a category. ${plantLibrary.filter(p=>p.dcwGuide).length} DCW Growing Guide profiles are loaded locally. The existing DCW Grows Growing Guide is loaded locally here. Store products get a separate shop badge. No AI call required.</p><div class="search-wrap"><span class="search-icon">⌕</span><input value="${esc(addFlow.query)}" oninput="setAddQuery(this.value)" placeholder="Search plumeria, dragon fruit, firesticks…" autocomplete="off"/></div><div class="chips">${categories.map(c=>`<button class="chip ${addFlow.category===c?'active':''}" onclick="setCategory('${c}')">${esc(c)}</button>`).join('')}</div><div id="libraryResults" class="library-grid">${filteredLibrary().map(p=>`<button class="library-card ${addFlow.selectedLibraryId===p.id?'selected':''}" onclick="selectLibrary('${p.id}')"><div class="library-emoji">${p.emoji}</div><div class="library-name">${esc(p.name)}</div><div class="library-scientific">${esc(p.scientific)}</div><div class="library-range">💧 ${esc(p.moisture)}</div>${p.dcwStore?'<div class="dcw-badge">🛍 DCW + Shop</div>':p.dcwGuide?'<div class="dcw-badge">🌱 DCW Guide</div>':''}</button>`).join('')}</div><div class="actions"><button class="button primary" ${addFlow.selectedLibraryId?'':'disabled'} onclick="libraryNext()">Continue</button></div>`; }
-    function addDetailsStep(){ const lib=libraryItem(addFlow.selectedLibraryId); return `${addFlowHeader()}<div class="eyebrow">Plant details</div><h1 class="screen-title">Make it yours.</h1><div class="selected-species"><div class="library-emoji">${lib.emoji}</div><div><div class="card-title">${esc(lib.name)}</div><div class="card-copy"><i>${esc(lib.scientific)}</i> • Typical moisture ${esc(lib.moisture)}</div></div></div><div class="field-stack"><div class="field"><label for="plantName">PLANT NAME</label><input id="plantName" maxlength="60" value="${esc(addFlow.name)}" placeholder="Mona" autocomplete="off"/><div class="field-help">Call it whatever you call it. This identity survives hardware changes.</div></div><div class="field"><label for="plantVariety">VARIETY / CULTIVAR — OPTIONAL</label><input id="plantVariety" maxlength="60" value="${esc(addFlow.variety)}" placeholder="Celadine, Thai Constellation, Meyer…" autocomplete="off"/></div><div class="field"><label for="plantZone">ZONE</label><select id="plantZone">${state.zones.map(z=>`<option ${z===addFlow.zone?'selected':''}>${esc(z)}</option>`).join('')}</select></div></div><div class="actions"><button class="button primary" onclick="detailsNext()">Continue</button></div>`; }
-    function addModeStep(){ const modes=[['phone','🌱','Just my phone','I’ll log care myself. No hardware required.'],['sensor','📡','I have a sensor','Stage a sensor assignment now. No real device connects in this build.'],['watering','💦','I have smart watering','Stage irrigation for this plant. Automation stays disconnected.']]; return `${addFlowHeader()}<div class="eyebrow">How do you want to care for it?</div><h1 class="screen-title">Start as simple as you want.</h1><p class="screen-sub">You can upgrade the same plant later. You never recreate it just because the hardware changes.</p><div class="mode-grid">${modes.map(m=>`<button class="mode-card ${addFlow.careMode===m[0]?'active':''}" onclick="chooseCareMode('${m[0]}')"><span class="mode-icon">${m[1]}</span><span class="grow"><span class="parent-name">${m[2]}</span><span class="parent-line">${m[3]}</span></span><span class="selection-check">✓</span></button>`).join('')}</div>${addFlow.careMode!=='phone'?`<div class="hardware-note">🧪 This is a UX simulation only. Build ${BUILD} creates a separate staged device record assigned to the plant — it does not scan, pair, call an API or touch Hub #0001.</div>`:''}<div class="actions"><button class="button primary" onclick="careModeNext()">Continue</button></div>`; }
-    function addReviewStep(){ const lib=libraryItem(addFlow.selectedLibraryId); const modeLabel={phone:'Just my phone',sensor:'Sensor — simulated',watering:'Smart watering — simulated'}[addFlow.careMode]; return `${addFlowHeader()}<div class="eyebrow">Ready to grow</div><h1 class="screen-title">Add ${esc(addFlow.name)}.</h1><p class="screen-sub">The plant becomes the permanent object. Any hardware is only assigned underneath it.</p><div class="selected-species"><div class="library-emoji">${lib.emoji}</div><div><div class="card-title">${esc(addFlow.name)}</div><div class="card-copy"><i>${esc(lib.scientific)}</i>${addFlow.variety?' • '+esc(addFlow.variety):''}</div></div></div><div class="review-grid"><div class="review-row"><span>Garden</span><b>${esc(state.siteName)}</b></div><div class="review-row"><span>Zone</span><b>${esc(addFlow.zone)}</b></div><div class="review-row"><span>Care setup</span><b>${esc(modeLabel)}</b></div><div class="review-row"><span>Typical moisture</span><b>${esc(lib.moisture)}</b></div></div><div class="card privacy-card" style="margin-top:15px"><div class="privacy-title">🌱 Plant ≠ device</div><div class="privacy-copy">${esc(addFlow.name)} keeps its identity, care profile and future history even if every sensor or watering device attached to it gets replaced.</div></div><div class="actions"><button class="button primary" onclick="saveNewPlant()">Add to ${esc(state.siteName)}</button></div>`; }
-    function addScreen(){ if(addFlow.step===1)return shell(addLibraryStep()); if(addFlow.step===2)return shell(addDetailsStep()); if(addFlow.step===3)return shell(addModeStep()); return shell(addReviewStep()); }
+    function resetAddFlow(preserveScreen=true) { addFlow = { step:1, selectedLibraryId:null, query:'', category:'All', name:'', variety:'', zone:state.zones[0] || 'My Plants', careMode:'phone' }; if (!preserveScreen) state.screen='plants'; }
+    resetAddFlow();
+    function filteredLibrary() { const q=addFlow.query.trim().toLowerCase(); return plantLibrary.filter(p => (addFlow.category==='All' || (addFlow.category==='DCW Grows' ? p.dcwGuide : p.category===addFlow.category)) && (!q || [p.name,p.scientific,p.category].join(' ').toLowerCase().includes(q))); }
+    function setAddQuery(value) { addFlow.query=value; render(); }
+    function setCategory(value) { addFlow.category=value; render(); }
+    function selectLibrary(id) { addFlow.selectedLibraryId=id; render(); }
+    function libraryNext() { const lib=libraryItem(addFlow.selectedLibraryId); if(!lib){toast('Pick a plant first 🌱');return;} addFlow.name=addFlow.name||lib.name; addFlow.zone=addFlow.zone||state.zones[0]||'My Plants'; addFlow.step=2; render(); scrollTop(); setTimeout(()=>document.getElementById('plantName')?.focus(),60); }
+    function detailsNext() { const name=document.getElementById('plantName')?.value.trim(); const variety=document.getElementById('plantVariety')?.value.trim(); const zone=document.getElementById('plantZone')?.value; if(!name){toast('Give your plant a name 🌱');return;} addFlow.name=name.slice(0,60); addFlow.variety=(variety||'').slice(0,60); addFlow.zone=zone||state.zones[0]; addFlow.step=3; render(); scrollTop(); }
+    function chooseCareMode(mode) { addFlow.careMode=mode; render(); }
+    function careModeNext() { addFlow.step=4; render(); scrollTop(); }
+    function addBack() { if(addFlow.step>1){addFlow.step--; render(); scrollTop();} else go('plants'); }
+    function saveNewPlant() { const lib=libraryItem(addFlow.selectedLibraryId); const id=uid('plant'); const plant={id,libraryId:lib.id,name:addFlow.name,species:lib.scientific,variety:addFlow.variety,emoji:lib.emoji,zone:addFlow.zone,careMode:addFlow.careMode,moisture:null,temp:null,createdAt:nowIso()}; state.plants.push(plant); if(addFlow.careMode==='sensor') state.devices.push({id:uid('device'),plantId:id,type:'sensor',label:'Demo Soil Sensor',status:'staged',simulated:true,current:true,battery:100,signal:'Excellent',assignedAt:nowIso()}); if(addFlow.careMode==='watering') state.devices.push({id:uid('device'),plantId:id,type:'irrigation',label:'Demo Smart Watering',status:'staged',simulated:true,current:true,battery:100,signal:'Excellent',assignedAt:nowIso()}); addLog(id,'added',`Added to ${state.siteName}`, null, plant.createdAt, true); saveState(); selectedPlantId=id; state.selectedPlantTab='today'; resetAddFlow(false); state.screen='plants'; render(); scrollTop(); toast(`${plant.name} is now in ${state.siteName} 🌱`); }
 
-    function openPlant(id){ selectedPlantId=id; render(); scrollTop(); }
-    function closePlant(){ selectedPlantId=null; render(); scrollTop(); }
-    function plantDetailScreen(){ const p=plantById(selectedPlantId); if(!p){selectedPlantId=null;return homeScreen();} const lib=libraryItem(p.libraryId), devs=devicesForPlant(p.id); return shell(`<button class="text-button" onclick="closePlant()">‹ All Plants</button><div class="detail-hero"><div class="detail-emoji">${p.emoji}</div><div class="detail-title">${esc(p.name)}</div><div class="detail-species">${esc(p.species)}${p.variety?' • '+esc(p.variety):''}</div><div class="badge-row"><span class="badge">🏡 ${esc(state.siteName)}</span><span class="badge">🌿 ${esc(p.zone)}</span><span class="badge">${p.careMode==='phone'?'📱 Manual':p.careMode==='sensor'?'📡 Sensor staged':'💦 Watering staged'}</span></div></div><div class="card"><div class="section-title">Care Library</div>${lib.dcwStore?`<div class="dcw-note">🛍 <b>DCW Grows Store + Growing Guide</b> • This plant is connected to both the local guide and a DCW store product.</div>`:lib.dcwGuide?`<div class="dcw-note">🌱 <b>DCW Grows Growing Guide</b> • This care profile comes from the guide catalog already built by DCW Grows.</div>`:''}<div class="care-profile"><div class="care-metric"><span>Moisture</span><b>${esc(lib.moisture)}</b></div><div class="care-metric"><span>Light</span><b>${esc(lib.light)}</b></div><div class="care-metric"><span>Temperature</span><b>${esc(lib.temp)}</b></div><div class="care-metric"><span>Soil</span><b>${esc(lib.soil)}</b></div></div><div class="card-copy" style="margin-top:12px">${esc(lib.watering)}</div>${lib.guideSummary?`<div class="card-copy" style="margin-top:10px"><b>DCW guide:</b> ${esc(lib.guideSummary)}</div>`:``}${lib.dcwGuide?`<div class="card-copy" style="margin-top:8px"><b>DCW fertilizer:</b> MaxiGro</div>`:``}</div><div class="card"><div class="section-title">Devices</div>${devs.length?devs.map(d=>`<div class="device-chip"><div class="row-icon">${d.type==='sensor'?'📡':'💦'}</div><div class="device-copy"><b>${esc(d.label)}</b><span>SIMULATED • assigned to ${esc(p.name)} • no live connection</span></div></div>`).join(''):`<div class="card-copy">No hardware assigned. ${p.name} still exists perfectly well without it.</div>`}</div><div class="card"><div class="section-title">History comes next</div><div class="card-copy">Build 0.4 will make Today, History, Care, Photos and manual moisture logging functional.</div></div><div class="plant-actions"><button class="button secondary" onclick="renderEditPlant('${p.id}')">Edit plant</button><button class="button secondary" onclick="showModal('move','${p.id}')">Move plant</button></div><button class="danger-button" onclick="showModal('delete','${p.id}')">Remove ${esc(p.name)}</button>`); }
+    function addFlowHeader() { return `<div class="flow-head"><button class="flow-back" onclick="addBack()">‹</button><div class="mini-progress">${[1,2,3,4].map(n=>`<span class="${n<=addFlow.step?'on':''}"></span>`).join('')}</div><div class="build-tag">${addFlow.step}/4</div></div>`; }
+    function addLibraryStep() { const categories=['All','DCW Grows',...new Set(plantLibrary.map(p=>p.category))]; return `${addFlowHeader()}<div class="eyebrow">Add a plant</div><h1 class="page-title">What are we growing?</h1><p class="page-sub">Search the built-in Care Library or browse a category. ${plantLibrary.filter(p=>p.dcwGuide).length} DCW Growing Guide profiles are loaded locally.</p><div class="search-wrap"><span class="search-icon">⌕</span><input value="${esc(addFlow.query)}" oninput="setAddQuery(this.value)" placeholder="Search plumeria, dragon fruit, basil…" autocomplete="off" /></div><div class="chips">${categories.map(c=>`<button class="chip ${addFlow.category===c?'active':''}" onclick="setCategory('${c}')">${esc(c)}</button>`).join('')}</div><div class="library-grid">${filteredLibrary().map(p=>`<button class="library-card ${addFlow.selectedLibraryId===p.id?'selected':''}" onclick="selectLibrary('${p.id}')"><div class="library-emoji">${p.emoji}</div><div class="library-name">${esc(p.name)}</div><div class="library-scientific">${esc(p.scientific)}</div><div class="library-range">💧 ${esc(p.moisture)}</div>${p.dcwStore?'<div class="dcw-badge">🛍 DCW + Shop</div>':p.dcwGuide?'<div class="dcw-badge">🌱 DCW Guide</div>':''}</button>`).join('')}</div><div class="actions"><button class="button primary" ${addFlow.selectedLibraryId?'':'disabled'} onclick="libraryNext()">Continue</button></div>`; }
+    function addDetailsStep() { const lib=libraryItem(addFlow.selectedLibraryId); return `${addFlowHeader()}<div class="eyebrow">Plant details</div><h1 class="page-title">Make it yours.</h1><div class="selected-species"><div class="library-emoji">${lib.emoji}</div><div><div class="card-title">${esc(lib.name)}</div><div class="card-copy"><i>${esc(lib.scientific)}</i> • Typical moisture ${esc(lib.moisture)}</div></div></div><div class="field-stack"><div class="field"><label>PLANT NAME</label><input id="plantName" maxlength="60" value="${esc(addFlow.name)}" placeholder="Mona" /></div><div class="field"><label>VARIETY / CULTIVAR — OPTIONAL</label><input id="plantVariety" maxlength="60" value="${esc(addFlow.variety)}" placeholder="Celadine, Thai Constellation…" /></div><div class="field"><label>ZONE</label><select id="plantZone">${state.zones.map(z=>`<option ${z===addFlow.zone?'selected':''}>${esc(z)}</option>`).join('')}</select></div></div><div class="actions"><button class="button primary" onclick="detailsNext()">Continue</button></div>`; }
+    function addModeStep() { const modes=[['phone','🌱','Just my phone','I’ll log care myself. No hardware required.'],['sensor','📡','I have a sensor','Stage a sensor assignment now. No real device connects in this build.'],['watering','💦','I have smart watering','Stage irrigation for this plant. Automation stays disconnected.']]; return `${addFlowHeader()}<div class="eyebrow">How do you want to care for it?</div><h1 class="page-title">Start as simple as you want.</h1><p class="page-sub">You can upgrade the same plant later. You never recreate it just because the hardware changes.</p><div class="mode-grid">${modes.map(m=>`<button class="mode-card ${addFlow.careMode===m[0]?'active':''}" onclick="chooseCareMode('${m[0]}')"><span class="mode-icon">${m[1]}</span><span class="grow"><span class="parent-name">${m[2]}</span><span class="parent-line">${m[3]}</span></span><span class="selection-check">✓</span></button>`).join('')}</div>${addFlow.careMode!=='phone'?`<div class="hardware-note">🧪 UX simulation only. Build ${BUILD} creates a staged device record assigned to the plant — it does not pair, call an API, or touch Hub #0001.</div>`:''}<div class="actions"><button class="button primary" onclick="careModeNext()">Continue</button></div>`; }
+    function addReviewStep() { const lib=libraryItem(addFlow.selectedLibraryId); const modeLabel={phone:'Just my phone',sensor:'Sensor — simulated',watering:'Smart watering — simulated'}[addFlow.careMode]; return `${addFlowHeader()}<div class="eyebrow">Ready to grow</div><h1 class="page-title">Add ${esc(addFlow.name)}.</h1><p class="page-sub">The plant becomes the permanent object. Any hardware is only assigned underneath it.</p><div class="selected-species"><div class="library-emoji">${lib.emoji}</div><div><div class="card-title">${esc(addFlow.name)}</div><div class="card-copy"><i>${esc(lib.scientific)}</i>${addFlow.variety?' • '+esc(addFlow.variety):''}</div></div></div><div class="review-grid"><div class="review-row"><span>Garden</span><b>${esc(state.siteName)}</b></div><div class="review-row"><span>Zone</span><b>${esc(addFlow.zone)}</b></div><div class="review-row"><span>Care setup</span><b>${esc(modeLabel)}</b></div><div class="review-row"><span>Typical moisture</span><b>${esc(lib.moisture)}</b></div></div><div class="actions"><button class="button primary" onclick="saveNewPlant()">Add to ${esc(state.siteName)}</button></div>`; }
+    function addScreen() { return shell(addFlow.step===1 ? addLibraryStep() : addFlow.step===2 ? addDetailsStep() : addFlow.step===3 ? addModeStep() : addReviewStep()); }
 
-    function renderEditPlant(id){ const p=plantById(id); if(!p)return; const root=document.querySelector('.page'); if(!root)return; root.innerHTML=`<button class="text-button" onclick="openPlant('${p.id}')">‹ Cancel</button><div class="eyebrow">Edit plant</div><h1 class="screen-title">Update ${esc(p.name)}.</h1><p class="screen-sub">Editing the plant does not recreate it or erase its identity.</p><div class="card"><div class="edit-form"><div class="field"><label>PLANT NAME</label><input id="editPlantName" value="${esc(p.name)}" maxlength="60"/></div><div class="field"><label>VARIETY / CULTIVAR</label><input id="editPlantVariety" value="${esc(p.variety||'')}" maxlength="60"/></div><div class="field"><label>ZONE</label><select id="editPlantZone">${state.zones.map(z=>`<option ${z===p.zone?'selected':''}>${esc(z)}</option>`).join('')}</select></div><div class="field"><label>CARE SETUP</label><select id="editPlantMode"><option value="phone" ${p.careMode==='phone'?'selected':''}>Just my phone</option><option value="sensor" ${p.careMode==='sensor'?'selected':''}>Sensor — simulated</option><option value="watering" ${p.careMode==='watering'?'selected':''}>Smart watering — simulated</option></select><div class="field-help">Changing this only changes a simulated assignment. The plant record stays put.</div></div></div><div class="actions"><button class="button primary" onclick="savePlantEdit('${p.id}')">Save changes</button></div></div>`; }
-    function savePlantEdit(id){ const p=plantById(id); if(!p)return; const name=document.getElementById('editPlantName')?.value.trim(), variety=document.getElementById('editPlantVariety')?.value.trim(), zone=document.getElementById('editPlantZone')?.value, mode=document.getElementById('editPlantMode')?.value; if(!name){toast('Plant needs a name 🌱');return;} p.name=name.slice(0,60);p.variety=(variety||'').slice(0,60);p.zone=zone||p.zone;
-      if(mode!==p.careMode){ state.devices=state.devices.filter(d=>d.plantId!==p.id); p.careMode=mode; if(mode==='sensor')state.devices.push({id:uid('device'),plantId:p.id,type:'sensor',label:'Demo Soil Sensor',status:'staged',simulated:true}); if(mode==='watering')state.devices.push({id:uid('device'),plantId:p.id,type:'irrigation',label:'Demo Smart Watering',status:'staged',simulated:true}); }
-      saveState(); render(); toast('Plant saved locally ✓'); }
-    function movePlant(id){ const p=plantById(id); const zone=document.getElementById('moveZone')?.value; if(!p||!zone)return; p.zone=zone; saveState(); closeModal(); render(); toast(`${p.name} moved to ${zone}`); }
-    function deletePlant(id){ const p=plantById(id); if(!p)return; state.plants=state.plants.filter(x=>x.id!==id); state.devices=state.devices.filter(d=>d.plantId!==id); selectedPlantId=null; saveState(); closeModal(); render(); scrollTop(); toast(`${p.name} removed locally`); }
+    function addLog(plantId, type, note='', value=null, date=null, skipSave=false) { const entry={ id:uid('log'), plantId, type, date:date || nowIso(), note:(note||'').trim(), value:typeof value==='number'?value:null }; state.logs.push(entry); if(!skipSave) saveState(); return entry; }
+    function saveLog(plantId, type) {
+      const dateValue = document.getElementById('logDate')?.value;
+      const note = document.getElementById('logNote')?.value.trim() || '';
+      const valueField = document.getElementById('logValue');
+      let numeric = null;
+      if (type==='moisture') {
+        numeric = Number(valueField?.value);
+        if (!Number.isFinite(numeric) || numeric < 0 || numeric > 100) { toast('Enter a moisture reading from 0 to 100'); return; }
+      }
+      addLog(plantId, type, note, numeric, dateValue ? new Date(dateValue).toISOString() : nowIso());
+      saveState(); closeModal(); render(); toast(type==='moisture' ? 'Manual moisture saved 📊' : 'Care event saved 🌱');
+    }
+    function movePlant(id) { const p=plantById(id); const zone=document.getElementById('moveZone')?.value; if(!p||!zone)return; p.zone=zone; addLog(id,'moved',`Moved to ${zone}`, null, nowIso(), true); saveState(); closeModal(); render(); toast(`${p.name} moved to ${zone}`); }
+    function deletePlant(id) { const p=plantById(id); if(!p)return; state.plants=state.plants.filter(x=>x.id!==id); state.devices=state.devices.filter(d=>d.plantId!==id); state.logs=state.logs.filter(l=>l.plantId!==id); state.photos=state.photos.filter(ph=>ph.plantId!==id); selectedPlantId=null; saveState(); closeModal(); render(); scrollTop(); toast(`${p.name} removed locally`); }
 
-    function toggleGardenEdit(){ document.getElementById('gardenEdit')?.classList.toggle('open'); }
-    function saveGardenEdit(){ const site=document.getElementById('editSite')?.value.trim(); if(!site){toast('Garden needs a name 🌱');return;} state.siteName=site.slice(0,60); saveState(); render(); toast('Garden saved locally ✓'); }
-    function addZone(){ const input=document.getElementById('newZone'); const z=input?.value.trim(); if(!z){toast('Give the Zone a name');return;} if(state.zones.some(x=>x.toLowerCase()===z.toLowerCase())){toast('That Zone already exists');return;} state.zones.push(z.slice(0,60)); saveState(); render(); toast(`${z} added 🌿`); }
-    function gardenMainScreen(){ return shell(`<div class="eyebrow">Garden</div><h1 class="screen-title">Your growing space.</h1><p class="screen-sub">Plants live in Zones. Devices attach to plants — never the other way around.</p><div class="card garden-card"><div class="garden-hero"><div class="garden-name">🏡 ${esc(state.siteName)}</div><div class="garden-zone">${state.zones.length} Zone${state.zones.length===1?'':'s'}</div></div><div class="garden-body"><div class="garden-stat"><span>Plants</span><strong>${state.plants.length}</strong></div><div class="garden-stat"><span>Staged devices</span><strong>${state.devices.length}</strong></div><div class="garden-stat"><span>Cloud sync</span><strong>Off</strong></div><button class="text-button" onclick="toggleGardenEdit()">Edit Garden name</button><div id="gardenEdit" class="edit-panel"><div class="field"><label>GARDEN / SITE</label><input id="editSite" value="${esc(state.siteName)}" maxlength="60"/></div><div class="actions"><button class="button primary" onclick="saveGardenEdit()">Save locally</button></div></div></div></div><div class="section-head"><div class="section-title">Zones</div></div><div class="zone-list">${state.zones.map(z=>`<div class="zone-row"><span>🌿</span><b>${esc(z)}</b><span class="zone-count">${state.plants.filter(p=>p.zone===z).length} plant${state.plants.filter(p=>p.zone===z).length===1?'':'s'}</span></div>`).join('')}</div><div class="inline-add"><input id="newZone" maxlength="60" placeholder="Add another Zone"/><button onclick="addZone()">Add</button></div><div class="card" style="margin-top:15px"><div class="card-title">Why this matters</div><div class="card-copy">Move a plant from one Zone to another without changing its identity. Later, irrigation and sensors can be assigned independently.</div></div>`); }
+    function setPlantTab(tab) { state.selectedPlantTab = tab; saveState(); render(); }
+    function setHistoryWindow(days) { state.historyWindow = days; saveState(); render(); }
+    function openPlant(id) { selectedPlantId=id; state.selectedPlantTab = state.selectedPlantTab || 'today'; render(); scrollTop(); }
+    function closePlant() { selectedPlantId=null; render(); scrollTop(); }
 
-    function switchCaretaker(key){ if(!caretakers[key])return; state.caretaker=key; state.draftCaretaker=key; saveState(); render(); toast(`${caretakers[key].label} is on plant duty 🌱`); }
-    function resetBuild(){ if(!confirm(`Reset Build ${BUILD}? This only clears Plant Daddy data created inside this browser preview.`))return; localStorage.removeItem(STORAGE_KEY); state={...defaults,zones:['My Plants'],plants:[],devices:[]}; selectedPlantId=null; resetAddFlow(false); render(); scrollTop(); }
-    function parentScreen(){ return shell(`<div class="eyebrow">Your Plant Parent</div><h1 class="screen-title">${parent().label}'s on duty.</h1><p class="screen-sub">Switch anytime. Your Garden and plants don't change.</p><div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.caretaker===key?'active':''}" onclick="switchCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="section-head"><div class="section-title">Build settings</div></div><div class="card"><div class="card-title">Local-only mode</div><div class="card-copy">${state.plants.length} plant${state.plants.length===1?'':'s'}, ${state.zones.length} Zone${state.zones.length===1?'':'s'} and your caretaker are stored only in this browser.</div></div><div class="card privacy-card"><div class="privacy-title">🔒 Hub #0001 stays separate</div><div class="privacy-copy">No network call in this file targets your Mac, Zigbee2MQTT, MQTT, local database or personal plant history.</div></div><button class="danger-button" onclick="resetBuild()">Reset onboarding & Build ${BUILD} local data</button>`); }
+    function renderTimelineItem(item) { const meta=eventMeta[item.type] || ['🌱', item.type]; return `<div class="timeline-item"><span class="timeline-dot"></span><div class="timeline-head"><b>${meta[0]} ${meta[1]}</b><span>${fmtDateTime(item.date)}</span>${item.value!=null?`<span>${item.value}%</span>`:''}</div>${item.note?`<div class="timeline-copy">${esc(item.note)}</div>`:''}</div>`; }
+    function historySeries(plantId, days) { const now=Date.now(); return logsForPlant(plantId).filter(l => l.type==='moisture' && typeof l.value==='number' && (now - +new Date(l.date)) <= days*86400000).sort((a,b)=>+new Date(a.date)-+new Date(b.date)); }
+    function renderChart(plantId, days) { const points=historySeries(plantId, days); if(!points.length) return `<div class="chart-empty">No moisture readings in the last ${days} days yet. Log one from Today or Care.</div>`; const vals=points.map(p=>p.value); const min=Math.max(0, Math.min(...vals, 0)); const max=Math.min(100, Math.max(...vals, 100)); const width=100, height=100; const coords=points.map((p,i)=>{ const x=points.length===1 ? 50 : i/(points.length-1)*width; const y=height - ((p.value-min)/(max-min || 1))*height; return [x,y,p]; }); const poly=coords.map(c=>`${c[0]},${c[1]}`).join(' '); return `<div class="chart-wrap"><svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><line x1="0" y1="100" x2="100" y2="100" stroke="var(--line)" stroke-width="1"/><line x1="0" y1="50" x2="100" y2="50" stroke="var(--line)" stroke-width="0.7" stroke-dasharray="2 2"/><polyline fill="none" stroke="var(--accent)" stroke-width="2.2" points="${poly}"/>${coords.map(c=>`<circle cx="${c[0]}" cy="${c[1]}" r="2.4" fill="var(--accent)"/>`).join('')}</svg><div class="chart-labels"><span>${fmtDate(points[0].date)}</span><span>${fmtDate(points[points.length-1].date)}</span></div></div>`; }
 
-    function renderMain(){ if(selectedPlantId)return plantDetailScreen(); const screens={plants:homeScreen,care:careScreen,add:addScreen,garden:gardenMainScreen,parent:parentScreen}; return (screens[state.screen]||homeScreen)(); }
-    function bindGardenPreview(){ const site=document.getElementById('siteName'),zone=document.getElementById('zoneName'),previewSite=document.getElementById('previewSite'),previewZone=document.getElementById('previewZone'); if(site&&previewSite)site.addEventListener('input',()=>previewSite.textContent=site.value||'Garden'); if(zone&&previewZone)zone.addEventListener('input',()=>previewZone.textContent=zone.value||'Zone'); }
-    function render(){ app.innerHTML=state.onboarded?renderMain():renderOnboarding(); if(!state.onboarded&&state.onboardingStep===3)bindGardenPreview(); }
+    function savePhoto(plantId, input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { toast('Pick an image file'); return; }
+      const reader = new FileReader();
+      reader.onload = () => { state.photos.push({ id:uid('photo'), plantId, date:nowIso(), src: String(reader.result), note:'' }); addLog(plantId, 'photo', 'Photo journal updated', null, nowIso(), true); saveState(); render(); toast('Photo saved locally 📸'); };
+      reader.readAsDataURL(file);
+    }
+
+    function plantTodayTab(p, lib, m) {
+      const parentLabel = parent().label;
+      const summaryText = m.status==='critical' ? `${parentLabel} says this one needs help soon.` : m.status==='attention' ? `${parentLabel} says keep an eye on this one.` : `${parentLabel} says it looks good.`;
+      return `<div class="card"><div class="card-title">${parentLabel} Says</div><div class="card-copy">${summaryText}</div>${m.reasons.length?`<div class="list-compact">${m.reasons.map(r=>`<div class="compact-item"><div class="compact-bullet">💡</div><div><b>Attention</b><span>${esc(r)}</span></div></div>`).join('')}</div>`:`<div class="card-copy">Nothing looks off right now. Keep building history so patterns become obvious.</div>`}</div><div class="metrics-grid"><div class="metric"><span>Current moisture</span><b>${m.moistureValue!=null ? m.moistureValue + '%' : '—'}</b></div><div class="metric"><span>Last watered</span><b>${m.lastWaterDate ? fmtDate(m.lastWaterDate) : 'Not logged'}</b></div><div class="metric"><span>Last fertilizer</span><b>${m.lastFertilizedDate ? fmtDate(m.lastFertilizedDate) : 'Not logged'}</b></div></div><div class="card"><div class="section-title">Quick log</div><div class="quick-grid"><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'watered'})"><b>💦 Water</b><span>Track the next watering.</span></button><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'moisture'})"><b>📊 Moisture</b><span>Add a manual reading.</span></button><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'fertilized'})"><b>🧪 Fertilize</b><span>Track feedings like MaxiGro.</span></button><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'note'})"><b>📝 Note</b><span>Remember anything important.</span></button></div></div>`;
+    }
+    function plantHistoryTab(p, lib, m) {
+      const window = state.historyWindow;
+      const timeline = timelineForPlant(p);
+      return `<div class="card chart-card"><div class="section-title">Moisture history</div><div class="chart-toolbar"><button class="${window===7?'active':''}" onclick="setHistoryWindow(7)">7D</button><button class="${window===30?'active':''}" onclick="setHistoryWindow(30)">30D</button></div>${renderChart(p.id, window)}<div class="helper">Build ${BUILD} charts are driven only by your local manual moisture logs.</div></div><div class="card"><div class="section-title">Plant timeline</div><div class="timeline">${timeline.length ? timeline.map(renderTimelineItem).join('') : '<div class="card-copy">No history yet.</div>'}</div></div>`;
+    }
+    function plantCareTab(p, lib, m) {
+      return `<div class="card"><div class="section-title">Care Library</div>${lib.dcwStore?`<div class="dcw-note">🛍 <b>DCW Grows Store + Growing Guide</b> • This plant is connected to both the local guide and a DCW store product.</div>`:lib.dcwGuide?`<div class="dcw-note">🌱 <b>DCW Grows Growing Guide</b> • This care profile comes from the guide catalog already built by DCW Grows.</div>`:''}<div class="care-profile"><div class="care-metric"><span>Moisture</span><b>${esc(lib.moisture)}</b></div><div class="care-metric"><span>Light</span><b>${esc(lib.light)}</b></div><div class="care-metric"><span>Temperature</span><b>${esc(lib.temp)}</b></div><div class="care-metric"><span>Soil</span><b>${esc(lib.soil)}</b></div></div><div class="card-copy" style="margin-top:12px">${esc(lib.watering)}</div>${lib.guideSummary?`<div class="card-copy" style="margin-top:10px"><b>DCW guide:</b> ${esc(lib.guideSummary)}</div>`:''}${lib.dcwGuide?`<div class="card-copy" style="margin-top:8px"><b>DCW fertilizer:</b> MaxiGro</div>`:''}</div><div class="card"><div class="section-title">Care actions</div><div class="quick-grid"><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'repotted'})"><b>🪴 Repot</b><span>Track pot or soil changes.</span></button><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'pruned'})"><b>✂️ Prune</b><span>Log trims and shaping.</span></button><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'pest'})"><b>🐞 Pest</b><span>Record treatments.</span></button><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'harvested'})"><b>🧺 Harvest</b><span>Track edible yield.</span></button><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'bloomed'})"><b>🌸 Bloom</b><span>Capture good plant moments.</span></button><button class="quick-action" onclick="showModal('log', {id:'${p.id}', type:'moved'})"><b>📦 Moved</b><span>Remember location changes.</span></button></div></div>`;
+    }
+    function plantDevicesTab(p) {
+      const devs=devicesForPlant(p.id), current=devs.filter(d=>d.current!==false), retired=devs.filter(d=>d.current===false);
+      return `<div class="card"><div class="section-head" style="margin-top:0"><div><div class="section-title">Devices</div><div class="card-copy">Hardware belongs to ${esc(p.name)}. ${esc(p.name)} does not belong to the hardware.</div></div><button class="button secondary small" onclick="showModal('deviceAssign','${p.id}')">Add staged</button></div>${current.length ? current.map(d=>`<div class="device-card"><div class="device-head"><span class="device-status"></span><div class="row-icon">${deviceIcon(d.type)}</div><div class="grow"><div class="card-title">${esc(d.label)}</div><div class="card-copy">Current • SIMULATED • no live connection</div></div></div><div class="device-meta"><span>Battery ${d.battery ?? 100}%</span><span>Signal ${esc(d.signal || 'Good')}</span><span>Assigned to ${esc(p.name)}</span></div>${d.type==='sensor'?`<div class="device-actions"><button class="button secondary small" onclick="showModal('replaceDevice','${p.id}')">Replace sensor</button></div>`:''}</div>`).join('') : `<div class="card-copy">No current hardware assigned. ${esc(p.name)} still keeps its identity and history.</div>`}${retired.length ? `<div class="section-head"><div class="section-title">Previous devices</div></div>${retired.map(d=>`<div class="device-card"><div class="device-head"><span class="device-status retired"></span><div class="row-icon">${deviceIcon(d.type)}</div><div class="grow"><div class="card-title">${esc(d.label)}</div><div class="card-copy">Retired • plant history preserved</div></div></div></div>`).join('')}`:''}<div class="history-proof">🔁 Sensor replacement never creates a new plant. Care logs, readings, photos, and the Plant ID stay attached to ${esc(p.name)}.</div></div>`;
+    }
+
+    function plantAutomationTab(p) {
+      const selected=automationModeFor(p.id), irrigation=hasIrrigation(p.id);
+      const options=[
+        ['observe','👀','Observe','Plant Daddy watches. No recommendations or actions.'],
+        ['recommend','🧠','Recommend',`${parent().label} can suggest what should happen. Nothing runs.`],
+        ['approve','👍','Approve','Preview an approval workflow before any staged watering action.'],
+        ['auto','💦','Auto','Preview autonomous care behind safety rules. Still no real action.']
+      ];
+      return `<div class="card"><div class="section-title">Automation</div><div class="card-copy">Choose how much control you would eventually allow for ${esc(p.name)}. Every mode in Build ${BUILD} is UI simulation only.</div><div class="automation-grid">${options.map(([key,icon,title,copy])=>{const disabled=(key==='approve'||key==='auto')&&!irrigation; return `<button class="automation-choice ${selected===key?'active':''}" ${disabled?'disabled':''} onclick="setAutomationMode('${p.id}','${key}')"><span class="auto-icon">${icon}</span><span class="grow"><b>${title}</b><span>${copy}${disabled?' Stage an irrigation device first.':''}</span></span><span class="selection-check">✓</span></button>`}).join('')}</div><div class="section-head"><div class="section-title">Safety preview</div></div><div class="safety-grid"><div class="safety-item"><b>⏱ Max runtime</b><span>Hard stop before overwatering.</span></div><div class="safety-item"><b>🕒 Minimum gap</b><span>No repeat watering too soon.</span></div><div class="safety-item"><b>📡 Fresh reading</b><span>Require current sensor data.</span></div><div class="safety-item"><b>🌧 Rain suppression</b><span>Future weather-aware skip.</span></div><div class="safety-item"><b>🛑 Manual override</b><span>You can always stop automation.</span></div><div class="safety-item"><b>⚠️ Fail safe</b><span>Uncertain state means no watering.</span></div></div><div class="demo-callout">Selected preview: <b>${selected}</b>. No irrigation, MQTT, Hub, API, or device command exists in this file.</div></div><div class="card ultra-card"><div class="card-title">🧠 Plant Daddy Ultra</div><div class="card-copy">Your plants already generate data. Ultra understands it.</div><div class="ultra-price">$1.99 <span>/ month target</span></div><div class="actions"><button class="button secondary" onclick="showModal('ultra','${p.id}')">Preview ${parent().label}'s analysis</button></div></div>`;
+    }
+
+    function plantPhotosTab(p) { const photos=photosForPlant(p.id); return `<div class="card"><div class="section-title">Photo journal</div><div class="card-copy">Snap progress over time. Photos stay only in this browser in Build ${BUILD}.</div><div class="actions"><label class="button secondary" style="display:grid; place-items:center; cursor:pointer;">Add photo<input type="file" accept="image/*" style="display:none" onchange="savePhoto('${p.id}', this)" /></label></div>${photos.length ? `<div class="photo-grid">${photos.map(photo=>`<div class="photo-card"><img src="${photo.src}" alt="${esc(p.name)} photo"/><div>${fmtDateTime(photo.date)}</div></div>`).join('')}</div>` : `<div class="card-copy" style="margin-top:12px">No photos yet. Add one to start a local visual history.</div>`}</div>`; }
+
+    function plantDetailScreen() {
+      const p=plantById(selectedPlantId); if(!p){ selectedPlantId=null; return homeScreen(); }
+      const m=plantMetrics(p); const tabs=['today','history','care','devices','automation','photos']; const labels={today:'Today', history:'History', care:'Care', devices:'Devices', automation:'Automation', photos:'Photos'};
+      let body='';
+      if (state.selectedPlantTab==='today') body = plantTodayTab(p, libraryItem(p.libraryId), m);
+      else if (state.selectedPlantTab==='history') body = plantHistoryTab(p, libraryItem(p.libraryId), m);
+      else if (state.selectedPlantTab==='care') body = plantCareTab(p, libraryItem(p.libraryId), m);
+      else if (state.selectedPlantTab==='devices') body = plantDevicesTab(p);
+      else if (state.selectedPlantTab==='automation') body = plantAutomationTab(p);
+      else body = plantPhotosTab(p);
+      return shell(`<button class="text-button" onclick="closePlant()">‹ All Plants</button><div class="detail-hero"><div class="detail-emoji">${p.emoji}</div><div class="detail-title">${esc(p.name)}</div><div class="detail-species">${esc(p.species)}${p.variety?' • '+esc(p.variety):''}</div><div class="badge-row"><span class="badge">🏡 ${esc(state.siteName)}</span><span class="badge">🌿 ${esc(p.zone)}</span><span class="badge">${p.careMode==='phone'?'📱 Manual':p.careMode==='sensor'?'📡 Sensor staged':'💦 Watering staged'}</span></div><div class="metrics-grid"><div class="metric"><span>Status</span><b class="${m.status==='critical'?'status-critical':m.status==='attention'?'status-attention':'status-happy'}">${m.status[0].toUpperCase()+m.status.slice(1)}</b></div><div class="metric"><span>Current moisture</span><b>${m.moistureValue!=null ? m.moistureValue + '%' : '—'}</b></div><div class="metric"><span>Last watered</span><b>${m.lastWaterDate ? fmtDate(m.lastWaterDate) : 'Not logged'}</b></div></div></div><div class="tab-row">${tabs.map(tab=>`<button class="tab ${state.selectedPlantTab===tab?'active':''}" onclick="setPlantTab('${tab}')">${labels[tab]}</button>`).join('')}</div>${body}<div class="plant-actions"><button class="button secondary" onclick="renderEditPlant('${p.id}')">Edit plant</button><button class="button secondary" onclick="showModal('move','${p.id}')">Move plant</button></div><button class="danger-button" onclick="showModal('delete','${p.id}')">Remove ${esc(p.name)}</button>`);
+    }
+
+    function renderEditPlant(id) { const p=plantById(id); if(!p)return; const root=document.querySelector('.page'); if(!root)return; root.innerHTML=`<button class="text-button" onclick="openPlant('${p.id}')">‹ Cancel</button><div class="eyebrow">Edit plant</div><h1 class="page-title">Update ${esc(p.name)}.</h1><p class="page-sub">Editing the plant does not recreate it or erase its identity or history.</p><div class="card"><div class="edit-form"><div class="field"><label>PLANT NAME</label><input id="editPlantName" value="${esc(p.name)}" maxlength="60"/></div><div class="field"><label>VARIETY / CULTIVAR</label><input id="editPlantVariety" value="${esc(p.variety||'')}" maxlength="60"/></div><div class="field"><label>ZONE</label><select id="editPlantZone">${state.zones.map(z=>`<option ${z===p.zone?'selected':''}>${esc(z)}</option>`).join('')}</select></div><div class="field"><label>CARE SETUP</label><select id="editPlantMode"><option value="phone" ${p.careMode==='phone'?'selected':''}>Just my phone</option><option value="sensor" ${p.careMode==='sensor'?'selected':''}>Sensor — simulated</option><option value="watering" ${p.careMode==='watering'?'selected':''}>Smart watering — simulated</option></select></div></div><div class="actions"><button class="button primary" onclick="savePlantEdit('${p.id}')">Save changes</button></div></div>`; }
+    function savePlantEdit(id) { const p=plantById(id); if(!p)return; const name=document.getElementById('editPlantName')?.value.trim(), variety=document.getElementById('editPlantVariety')?.value.trim(), zone=document.getElementById('editPlantZone')?.value, mode=document.getElementById('editPlantMode')?.value; if(!name){toast('Plant needs a name 🌱');return;} p.name=name.slice(0,60); p.variety=(variety||'').slice(0,60); p.zone=zone||p.zone; if(mode!==p.careMode){ state.devices=state.devices.filter(d=>d.plantId!==p.id); p.careMode=mode; if(mode==='sensor')state.devices.push({id:uid('device'),plantId:p.id,type:'sensor',label:'Demo Soil Sensor',status:'staged',simulated:true,current:true,battery:100,signal:'Excellent',assignedAt:nowIso()}); if(mode==='watering')state.devices.push({id:uid('device'),plantId:p.id,type:'irrigation',label:'Demo Smart Watering',status:'staged',simulated:true,current:true,battery:100,signal:'Excellent',assignedAt:nowIso()}); } saveState(); render(); toast('Plant saved locally ✓'); }
+
+    function toggleGardenEdit() { document.getElementById('gardenEdit')?.classList.toggle('open'); }
+    function saveGardenEdit() { const site=document.getElementById('editSite')?.value.trim(); if(!site){toast('Garden needs a name 🌱');return;} state.siteName=site.slice(0,60); saveState(); render(); toast('Garden saved locally ✓'); }
+    function addZone() { const input=document.getElementById('newZone'); const z=input?.value.trim(); if(!z){toast('Give the Zone a name');return;} if(state.zones.some(x=>x.toLowerCase()===z.toLowerCase())){toast('That Zone already exists');return;} state.zones.push(z.slice(0,60)); saveState(); render(); toast(`${z} added 🌿`); }
+    function gardenTabs() { return `<div class="segmented"><button class="${state.gardenView==='overview'?'active':''}" onclick="setGardenView('overview')">Garden</button><button class="${state.gardenView==='devices'?'active':''}" onclick="setGardenView('devices')">Devices</button><button class="${state.gardenView==='ultra'?'active':''}" onclick="setGardenView('ultra')">Ultra</button></div>`; }
+    function zoneDetailScreen() {
+      const zone=state.zoneFocus; if(!zone||!state.zones.includes(zone)){state.zoneFocus=null; return gardenOverview();}
+      const plants=state.plants.filter(p=>p.zone===zone);
+      return `<button class="text-button" onclick="closeZone()">‹ ${esc(state.siteName)}</button><div class="eyebrow">Zone</div><h1 class="page-title">🌿 ${esc(zone)}</h1><p class="page-sub">${plants.length} plant${plants.length===1?'':'s'} in this Zone.</p>${plants.length ? plants.map(plantCard).join('') : `<div class="card empty"><div class="empty-icon">🌿</div><h3>This Zone is empty.</h3><p>Move an existing plant here or add a new one.</p><div class="actions"><button class="button primary" onclick="go('add')">Add plant</button></div></div>`}`;
+    }
+    function gardenOverview() {
+      return `<div class="eyebrow">Garden</div><h1 class="page-title">Your growing space.</h1><p class="page-sub">Site → Zones → Plants. Hardware stays underneath the plant instead of becoming the plant.</p>${gardenTabs()}<div class="hierarchy-site"><div class="hierarchy-title"><span class="row-icon">🏡</span><div><div>${esc(state.siteName)}</div><div class="card-copy">1 Site • ${state.zones.length} Zone${state.zones.length===1?'':'s'} • ${state.plants.length} plant${state.plants.length===1?'':'s'}</div></div></div><div class="hierarchy-line">${state.zones.map(z=>`<button class="zone-row" onclick="openZone(decodeURIComponent('${encodeURIComponent(z)}'))"><span>🌿</span><b>${esc(z)}</b><span class="zone-count">${state.plants.filter(p=>p.zone===z).length} plant${state.plants.filter(p=>p.zone===z).length===1?'':'s'} ›</span></button>`).join('')}</div><button class="text-button" onclick="toggleGardenEdit()">Edit Site name</button><div id="gardenEdit" class="edit-panel"><div class="field"><label>GARDEN / SITE</label><input id="editSite" value="${esc(state.siteName)}" maxlength="60"/></div><div class="actions"><button class="button primary" onclick="saveGardenEdit()">Save locally</button></div></div></div><div class="section-head"><div class="section-title">Add Zone</div></div><div class="inline-add"><input id="newZone" maxlength="60" placeholder="Greenhouse, Patio, Front Yard…"/><button onclick="addZone()">Add</button></div><div class="card privacy-card" style="margin-top:15px"><div class="privacy-title">🔒 Local garden only</div><div class="privacy-copy">Sites, Zones, plants, logs, photos, staged devices, and automation previews stay in this browser.</div></div>`;
+    }
+    function gardenDevicesScreen() {
+      const active=state.devices.filter(d=>d.current!==false), retired=state.devices.filter(d=>d.current===false);
+      return `<div class="eyebrow">Garden</div><h1 class="page-title">Devices.</h1><p class="page-sub">A fake hardware manager so we can perfect assignment and replacement before touching real integrations.</p>${gardenTabs()}<div class="actions"><button class="button primary" onclick="showModal('deviceAssign')" ${state.plants.length?'':'disabled'}>Add staged device</button></div>${active.length ? active.map(d=>{const p=plantById(d.plantId); return `<div class="device-card"><div class="device-head"><span class="device-status"></span><div class="row-icon">${deviceIcon(d.type)}</div><div class="grow"><div class="card-title">${esc(d.label)}</div><div class="card-copy">${p?esc(p.name):'Unassigned'} • SIMULATED</div></div><button class="button secondary small" onclick="openPlant('${d.plantId}')">Plant</button></div><div class="device-meta"><span>${d.type}</span><span>Battery ${d.battery ?? 100}%</span><span>Signal ${esc(d.signal||'Good')}</span><span>No network</span></div>${d.type==='sensor'&&p?`<div class="device-actions"><button class="button secondary small" onclick="showModal('replaceDevice','${p.id}')">Replace sensor</button></div>`:''}</div>`}).join('') : `<div class="card empty"><div class="empty-icon">📡</div><h3>No staged devices.</h3><p>That's okay. Free/manual Plant Daddy works without hardware.</p></div>`}${retired.length ? `<div class="section-head"><div class="section-title">Retired device history</div></div>${retired.map(d=>`<div class="device-card"><div class="device-head"><span class="device-status retired"></span><div class="row-icon">${deviceIcon(d.type)}</div><div class="grow"><div class="card-title">${esc(d.label)}</div><div class="card-copy">Retired after replacement • plant record survived</div></div></div></div>`).join('')}`:''}<div class="history-proof">The device list can change completely without deleting a plant. That's the architecture lesson we wanted Build ${BUILD} to prove.</div>`;
+    }
+    function gardenUltraScreen() {
+      return `<div class="eyebrow">Plant Daddy Ultra</div><h1 class="page-title">Intelligence, not ransom.</h1><p class="page-sub">Raw plant data stays yours. Ultra is where prediction, understanding, and automation eventually live.</p>${gardenTabs()}<div class="card ultra-card"><div class="card-title">🧠 Plant Daddy Ultra</div><div class="card-copy">${parent().label} doesn't just watch your plants. ${parent().label} learns them.</div><div class="ultra-price">$1.99 <span>/ month target</span></div><div class="actions"><button class="button secondary" onclick="showModal('ultra','${state.plants[0]?.id||''}')">Run local preview</button></div></div><div class="card"><div class="section-title">What Ultra eventually adds</div>${[['📈','Predictive watering','Estimate when a plant will reach its preferred watering point.'],['🧠','Plant-specific intelligence','Compare this plant with its own normal behavior.'],['🌦️','Weather awareness','Use forecast/rain context when a supported service exists.'],['💦','Smart irrigation','Recommend, approve, or automate supported watering.']].map(([i,t,c])=>`<div class="ultra-feature"><span>${i}</span><div><b>${t}</b><span>${c}</span></div></div>`).join('')}</div><div class="card privacy-card"><div class="privacy-title">🔒 Not connected yet</div><div class="privacy-copy">The Build ${BUILD} Ultra preview is deterministic and local. No AI API, payment processor, cloud backend, or real irrigation exists here.</div></div>`;
+    }
+    function gardenMainScreen() {
+      if(state.zoneFocus) return shell(zoneDetailScreen());
+      const body=state.gardenView==='devices'?gardenDevicesScreen():state.gardenView==='ultra'?gardenUltraScreen():gardenOverview();
+      return shell(body);
+    }
+
+    function switchCaretaker(key) { if(!caretakers[key])return; state.caretaker=key; state.draftCaretaker=key; saveState(); render(); toast(`${caretakers[key].label} is on plant duty 🌱`); }
+    function resetBuild() { if(!confirm(`Reset Build ${BUILD}? This clears only Plant Daddy data created inside this browser preview.`))return; localStorage.removeItem(STORAGE_KEY); state=normalizeState({...defaults,zones:['My Plants'],plants:[],devices:[],logs:[],photos:[],automationPolicies:{}}); selectedPlantId=null; resetAddFlow(false); applyAppearance(); render(); scrollTop(); }
+    function parentScreen() { return shell(`<div class="eyebrow">Your Plant Parent</div><h1 class="page-title">${parent().label}'s on duty.</h1><p class="page-sub">Switch anytime. Your Garden, plants, history, devices, and photos don't change.</p><div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.caretaker===key?'active':''}" onclick="switchCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="section-head"><div class="section-title">Appearance</div></div><div class="segmented"><button class="${state.appearance==='system'?'active':''}" onclick="setAppearance('system')">◐ System</button><button class="${state.appearance==='light'?'active':''}" onclick="setAppearance('light')">☀️ Light</button><button class="${state.appearance==='dark'?'active':''}" onclick="setAppearance('dark')">🌙 Dark</button></div><div class="card"><div class="card-title">Local-only mode</div><div class="card-copy">${state.plants.length} plant${state.plants.length===1?'':'s'}, ${state.logs.length} history event${state.logs.length===1?'':'s'}, ${state.devices.length} staged device record${state.devices.length===1?'':'s'}, and ${state.photos.length} photo${state.photos.length===1?'':'s'} are stored only in this browser.</div></div><div class="card privacy-card"><div class="privacy-title">🔒 Hub #0001 stays separate</div><div class="privacy-copy">No network call in this file targets your Mac, Zigbee2MQTT, MQTT, local database, or personal plant history.</div></div><button class="danger-button" onclick="resetBuild()">Reset onboarding & Build ${BUILD} local data</button>`); }
+
+    function renderMain() { if(selectedPlantId)return plantDetailScreen(); const screens={plants:homeScreen, care:careScreen, add:addScreen, garden:gardenMainScreen, parent:parentScreen}; return (screens[state.screen] || homeScreen)(); }
+    function render() { applyAppearance(); app.innerHTML = state.onboarded ? renderMain() : renderOnboarding(); }
+    applyAppearance();
     render();
   </script>
-
-<script id="build04-js">
-  let selectedPlantTab='today';
-  let historyDays=7;
-  const careTypes={water:['💦','Watered'],fertilize:['🌱','Fertilized'],repot:['🪴','Repotted'],prune:['✂️','Pruned'],pest:['🐛','Pest treatment'],move:['↔️','Moved'],bloom:['🌸','Bloom'],harvest:['🧺','Harvest'],note:['📝','Note']};
-
-  function upgrade04(){ state.events=Array.isArray(state.events)?state.events:[]; state.readings=Array.isArray(state.readings)?state.readings:[]; state.photos=Array.isArray(state.photos)?state.photos:[]; saveState(); }
-  saveState=function(){ localStorage.setItem(STORAGE_KEY,JSON.stringify({onboarded:state.onboarded,onboardingStep:state.onboardingStep,caretaker:state.caretaker,draftCaretaker:state.draftCaretaker,siteName:state.siteName,zoneName:state.zoneName,zones:state.zones,demoMode:state.demoMode,plants:state.plants,devices:state.devices,events:state.events||[],readings:state.readings||[],photos:state.photos||[]})); };
-  function eventsForPlant(id){return (state.events||[]).filter(x=>x.plantId===id).sort((a,b)=>new Date(b.at)-new Date(a.at));}
-  function readingsForPlant(id){return (state.readings||[]).filter(x=>x.plantId===id).sort((a,b)=>new Date(b.at)-new Date(a.at));}
-  function photosForPlant(id){return (state.photos||[]).filter(x=>x.plantId===id).sort((a,b)=>new Date(b.at)-new Date(a.at));}
-  function latestReading(id){return readingsForPlant(id)[0]||null;}
-  function lastEvent(id,type){return eventsForPlant(id).find(x=>x.type===type)||null;}
-  function moistureBounds(p){const m=String(libraryItem(p.libraryId).moisture||'').match(/(\d+)\D+(\d+)/);return m?[+m[1],+m[2]]:[null,null];}
-  function daysAgo(iso){if(!iso)return null;return Math.max(0,Math.floor((Date.now()-new Date(iso).getTime())/86400000));}
-  function whenText(iso){const d=new Date(iso),days=daysAgo(iso);if(days===0)return d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});if(days===1)return 'Yesterday';if(days<7)return `${days} days ago`;return d.toLocaleDateString([],{month:'short',day:'numeric',year:d.getFullYear()!==new Date().getFullYear()?'numeric':undefined});}
-  function displayAgo(evt,empty='Not logged yet'){return evt?whenText(evt.at):empty;}
-  function currentMoisture(p){const r=latestReading(p.id);return r?r.moisture:(p.moisture??null);}
-  statusFor=function(p){const moisture=currentMoisture(p);if(moisture==null)return {key:'new',label:'Ready to track'};const [low,high]=moistureBounds(p);if(low==null)return {key:'happy',label:'Tracking'};if(moisture<Math.max(0,low-8))return {key:'critical',label:'Critical'};if(moisture<low)return {key:'attention',label:'Needs attention'};if(moisture>high+12)return {key:'attention',label:'Check moisture'};return {key:'happy',label:'Happy'};};
-  plantCard=function(p,demo=false){const st=demo?{key:p.status,label:p.status==='attention'?'Needs attention':'Happy'}:statusFor(p);const modeIcon={phone:'📱',sensor:'📡',watering:'💦'}[p.careMode]||'📱';const m=demo?p.moisture:currentMoisture(p);return `<button class="plant-card" onclick="${demo?"toast('Demo plant — not saved to your Garden')":`openPlant('${p.id}')`}"><div class="plant-top"><span class="plant-emoji">${p.emoji}</span><div class="grow"><div class="plant-name">${esc(p.name)}</div><div class="plant-species">${esc(p.species)} • ${esc(p.zone)}</div></div><div class="plant-metric">${m==null?modeIcon:m+'%'}</div></div><div class="plant-bottom"><span>${m==null?'No moisture logged':`Latest moisture • ${whenText((latestReading(p.id)||{}).at||new Date().toISOString())}`}</span><span class="${st.key==='attention'||st.key==='critical'?'attention':'plant-status-new'}">${st.label}</span></div></button>`;};
-
-  function openCareComposer(id,type='water'){const p=plantById(id);if(!p)return;const modal=document.getElementById('modal'),meta=careTypes[type]||careTypes.note;modal.innerHTML=`<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="sheet-icon">${meta[0]}</div><h3>${meta[1]} • ${esc(p.name)}</h3><p>Add an optional note. This event is saved only in this browser.</p><div class="field"><label>NOTE — OPTIONAL</label><textarea id="careNote" class="event-note" maxlength="300" placeholder="What happened?"></textarea></div><div class="actions"><button class="button primary" onclick="logCareEvent('${p.id}','${type}')">Save ${meta[1].toLowerCase()}</button><button class="button secondary" onclick="closeModal()">Cancel</button></div></div>`;modal.classList.add('show');modal.setAttribute('aria-hidden','false');modal.onclick=closeModal;}
-  function logCareEvent(id,type){const p=plantById(id);if(!p)return;const note=document.getElementById('careNote')?.value.trim()||'';state.events.push({id:uid('event'),plantId:id,type,at:new Date().toISOString(),note:note.slice(0,300)});saveState();closeModal();render();toast(`${careTypes[type]?.[1]||'Care'} saved for ${p.name} ✓`);}
-  function openMoistureSheet(id){const p=plantById(id);if(!p)return;const modal=document.getElementById('modal');modal.innerHTML=`<div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="sheet-icon">💧</div><h3>Manual moisture • ${esc(p.name)}</h3><p>Enter a reading from a meter or your own observation workflow. No sensor connection is required.</p><div class="field-stack"><div class="field"><label>SOIL MOISTURE %</label><input id="manualMoisture" type="number" min="0" max="100" inputmode="decimal" placeholder="46"></div><div class="field"><label>SOIL TEMP °F — OPTIONAL</label><input id="manualTemp" type="number" min="-20" max="180" inputmode="decimal" placeholder="81"></div></div><div class="actions"><button class="button primary" onclick="saveManualReading('${p.id}')">Save reading</button><button class="button secondary" onclick="closeModal()">Cancel</button></div></div>`;modal.classList.add('show');modal.setAttribute('aria-hidden','false');modal.onclick=closeModal;setTimeout(()=>document.getElementById('manualMoisture')?.focus(),50);}
-  function saveManualReading(id){const p=plantById(id),m=Number(document.getElementById('manualMoisture')?.value),tRaw=document.getElementById('manualTemp')?.value;if(!p||!Number.isFinite(m)||m<0||m>100){toast('Enter moisture from 0–100%');return;}const temp=tRaw===''?null:Number(tRaw);state.readings.push({id:uid('reading'),plantId:id,moisture:Math.round(m*10)/10,temp:Number.isFinite(temp)?Math.round(temp*10)/10:null,source:'manual',at:new Date().toISOString()});p.moisture=Math.round(m*10)/10;if(Number.isFinite(temp))p.temp=temp;saveState();closeModal();render();toast(`Moisture logged for ${p.name} 💧`);}
-  function mergedTimeline(id){const e=eventsForPlant(id).map(x=>({...x,kind:'event'}));const r=readingsForPlant(id).map(x=>({...x,kind:'reading'}));const ph=photosForPlant(id).map(x=>({...x,kind:'photo'}));return [...e,...r,...ph].sort((a,b)=>new Date(b.at)-new Date(a.at));}
-  function timelineHtml(id,limit=50){const items=mergedTimeline(id).slice(0,limit);if(!items.length)return `<div class="chart-empty">No history yet. Log water, a moisture reading, or another care event to start the timeline.</div>`;return `<div class="timeline">${items.map(x=>{if(x.kind==='reading')return `<div class="timeline-item"><div class="timeline-icon">💧</div><div><div class="timeline-title">Moisture ${x.moisture}%${x.temp!=null?` • ${x.temp}°F`:''}</div><div class="timeline-meta">${whenText(x.at)} • Manual reading</div></div></div>`;if(x.kind==='photo')return `<div class="timeline-item"><div class="timeline-icon">📷</div><div><div class="timeline-title">Photo added</div><div class="timeline-meta">${whenText(x.at)}</div></div></div>`;const meta=careTypes[x.type]||careTypes.note;return `<div class="timeline-item"><div class="timeline-icon">${meta[0]}</div><div><div class="timeline-title">${meta[1]}</div><div class="timeline-meta">${whenText(x.at)}</div>${x.note?`<div class="timeline-note">${esc(x.note)}</div>`:''}</div></div>`;}).join('')}</div>`;}
-  function historyChart(id){const cutoff=Date.now()-historyDays*86400000;const rs=readingsForPlant(id).filter(r=>new Date(r.at).getTime()>=cutoff).reverse();if(rs.length<2)return `<div class="chart-empty">Log at least two moisture readings to draw the ${historyDays}-day trend.</div>`;const vals=rs.map(r=>r.moisture),min=Math.min(...vals),max=Math.max(...vals),span=Math.max(10,max-min),pts=rs.map((r,i)=>{const x=6+i*(88/(rs.length-1));const y=92-((r.moisture-(min-span*.15))/(span*1.3))*78;return `${x.toFixed(1)},${Math.max(8,Math.min(92,y)).toFixed(1)}`}).join(' ');return `<svg viewBox="0 0 100 100" width="100%" height="170" role="img" aria-label="Moisture trend"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"/></svg><div class="card-copy">${rs.length} readings • ${min}%–${max}%</div>`;}
-  function setHistoryDays(n){historyDays=n;render();}
-  function setPlantTab(tab){selectedPlantTab=tab;render();scrollTop();}
-  openPlant=function(id){selectedPlantId=id;selectedPlantTab='today';render();scrollTop();};
-  closePlant=function(){selectedPlantId=null;selectedPlantTab='today';render();scrollTop();};
-
-  function todayTab(p){const r=latestReading(p.id),water=lastEvent(p.id,'water'),fert=lastEvent(p.id,'fertilize'),st=statusFor(p),[low,high]=moistureBounds(p);return `<div class="metric-grid04"><div class="metric04"><span>Moisture</span><strong>${r?r.moisture+'%':'—'}</strong><small>Preferred ${low!=null?low+'–'+high+'%':'profile range'}</small></div><div class="metric04"><span>Soil Temp</span><strong>${r&&r.temp!=null?r.temp+'°F':'—'}</strong><small>${r?'Manual reading':'Not logged'}</small></div><div class="metric04"><span>Last Water</span><strong>${water?displayAgo(water):'—'}</strong><small>${water?'Logged care event':'Not logged yet'}</small></div><div class="metric04"><span>Last Feed</span><strong>${fert?displayAgo(fert):'—'}</strong><small>${fert?'Fertilizer logged':'Not logged yet'}</small></div></div><div class="card" style="margin-top:12px"><div class="section-title">${parent().label} Says</div><div class="card-copy">${st.key==='critical'?`${p.name}'s latest moisture is well below the care-library range. Check the plant and soil before deciding what it needs.`:st.key==='attention'?`${p.name}'s latest moisture is outside its usual care-library range. Worth a look.`:r?`${p.name}'s latest moisture is inside its care-library range.`:`Start with a manual moisture reading or log a care event. ${parent().label} won't invent a condition without data.`}</div></div><div class="quick-actions"><button class="quick-action" onclick="openCareComposer('${p.id}','water')"><span>💦</span>Water</button><button class="quick-action" onclick="openMoistureSheet('${p.id}')"><span>💧</span>Moisture</button><button class="quick-action" onclick="openCareComposer('${p.id}','fertilize')"><span>🌱</span>Feed</button><button class="quick-action" onclick="openCareComposer('${p.id}','note')"><span>📝</span>Note</button></div><div class="card"><div class="section-title">Recent history</div>${timelineHtml(p.id,4)}</div>`;}
-  function historyTab(p){return `<div class="section-head"><div><div class="section-title">Moisture history</div><div class="card-copy">Manual readings are yours and stay local.</div></div><div class="segmented"><button class="segment ${historyDays===7?'active':''}" onclick="setHistoryDays(7)">7D</button><button class="segment ${historyDays===30?'active':''}" onclick="setHistoryDays(30)">30D</button></div></div><div class="chart-wrap">${historyChart(p.id)}</div><div class="section-head"><div class="section-title">Timeline</div></div><div class="card">${timelineHtml(p.id)}</div>`;}
-  function careTab(p){const lib=libraryItem(p.libraryId);return `<div class="card"><div class="section-title">Care Library</div>${lib.dcwStore?`<div class="dcw-note">🛍 <b>DCW Grows Store + Growing Guide</b></div>`:lib.dcwGuide?`<div class="dcw-note">🌱 <b>DCW Grows Growing Guide</b></div>`:''}<div class="care-profile"><div class="care-metric"><span>Moisture</span><b>${esc(lib.moisture)}</b></div><div class="care-metric"><span>Light</span><b>${esc(lib.light)}</b></div><div class="care-metric"><span>Temperature</span><b>${esc(lib.temp)}</b></div><div class="care-metric"><span>Soil</span><b>${esc(lib.soil)}</b></div></div><div class="card-copy" style="margin-top:12px">${esc(lib.watering)}</div>${lib.guideSummary?`<div class="card-copy" style="margin-top:10px"><b>DCW guide:</b> ${esc(lib.guideSummary)}</div>`:''}</div><div class="section-head"><div class="section-title">Log care</div></div><div class="care-actions">${[['water','💦','Water'],['fertilize','🌱','Feed'],['repot','🪴','Repot'],['prune','✂️','Prune'],['pest','🐛','Pest'],['move','↔️','Move'],['bloom','🌸','Bloom'],['harvest','🧺','Harvest'],['note','📝','Note']].map(x=>`<button class="care-action" onclick="openCareComposer('${p.id}','${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}</div>`;}
-  function devicesTab(p){const devs=devicesForPlant(p.id);return `<div class="card"><div class="section-title">Devices</div>${devs.length?devs.map(d=>`<div class="device-chip"><div class="row-icon">${d.type==='sensor'?'📡':'💦'}</div><div class="device-copy"><b>${esc(d.label)}</b><span>SIMULATED • assigned to ${esc(p.name)} • no live connection</span></div></div>`).join(''):`<div class="card-copy">No hardware assigned. ${esc(p.name)} keeps all history without a sensor.</div>`}</div><div class="card privacy-card"><div class="privacy-title">🔒 Still clean-room</div><div class="privacy-copy">Nothing on this screen scans your network or talks to Hub #0001.</div></div>`;}
-  function automationTab(p){return `<div class="card"><div class="section-title">Automation</div><div class="card-copy">The four safety modes are visible now, but no watering action can run in Build ${BUILD}.</div><div class="care-profile"><div class="care-metric"><span>Mode 1</span><b>👀 Observe</b></div><div class="care-metric"><span>Mode 2</span><b>🧠 Recommend</b></div><div class="care-metric"><span>Mode 3</span><b>👍 Approve</b></div><div class="care-metric"><span>Mode 4</span><b>💦 Auto</b></div></div><div class="hardware-note">Build 0.5 will make this UX interactive. All real irrigation remains impossible here.</div></div>`;}
-  function photosTab(p){const photos=photosForPlant(p.id);return `<div class="upload-box"><div style="font-size:28px;margin-bottom:9px">📷</div><div class="card-title">Add a growth photo</div><div class="card-copy" style="margin:6px 0 13px">Photos are resized in your browser and saved locally. Nothing uploads anywhere.</div><label class="upload-label" for="plantPhotoInput">Choose photo</label><input id="plantPhotoInput" type="file" accept="image/*" onchange="handlePhotoInput('${p.id}',this)"></div>${photos.length?`<div class="section-head"><div class="section-title">${photos.length} photo${photos.length===1?'':'s'}</div></div><div class="photo-grid">${photos.map(ph=>`<div class="photo-card"><img src="${ph.data}" alt="${esc(p.name)} growth photo"><div class="photo-info"><div class="timeline-meta">${whenText(ph.at)}</div><button onclick="deletePhoto('${ph.id}')">Remove</button></div></div>`).join('')}</div>`:`<div class="card" style="margin-top:12px"><div class="card-copy">No photos yet.</div></div>`}`;}
-  function handlePhotoInput(id,input){const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/')){toast('Choose an image file');return;}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const max=900,scale=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);const data=c.toDataURL('image/jpeg',.72);state.photos.push({id:uid('photo'),plantId:id,at:new Date().toISOString(),data});try{saveState();render();toast('Photo saved locally 📷');}catch(e){state.photos.pop();toast('Browser storage is full — try a smaller photo');}};img.src=reader.result;};reader.readAsDataURL(file);}
-  function deletePhoto(id){state.photos=state.photos.filter(x=>x.id!==id);saveState();render();toast('Photo removed locally');}
-
-  plantDetailScreen=function(){const p=plantById(selectedPlantId);if(!p){selectedPlantId=null;return homeScreen();}const tabs=[['today','Today'],['history','History'],['care','Care'],['devices','Devices'],['automation','Automation'],['photos','Photos']];const content={today:todayTab,history:historyTab,care:careTab,devices:devicesTab,automation:automationTab,photos:photosTab}[selectedPlantTab]?.(p)||todayTab(p);return shell(`<button class="text-button" onclick="closePlant()">‹ All Plants</button><div class="detail-hero"><div class="detail-emoji">${p.emoji}</div><div class="detail-title">${esc(p.name)}</div><div class="detail-species">${esc(p.species)}${p.variety?' • '+esc(p.variety):''}</div><div class="badge-row"><span class="badge">🏡 ${esc(state.siteName)}</span><span class="badge">🌿 ${esc(p.zone)}</span><span class="badge">${p.careMode==='phone'?'📱 Manual':p.careMode==='sensor'?'📡 Sensor staged':'💦 Watering staged'}</span></div></div><div class="detail-tabs">${tabs.map(t=>`<button class="detail-tab ${selectedPlantTab===t[0]?'active':''}" onclick="setPlantTab('${t[0]}')">${t[1]}</button>`).join('')}</div>${content}<div class="plant-actions" style="margin-top:18px"><button class="button secondary" onclick="renderEditPlant('${p.id}')">Edit plant</button><button class="button secondary" onclick="showModal('move','${p.id}')">Move plant</button></div><button class="danger-button" onclick="showModal('delete','${p.id}')">Remove ${esc(p.name)}</button>`);};
-
-  careScreen=function(){if(state.demoMode){return shell(`<div class="eyebrow">Care</div><h1 class="screen-title">Demo care stays synthetic.</h1><p class="screen-sub">Switch back to My Garden to log real local care history.</p><button class="button primary" onclick="toggleDemo(false)">My Garden</button>`);}if(!state.plants.length)return shell(`<div class="eyebrow">Care</div><h1 class="screen-title">Nothing to care for yet.</h1><p class="screen-sub">Add your first plant and its care history starts here.</p><button class="button primary" onclick="go('add')">Add a plant</button>`);const sorted=[...state.plants].sort((a,b)=>{const rank={critical:0,attention:1,new:2,happy:3};return rank[statusFor(a).key]-rank[statusFor(b).key]});return shell(`<div class="eyebrow">Care</div><h1 class="screen-title">What needs a look.</h1><p class="screen-sub">Plant Daddy uses your latest manual reading and logged history. It won't pretend a plant is thirsty when you haven't given it data.</p>${sorted.map(p=>{const st=statusFor(p),r=latestReading(p.id),w=lastEvent(p.id,'water');return `<div class="card"><div class="care-alert"><div class="care-dot ${st.key==='critical'?'critical':st.key==='happy'?'good':''}"></div><div class="grow"><div class="card-title">${p.emoji} ${esc(p.name)} • ${st.label}</div><div class="card-copy">${r?`Latest moisture ${r.moisture}% • ${whenText(r.at)}`:'No moisture logged yet'}${w?` • Watered ${whenText(w.at)}`:''}</div><div class="plant-actions"><button class="button secondary" onclick="openPlant('${p.id}')">View plant</button><button class="button secondary" onclick="openMoistureSheet('${p.id}')">Log moisture</button></div></div></div></div>`}).join('')}`);};
-
-  const oldMovePlant=movePlant;
-  movePlant=function(id){const p=plantById(id),before=p?.zone;const zone=document.getElementById('moveZone')?.value;if(!p||!zone)return;p.zone=zone;if(before!==zone)state.events.push({id:uid('event'),plantId:id,type:'move',at:new Date().toISOString(),note:`Moved from ${before} to ${zone}`});saveState();closeModal();render();toast(`${p.name} moved to ${zone}`);};
-  deletePlant=function(id){const p=plantById(id);if(!p)return;state.plants=state.plants.filter(x=>x.id!==id);state.devices=state.devices.filter(d=>d.plantId!==id);state.events=(state.events||[]).filter(x=>x.plantId!==id);state.readings=(state.readings||[]).filter(x=>x.plantId!==id);state.photos=(state.photos||[]).filter(x=>x.plantId!==id);selectedPlantId=null;saveState();closeModal();render();scrollTop();toast(`${p.name} removed locally`);};
-  resetBuild=function(){if(!confirm(`Reset Build ${BUILD}? This clears only Plant Daddy data created inside this browser preview.`))return;localStorage.removeItem(STORAGE_KEY);state={...defaults,zones:['My Plants'],plants:[],devices:[],events:[],readings:[],photos:[]};selectedPlantId=null;selectedPlantTab='today';resetAddFlow(false);render();scrollTop();};
-
-  upgrade04();
-  render();
-</script>
 </body>
 </html>
