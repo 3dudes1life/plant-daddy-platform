@@ -1,7 +1,5 @@
-PLANT DADDY BUILD 0.3.2
+PLANT DADDY BUILD 0.4.0
 
-Upload index.html to the ROOT of plant-daddy-platform and replace the existing index.html.
+Upload index.html to the ROOT of your plant-daddy-platform GitHub repo and replace the existing index.html.
 
-No Bash. No Cloudflare. No Mac/Hub access.
-
-0.3.2 change: DCW Grows Growing Guide is now the foundation of the local Care Library; DCW store products are separately tagged.
+No Bash. No Cloudflare. No Hub/Mac connection.
