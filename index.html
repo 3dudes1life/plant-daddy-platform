@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#153923" />
   <meta name="color-scheme" content="light dark" />
-  <title>Plant Daddy — Build 0.8</title>
+  <title>Plant Daddy — Build 0.9</title>
   <style>
     :root {
       --bg: #f3f5f0;
@@ -371,6 +371,17 @@
     .empty-search{text-align:center;padding:25px 15px}.empty-search .big{font-size:36px}.build-ribbon{font-size:11px;color:var(--sub);text-align:center;margin-top:14px}
     @media(max-width:650px){.home-toolbar{grid-template-columns:1fr}.settings-grid,.compare-grid{grid-template-columns:1fr}.history-insights{grid-template-columns:1fr 1fr}.local-pill{display:none}.topbar-inner{padding-left:14px;padding-right:14px}.plant-avatar{width:52px;height:52px;border-radius:16px}}
 
+
+    /* Build 0.9 — Demo Lab */
+    .lab-banner{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);background:linear-gradient(135deg,var(--accent-softer),var(--card));border-radius:20px;margin:14px 0}.lab-badge{font-size:11px;font-weight:950;letter-spacing:.08em;padding:7px 10px;border-radius:999px;background:var(--accent);color:#fff;white-space:nowrap}.lab-banner b{display:block}.lab-banner span{display:block;color:var(--sub);font-size:12px;margin-top:3px}
+    .scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.scenario-card{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:17px;padding:13px;text-align:left;cursor:pointer}.scenario-card.active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-softer)}.scenario-card .s-icon{font-size:23px;display:block;margin-bottom:7px}.scenario-card b{display:block}.scenario-card small{display:block;color:var(--sub);margin-top:4px;line-height:1.35}
+    .lab-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.lab-metric{background:var(--card-2);border:1px solid var(--line);border-radius:16px;padding:12px}.lab-metric span{display:block;color:var(--sub);font-size:11px}.lab-metric b{display:block;font-size:20px;margin-top:4px}.lab-metric.bad{background:var(--danger-soft);border-color:rgba(178,59,56,.25)}.lab-metric.warn{background:var(--warning-soft);border-color:rgba(168,102,18,.25)}
+    .lab-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.range-card{border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card-2)}.range-card label{display:flex;justify-content:space-between;font-size:12px;font-weight:850}.range-card input[type=range]{width:100%;margin-top:10px;accent-color:var(--accent)}
+    .toggle-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.toggle-btn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;padding:11px;font-weight:850}.toggle-btn.on{border-color:var(--accent);background:var(--accent-softer)}.toggle-btn.danger-on{border-color:var(--danger);background:var(--danger-soft)}
+    .lab-result{border-radius:20px;padding:17px;border:1px solid var(--line);background:var(--card)}.lab-result.happy{background:var(--success-soft)}.lab-result.attention{background:var(--warning-soft)}.lab-result.critical{background:var(--danger-soft)}.lab-result h3{margin:4px 0 8px}.lab-reasons{display:grid;gap:6px;margin:10px 0}.lab-reason{font-size:13px;color:var(--sub)}.decision-box{margin-top:12px;padding:12px;border-radius:15px;background:var(--card);border:1px solid var(--line)}.decision-box b{display:block}.decision-box span{display:block;color:var(--sub);font-size:12px;margin-top:4px;line-height:1.4}
+    .timeline-mini{display:grid;gap:8px}.timeline-mini .item{display:grid;grid-template-columns:auto 1fr;gap:9px;padding:10px;border-radius:14px;background:var(--card-2);border:1px solid var(--line)}.timeline-mini .time{font-size:10px;color:var(--sub);margin-top:3px}.lab-note{font-size:12px;color:var(--sub);line-height:1.5;padding:12px;border-left:3px solid var(--accent);background:var(--accent-softer);border-radius:0 12px 12px 0}
+    @media(max-width:650px){.scenario-grid,.lab-controls{grid-template-columns:1fr}.lab-metrics{grid-template-columns:1fr 1fr}.toggle-row{grid-template-columns:1fr 1fr}.segmented{overflow:auto;justify-content:flex-start}.segmented button{white-space:nowrap}}
+
   </style>
 </head>
 <body>
@@ -378,11 +389,11 @@
   <div id="modal" class="modal-wrap" role="dialog" aria-modal="true" aria-hidden="true"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script>
-    const BUILD = '0.8.0';
+    const BUILD = '0.9.0';
     const SCHEMA_VERSION = 7;
-    const STORAGE_KEY = 'plantDaddy.build08.state';
-    const CHECKPOINT_KEY = 'plantDaddy.build08.checkpoint';
-    const MIGRATE_KEYS = ['plantDaddy.build07.state','plantDaddy.build06.state','plantDaddy.build05.state','plantDaddy.build04.state','plantDaddy.build03.state','plantDaddy.build02.state'];
+    const STORAGE_KEY = 'plantDaddy.build09.state';
+    const CHECKPOINT_KEY = 'plantDaddy.build09.checkpoint';
+    const MIGRATE_KEYS = ['plantDaddy.build08.state','plantDaddy.build07.state','plantDaddy.build06.state','plantDaddy.build05.state','plantDaddy.build04.state','plantDaddy.build03.state','plantDaddy.build02.state'];
     const caretakers = {
       daddy: { label:'Daddy', pronouns:'He/Him', icon:'💪', line:'Daddy handles the rest.' },
       mama: { label:'Mama', pronouns:'She/Her', icon:'🌺', line:'Mama handles the rest.' },
@@ -396,6 +407,7 @@
       appearance:'system', gardenView:'overview', zoneFocus:null, automationPolicies:{}, ultraPreview:false,
       libraryQuery:'', libraryCategory:'All', libraryFocus:null, careLibraryVersion:'0.6.0',
       homeQuery:'', homeFilter:'all', dismissedNotices:[], settingsView:'overview',
+      demoLab:{plantId:'',scenario:'healthy',mode:'observe',moisture:50,soilTempF:80,dryRate:3.2,battery:100,sensorOnline:true,signal:'Excellent',rain:false,flow:'ok',lastAction:'',timeline:[]},
       schemaVersion:SCHEMA_VERSION, dataUpdatedAt:null, lastBackupAt:null, migrationHistory:[]
     };
 
@@ -467,7 +479,7 @@
       s.selectedPlantTab = s.selectedPlantTab || 'today';
       s.historyWindow = [7,30,90,365].includes(Number(s.historyWindow)) ? Number(s.historyWindow) : 7;
       s.appearance = ['system','light','dark'].includes(s.appearance) ? s.appearance : 'system';
-      s.gardenView = ['overview','devices','ultra','library'].includes(s.gardenView) ? s.gardenView : 'overview';
+      s.gardenView = ['overview','devices','ultra','library','lab'].includes(s.gardenView) ? s.gardenView : 'overview';
       s.zoneFocus = s.zones.includes(s.zoneFocus) ? s.zoneFocus : null;
       s.automationPolicies = s.automationPolicies && typeof s.automationPolicies === 'object' ? s.automationPolicies : {};
       s.ultraPreview = Boolean(s.ultraPreview);
@@ -479,6 +491,11 @@
       s.homeFilter = ['all','happy','attention','critical'].includes(s.homeFilter) ? s.homeFilter : 'all';
       s.dismissedNotices = Array.isArray(s.dismissedNotices) ? s.dismissedNotices : [];
       s.settingsView = typeof s.settingsView==='string' ? s.settingsView : 'overview';
+      const labDefault={plantId:'',scenario:'healthy',mode:'observe',moisture:50,soilTempF:80,dryRate:3.2,battery:100,sensorOnline:true,signal:'Excellent',rain:false,flow:'ok',lastAction:'',timeline:[]};
+      s.demoLab = (s.demoLab && typeof s.demoLab==='object') ? {...labDefault,...s.demoLab} : labDefault;
+      s.demoLab.timeline = Array.isArray(s.demoLab.timeline) ? s.demoLab.timeline.slice(-30) : [];
+      s.demoLab.mode = ['observe','recommend','approve','auto'].includes(s.demoLab.mode) ? s.demoLab.mode : 'observe';
+      s.demoLab.flow = ['ok','failed'].includes(s.demoLab.flow) ? s.demoLab.flow : 'ok';
       s.schemaVersion = SCHEMA_VERSION;
       s.dataUpdatedAt = s.dataUpdatedAt || null;
       s.lastBackupAt = s.lastBackupAt || null;
@@ -498,6 +515,7 @@
         automationPolicies:state.automationPolicies, ultraPreview:state.ultraPreview,
         libraryQuery:state.libraryQuery, libraryCategory:state.libraryCategory, libraryFocus:state.libraryFocus,
         homeQuery:state.homeQuery, homeFilter:state.homeFilter, dismissedNotices:state.dismissedNotices, settingsView:state.settingsView,
+        demoLab:state.demoLab,
         careLibraryVersion:state.careLibraryVersion, schemaVersion:SCHEMA_VERSION, dataUpdatedAt:state.dataUpdatedAt,
         lastBackupAt:state.lastBackupAt, migrationHistory:state.migrationHistory
       };
@@ -628,7 +646,7 @@
     function setAppearance(mode) { if(!['system','light','dark'].includes(mode))return; state.appearance=mode; saveState(); applyAppearance(); render(); }
     function automationModeFor(id) { return state.automationPolicies[id] || 'observe'; }
     function hasIrrigation(id) { return Boolean(currentDevice(id,'irrigation')); }
-    function setGardenView(view) { if(!['overview','devices','ultra','library'].includes(view))return; state.zoneFocus=null; state.gardenView=view; saveState(); render(); scrollTop(); }
+    function setGardenView(view) { if(!['overview','devices','ultra','library','lab'].includes(view))return; state.zoneFocus=null; state.gardenView=view; saveState(); render(); scrollTop(); }
     function openZone(zone) { if(!state.zones.includes(zone))return; state.zoneFocus=zone; state.gardenView='overview'; saveState(); render(); scrollTop(); }
     function closeZone() { state.zoneFocus=null; saveState(); render(); scrollTop(); }
     function setAutomationMode(plantId, mode) {
@@ -1056,7 +1074,7 @@
     function toggleGardenEdit() { document.getElementById('gardenEdit')?.classList.toggle('open'); }
     function saveGardenEdit() { const site=document.getElementById('editSite')?.value.trim(); if(!site){toast('Garden needs a name 🌱');return;} state.siteName=site.slice(0,60); saveState(); render(); toast('Garden saved locally ✓'); }
     function addZone() { const input=document.getElementById('newZone'); const z=input?.value.trim(); if(!z){toast('Give the Zone a name');return;} if(state.zones.some(x=>x.toLowerCase()===z.toLowerCase())){toast('That Zone already exists');return;} state.zones.push(z.slice(0,60)); saveState(); render(); toast(`${z} added 🌿`); }
-    function gardenTabs() { return `<div class="segmented"><button class="${state.gardenView==='overview'?'active':''}" onclick="setGardenView('overview')">Garden</button><button class="${state.gardenView==='library'?'active':''}" onclick="setGardenView('library')">Library</button><button class="${state.gardenView==='devices'?'active':''}" onclick="setGardenView('devices')">Devices</button><button class="${state.gardenView==='ultra'?'active':''}" onclick="setGardenView('ultra')">Ultra</button></div>`; }
+    function gardenTabs() { return `<div class="segmented"><button class="${state.gardenView==='overview'?'active':''}" onclick="setGardenView('overview')">Garden</button><button class="${state.gardenView==='library'?'active':''}" onclick="setGardenView('library')">Library</button><button class="${state.gardenView==='devices'?'active':''}" onclick="setGardenView('devices')">Devices</button><button class="${state.gardenView==='ultra'?'active':''}" onclick="setGardenView('ultra')">Ultra</button><button class="${state.gardenView==='lab'?'active':''}" onclick="setGardenView('lab')">Demo Lab</button></div>`; }
     function zoneDetailScreen() {
       const zone=state.zoneFocus; if(!zone||!state.zones.includes(zone)){state.zoneFocus=null; return gardenOverview();}
       const plants=state.plants.filter(p=>p.zone===zone);
@@ -1078,9 +1096,87 @@
     function gardenUltraScreen() {
       return `<div class="eyebrow">Plant Daddy Ultra</div><h1 class="page-title">Intelligence, not ransom.</h1><p class="page-sub">Raw plant data stays yours. Ultra is where prediction, understanding, and automation eventually live.</p>${gardenTabs()}<div class="card ultra-card"><div class="card-title">🧠 Plant Daddy Ultra</div><div class="card-copy">${parent().label} doesn't just watch your plants. ${parent().label} learns them.</div><div class="ultra-price">$1.99 <span>/ month target</span></div><div class="actions"><button class="button secondary" onclick="showModal('ultra','${state.plants[0]?.id||''}')">Run local preview</button></div></div><div class="card"><div class="section-title">What Ultra eventually adds</div>${[['📈','Predictive watering','Estimate when a plant will reach its preferred watering point.'],['🧠','Plant-specific intelligence','Compare this plant with its own normal behavior.'],['🌦️','Weather awareness','Use forecast/rain context when a supported service exists.'],['💦','Smart irrigation','Recommend, approve, or automate supported watering.']].map(([i,t,c])=>`<div class="ultra-feature"><span>${i}</span><div><b>${t}</b><span>${c}</span></div></div>`).join('')}</div><div class="card privacy-card"><div class="privacy-title">🔒 Not connected yet</div><div class="privacy-copy">The Build ${BUILD} Ultra preview is deterministic and local. No AI API, payment processor, cloud backend, or real irrigation exists here.</div></div>`;
     }
+
+
+    /* ==============================
+       BUILD 0.9 DEMO LAB
+       ============================== */
+    const labScenarios={
+      healthy:{icon:'🌱',title:'Healthy day',copy:'Normal moisture, normal temperature, everything online.'},
+      drying:{icon:'📉',title:'Drying fast',copy:'Moisture falling much faster than this plant normally should.'},
+      dry:{icon:'💦',title:'Dry now',copy:'Below the plant’s preferred moisture range.'},
+      heat:{icon:'☀️',title:'99°F soil',copy:'Heat stress without automatically assuming water is the answer.'},
+      battery:{icon:'🔋',title:'Low battery',copy:'Sensor is healthy, but its battery is nearly done.'},
+      offline:{icon:'📡',title:'Sensor offline',copy:'Fresh data is unavailable, so automation must fail safe.'},
+      rain:{icon:'🌧️',title:'Rain incoming',copy:'Plant is dry, but rain suppression should stop watering.'},
+      flowfail:{icon:'⚠️',title:'Flow failure',copy:'Watering cannot be confirmed, so automation pauses.'}
+    };
+    function labPlant(){ return state.plants.find(p=>p.id===state.demoLab.plantId) || null; }
+    function labLibrary(){ const p=labPlant(); return p ? libraryItem(p.libraryId) : libraryItem('plumeria'); }
+    function labName(){ return labPlant()?.name || 'Lab Plumeria'; }
+    function labCare(){ const p=labPlant(); return p ? effectiveCareProfile(p) : structuredLibraryProfile(labLibrary()); }
+    function labTarget(){ const c=labCare(); return {min:Number.isFinite(Number(c.moistureMin))?Number(c.moistureMin):25,max:Number.isFinite(Number(c.moistureMax))?Number(c.moistureMax):45,tmax:Number.isFinite(Number(c.tempMaxF))?Number(c.tempMaxF):90}; }
+    function labSetPlant(id){ state.demoLab.plantId=id||''; labApplyScenario(state.demoLab.scenario||'healthy',false); saveState(); render(); }
+    function labSetMode(mode){ if(!['observe','recommend','approve','auto'].includes(mode))return; state.demoLab.mode=mode; labPush(`Automation mode set to ${mode}.`,'🤖'); saveState(); render(); }
+    function labPush(message,icon='🧪'){ state.demoLab.timeline=[{id:uid('lab'),date:nowIso(),icon,message},...(state.demoLab.timeline||[])].slice(0,30); state.demoLab.lastAction=message; }
+    function labApplyScenario(key,rerender=true){
+      const t=labTarget(), mid=Math.round((t.min+t.max)/2), l=state.demoLab; l.scenario=key;
+      Object.assign(l,{moisture:mid,soilTempF:Math.min(t.tmax-5,80),dryRate:3.2,battery:92,sensorOnline:true,signal:'Excellent',rain:false,flow:'ok'});
+      if(key==='drying') Object.assign(l,{moisture:Math.min(t.max, t.min+8),soilTempF:Math.min(t.tmax+2,94),dryRate:8.4});
+      if(key==='dry') Object.assign(l,{moisture:Math.max(0,t.min-6),soilTempF:88,dryRate:6.8});
+      if(key==='heat') Object.assign(l,{moisture:mid,soilTempF:99,dryRate:8.1});
+      if(key==='battery') Object.assign(l,{battery:12});
+      if(key==='offline') Object.assign(l,{sensorOnline:false,signal:'Offline'});
+      if(key==='rain') Object.assign(l,{moisture:Math.max(0,t.min-4),rain:true,dryRate:5.4});
+      if(key==='flowfail') Object.assign(l,{moisture:Math.max(0,t.min-5),flow:'failed',dryRate:6.1});
+      labPush(`${labScenarios[key]?.title||'Scenario'} loaded for ${labName()}.`,'🧪'); saveState(); if(rerender)render();
+    }
+    function labUpdate(field,value){ const l=state.demoLab; if(['moisture','soilTempF','dryRate','battery'].includes(field)) l[field]=Number(value); else l[field]=value; l.scenario='custom'; saveState(); render(); }
+    function labToggle(field){ state.demoLab[field]=!state.demoLab[field]; state.demoLab.scenario='custom'; if(field==='sensorOnline') state.demoLab.signal=state.demoLab.sensorOnline?'Excellent':'Offline'; saveState(); render(); }
+    function labToggleFlow(){ state.demoLab.flow=state.demoLab.flow==='ok'?'failed':'ok'; state.demoLab.scenario='custom'; saveState(); render(); }
+    function labEvaluation(){
+      const l=state.demoLab,t=labTarget(),reasons=[]; let severity='happy',shouldWater=false,blocked='';
+      if(!l.sensorOnline){severity='critical';reasons.push('Sensor has stopped reporting. Current moisture cannot be trusted.');blocked='Fresh sensor reading required.';}
+      if(l.battery<=20){ if(severity==='happy')severity='attention'; reasons.push(`Sensor battery is low at ${Math.round(l.battery)}%.`); }
+      if(l.soilTempF>t.tmax){ if(severity==='happy')severity='attention'; reasons.push(`Soil temperature is ${Math.round(l.soilTempF)}°F, above this profile’s ${t.tmax}°F upper target.`); }
+      if(l.moisture<t.min){ shouldWater=true; if(severity==='happy')severity='attention'; reasons.push(`Moisture is ${Math.round(l.moisture)}%, below the ${t.min}–${t.max}% preferred range.`); }
+      else if(l.moisture>t.max){ if(severity==='happy')severity='attention'; reasons.push(`Moisture is ${Math.round(l.moisture)}%, above the preferred range.`); }
+      if(l.dryRate>=7){ if(severity==='happy')severity='attention'; reasons.push(`Dry-down is fast at about ${Number(l.dryRate).toFixed(1)} points/day.`); }
+      if(l.rain && shouldWater){blocked='Rain suppression is active.';reasons.push('Rain is incoming, so watering should wait.');}
+      if(l.flow==='failed'){severity='critical';blocked='Irrigation flow could not be confirmed.';reasons.push('Flow verification failed. Automatic watering is paused.');}
+      if(!reasons.length) reasons.push('Readings are inside the current care profile and hardware looks healthy.');
+      let forecast=''; if(l.moisture>=t.min && l.dryRate>0){const days=(l.moisture-t.min)/l.dryRate;if(days<=3)forecast=`At this dry-down rate, the lower target could be reached in about ${days<1?Math.max(1,Math.round(days*24))+' hours':days.toFixed(1)+' days'}.`;}
+      let decision='Watching only. No recommendation or action.';
+      if(l.mode==='recommend') decision=shouldWater&&!blocked?'Recommend watering this plant.':blocked?`Do not water: ${blocked}`:'No watering recommendation right now.';
+      if(l.mode==='approve') decision=shouldWater&&!blocked?'Watering is recommended and waiting for your approval.':blocked?`Approval is blocked: ${blocked}`:'Nothing needs approval right now.';
+      if(l.mode==='auto') decision=shouldWater&&!blocked?'AUTO is allowed to run a simulated watering decision.':blocked?`AUTO is blocked: ${blocked}`:'AUTO would take no action right now.';
+      return {severity,reasons,shouldWater,blocked,forecast,decision,target:t};
+    }
+    function labRunDecision(){
+      const l=state.demoLab,e=labEvaluation();
+      if(l.mode==='observe'){labPush('Observe mode watched the conditions and took no action.','👀');}
+      else if(l.mode==='recommend'){labPush(e.shouldWater&&!e.blocked?'Recommendation created: water this plant.':e.blocked?`Recommendation: do not water — ${e.blocked}`:'Recommendation: no watering needed.','🧠');}
+      else if(l.mode==='approve'){labPush(e.shouldWater&&!e.blocked?'Approval requested for simulated watering.':e.blocked?`Approval blocked — ${e.blocked}`:'No approval needed.','👍');}
+      else if(l.mode==='auto'){
+        if(e.shouldWater&&!e.blocked){const before=l.moisture;l.moisture=Math.min(100,Math.max(e.target.min+10,Math.min(e.target.max,l.moisture+20)));labPush(`AUTO simulated watering: ${Math.round(before)}% → ${Math.round(l.moisture)}%. No device command was sent.`,'💦');}
+        else labPush(e.blocked?`AUTO failed safe — ${e.blocked}`:'AUTO checked conditions and did nothing.','🛑');
+      }
+      saveState();render();
+    }
+    function labApprove(){ const e=labEvaluation(),l=state.demoLab;if(l.mode!=='approve'){toast('Switch to Approve mode first');return;}if(!e.shouldWater||e.blocked){labPush(e.blocked?`Manual approval blocked — ${e.blocked}`:'No watering action is currently proposed.','🛑');saveState();render();return;}const before=l.moisture;l.moisture=Math.min(100,Math.max(e.target.min+10,Math.min(e.target.max,l.moisture+20)));labPush(`You approved simulated watering: ${Math.round(before)}% → ${Math.round(l.moisture)}%.`,'👍');saveState();render(); }
+    function labSkip(){ labPush('You skipped the proposed watering.','⏭️');saveState();render(); }
+    function resetDemoLab(){ state.demoLab={plantId:'',scenario:'healthy',mode:'observe',moisture:50,soilTempF:80,dryRate:3.2,battery:100,sensorOnline:true,signal:'Excellent',rain:false,flow:'ok',lastAction:'',timeline:[]}; labApplyScenario('healthy',false); saveState(); render(); toast('Demo Lab reset 🧪'); }
+    function demoLabScreen(){
+      const l=state.demoLab,e=labEvaluation(),t=e.target,scenarios=Object.entries(labScenarios), plantOptions=state.plants.map(p=>`<option value="${p.id}" ${l.plantId===p.id?'selected':''}>${esc(p.name)} • ${esc(p.zone)}</option>`).join('');
+      const modeCopy={observe:'Watch only',recommend:'Suggest what should happen',approve:'Ask before simulated watering',auto:'Act inside simulated safety rules'};
+      const scenarioLabel=labScenarios[l.scenario]?.title || 'Custom controls';
+      return `<div class="eyebrow">Demo Lab</div><h1 class="page-title">Break it without breaking anything.</h1><p class="page-sub">Fake sensors, weather and irrigation so Plant Daddy can prove its logic before one real device is connected.</p>${gardenTabs()}<div class="lab-banner"><div class="lab-badge">SIMULATION ONLY</div><div><b>Nothing here changes your plant history.</b><span>No device command, API call, MQTT message, Hub request or cloud request exists in this lab.</span></div></div><div class="card"><div class="section-title">Lab subject</div><div class="card-copy">Use a built-in Plumeria profile or borrow the care targets from one of your locally-created plants. The simulator never edits that plant.</div><div class="field" style="margin-top:12px"><label>PLANT PROFILE</label><select onchange="labSetPlant(this.value)"><option value="" ${!l.plantId?'selected':''}>🌺 Lab Plumeria • built-in profile</option>${plantOptions}</select></div><div class="verification-note">Testing <b>${esc(labName())}</b> • Target moisture ${t.min}–${t.max}% • Upper soil-temp target ${t.tmax}°F</div></div><div class="section-head"><div><div class="section-title">Load a problem</div><div class="section-sub">One tap puts the fake garden into that condition.</div></div></div><div class="scenario-grid">${scenarios.map(([k,s])=>`<button class="scenario-card ${l.scenario===k?'active':''}" onclick="labApplyScenario('${k}')"><span class="s-icon">${s.icon}</span><b>${s.title}</b><small>${s.copy}</small></button>`).join('')}</div><div class="section-head"><div><div class="section-title">Live fake readings</div><div class="section-sub">${esc(scenarioLabel)}</div></div></div><div class="lab-metrics"><div class="lab-metric ${l.moisture<t.min?'warn':''}"><span>Moisture</span><b>${Math.round(l.moisture)}%</b></div><div class="lab-metric ${l.soilTempF>t.tmax?'warn':''}"><span>Soil temp</span><b>${Math.round(l.soilTempF)}°F</b></div><div class="lab-metric ${l.battery<=20?'warn':''}"><span>Battery</span><b>${Math.round(l.battery)}%</b></div><div class="lab-metric ${!l.sensorOnline||l.flow==='failed'?'bad':''}"><span>Hardware</span><b>${!l.sensorOnline?'Offline':l.flow==='failed'?'Flow fail':'Online'}</b></div></div><div class="lab-controls" style="margin-top:10px"><div class="range-card"><label><span>Moisture</span><b>${Math.round(l.moisture)}%</b></label><input type="range" min="0" max="100" value="${l.moisture}" oninput="labUpdate('moisture',this.value)"></div><div class="range-card"><label><span>Soil temperature</span><b>${Math.round(l.soilTempF)}°F</b></label><input type="range" min="35" max="115" value="${l.soilTempF}" oninput="labUpdate('soilTempF',this.value)"></div><div class="range-card"><label><span>Dry-down rate</span><b>${Number(l.dryRate).toFixed(1)}/day</b></label><input type="range" min="0" max="12" step="0.1" value="${l.dryRate}" oninput="labUpdate('dryRate',this.value)"></div><div class="range-card"><label><span>Battery</span><b>${Math.round(l.battery)}%</b></label><input type="range" min="0" max="100" value="${l.battery}" oninput="labUpdate('battery',this.value)"></div></div><div class="section-head"><div class="section-title">Environment & safety</div></div><div class="toggle-row"><button class="toggle-btn ${l.sensorOnline?'on':'danger-on'}" onclick="labToggle('sensorOnline')">📡 Sensor ${l.sensorOnline?'online':'offline'}</button><button class="toggle-btn ${l.rain?'on':''}" onclick="labToggle('rain')">🌧️ Rain ${l.rain?'incoming':'clear'}</button><button class="toggle-btn ${l.flow==='failed'?'danger-on':'on'}" onclick="labToggleFlow()">💧 Flow ${l.flow==='ok'?'verified':'failed'}</button><button class="toggle-btn ${l.signal==='Excellent'?'on':''}" onclick="state.demoLab.signal=state.demoLab.signal==='Excellent'?'Weak':'Excellent';state.demoLab.scenario='custom';saveState();render()">📶 Signal ${esc(l.signal)}</button></div><div class="section-head"><div><div class="section-title">Automation mode</div><div class="section-sub">Same four-step trust ladder we plan for real hardware later.</div></div></div><div class="automation-grid">${[['observe','👀','Observe'],['recommend','🧠','Recommend'],['approve','👍','Approve'],['auto','💦','Auto']].map(([k,i,n])=>`<button class="automation-choice ${l.mode===k?'active':''}" onclick="labSetMode('${k}')"><span class="auto-icon">${i}</span><span class="grow"><b>${n}</b><span>${modeCopy[k]}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="section-head"><div class="section-title">What Plant Daddy thinks</div></div><div class="lab-result ${e.severity}"><div class="eyebrow">${e.severity==='critical'?'Critical':e.severity==='attention'?'Needs attention':'Looks good'}</div><h3>${parent().icon} ${parent().label} says: ${e.blocked?'Safety first.':e.shouldWater?'This plant is asking for water.':'I’m watching it.'}</h3><div class="lab-reasons">${e.reasons.map(r=>`<div class="lab-reason">• ${esc(r)}</div>`).join('')}</div>${e.forecast?`<div class="lab-note">📈 ${esc(e.forecast)}</div>`:''}<div class="decision-box"><b>${l.mode.toUpperCase()} decision</b><span>${esc(e.decision)}</span></div><div class="actions inline"><button class="button primary" onclick="labRunDecision()">Run simulated decision</button>${l.mode==='approve'&&e.shouldWater&&!e.blocked?`<button class="button secondary" onclick="labApprove()">Approve water</button><button class="button secondary" onclick="labSkip()">Skip</button>`:''}</div></div><div class="section-head"><div><div class="section-title">Lab timeline</div><div class="section-sub">Simulator actions only — never written to plant history.</div></div><button class="text-button" onclick="state.demoLab.timeline=[];saveState();render()">Clear</button></div>${l.timeline.length?`<div class="timeline-mini">${l.timeline.slice(0,8).map(x=>`<div class="item"><div>${x.icon}</div><div><b>${esc(x.message)}</b><div class="time">${fmtDateTime(x.date)}</div></div></div>`).join('')}</div>`:`<div class="card empty"><div class="empty-icon">🧪</div><h3>No lab actions yet.</h3><p>Load a scenario and run a decision.</p></div>`}<div class="actions"><button class="button secondary" onclick="resetDemoLab()">Reset Demo Lab</button></div><div class="card privacy-card"><div class="privacy-title">🔒 Fake Hub #0000</div><div class="privacy-copy">Build ${BUILD} intentionally simulates the contract we eventually want from a Hub. Hub #0001 on your Mac is still completely uninvolved.</div></div>`;
+    }
+
+
     function gardenMainScreen() {
       if(state.zoneFocus) return shell(zoneDetailScreen());
-      const body=state.gardenView==='library'?gardenLibraryScreen():state.gardenView==='devices'?gardenDevicesScreen():state.gardenView==='ultra'?gardenUltraScreen():gardenOverview();
+      const body=state.gardenView==='library'?gardenLibraryScreen():state.gardenView==='devices'?gardenDevicesScreen():state.gardenView==='ultra'?gardenUltraScreen():state.gardenView==='lab'?demoLabScreen():gardenOverview();
       return shell(body);
     }
 
@@ -1223,7 +1319,7 @@
     function gardenOverview(){
       return `<div class="eyebrow">Garden</div><h1 class="page-title">Your growing space.</h1><p class="page-sub">Site → Zones → Plants. Reorder and rename Zones without rebuilding any plant.</p>${gardenTabs()}<div class="hierarchy-site"><div class="hierarchy-title"><span class="row-icon">🏡</span><div><div>${esc(state.siteName)}</div><div class="card-copy">1 Site • ${state.zones.length} Zone${state.zones.length===1?'':'s'} • ${state.plants.length} plant${state.plants.length===1?'':'s'}</div></div></div><div class="hierarchy-line">${state.zones.map((z,i)=>`<div class="zone-row v08"><span>🌿</span><b>${esc(z)}</b><span class="zone-count">${state.plants.filter(p=>p.zone===z).length} plant${state.plants.filter(p=>p.zone===z).length===1?'':'s'}</span><div class="zone-tools"><button class="mini-icon-btn" title="Move up" ${i===0?'disabled':''} onclick="event.stopPropagation();moveZoneOrder(decodeURIComponent('${encodeURIComponent(z)}'),-1)">↑</button><button class="mini-icon-btn" title="Move down" ${i===state.zones.length-1?'disabled':''} onclick="event.stopPropagation();moveZoneOrder(decodeURIComponent('${encodeURIComponent(z)}'),1)">↓</button><button class="mini-icon-btn" title="Rename" onclick="event.stopPropagation();renameZonePrompt(decodeURIComponent('${encodeURIComponent(z)}'))">✎</button><button class="zone-open" title="Open Zone" onclick="openZone(decodeURIComponent('${encodeURIComponent(z)}'))">›</button></div></div>`).join('')}</div><button class="text-button" onclick="toggleGardenEdit()">Edit Site name</button><div id="gardenEdit" class="edit-panel"><div class="field"><label>GARDEN / SITE</label><input id="editSite" value="${esc(state.siteName)}" maxlength="60"/></div><div class="actions"><button class="button primary" onclick="saveGardenEdit()">Save locally</button></div></div></div><div class="section-head"><div class="section-title">Add Zone</div></div><div class="inline-add"><input id="newZone" maxlength="60" placeholder="Greenhouse, Patio, Front Yard…"/><button onclick="addZone()">Add</button></div><div class="section-head"><div class="section-title">Zone cleanup</div></div>${state.zones.map(z=>`<div class="card row"><div class="grow"><b>${esc(z)}</b><div class="card-copy">${state.plants.filter(p=>p.zone===z).length} plant${state.plants.filter(p=>p.zone===z).length===1?'':'s'}</div></div><button class="button secondary small" onclick="deleteZone(decodeURIComponent('${encodeURIComponent(z)}'))" ${state.plants.some(p=>p.zone===z)||state.zones.length===1?'disabled':''}>Delete empty</button></div>`).join('')}<div class="card privacy-card"><div class="privacy-title">🔒 Local garden only</div><div class="privacy-copy">Sites, Zones, plants, logs, photos, staged devices and automation previews stay in this browser.</div></div>`;
     }
-    function finishScreen(){return onboardingShell(`<div class="onboarding-card"><div class="hero-icon">${parent().icon}</div><div class="eyebrow">You're ready</div><h2>${parent().label}'s got the garden.</h2><p class="lead">Build ${BUILD} finishes the consumer-facing local experience: searchable plants, local notifications, better history, photo avatars, Zone controls, Help, Privacy, About and Free vs Ultra.</p><div class="actions"><button class="button primary" onclick="finishOnboarding()">Open my Garden</button></div></div>`,4);}
+    function finishScreen(){return onboardingShell(`<div class="onboarding-card"><div class="hero-icon">${parent().icon}</div><div class="eyebrow">You're ready</div><h2>${parent().label}'s got the garden.</h2><p class="lead">Build ${BUILD} adds the Demo Lab: fake sensors, weather, irrigation safety and all four automation modes without connecting anything real.</p><div class="actions"><button class="button primary" onclick="finishOnboarding()">Open my Garden</button></div></div>`,4);}
     function parentScreen(){
       const checkpoint=checkpointInfo(),migrated=(state.migrationHistory||[]).slice(-1)[0],migrationLine=migrated?`Migrated ${esc(migrated.from)} → schema ${SCHEMA_VERSION} on ${new Date(migrated.date).toLocaleString()}.`:`Created on local schema ${SCHEMA_VERSION}.`,backupLine=state.lastBackupAt?new Date(state.lastBackupAt).toLocaleString():'No manual backup yet';
       return shell(`<div class="eyebrow">Your Plant Parent</div><h1 class="page-title">${parent().label}'s on duty.</h1><p class="page-sub">Caretaker, preferences, product information and local data controls in one place.</p><div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.caretaker===key?'active':''}" onclick="switchCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="section-head"><div class="section-title">Appearance</div></div><div class="segmented"><button class="${state.appearance==='system'?'active':''}" onclick="setAppearance('system')">◐ System</button><button class="${state.appearance==='light'?'active':''}" onclick="setAppearance('light')">☀️ Light</button><button class="${state.appearance==='dark'?'active':''}" onclick="setAppearance('dark')">🌙 Dark</button></div><div class="section-head"><div class="section-title">Plant Daddy</div></div><div class="settings-grid"><button class="settings-card" onclick="openHelp()"><span>🌱</span><b>Plant Daddy 101</b><small>Quick tour of the product.</small></button><button class="settings-card" onclick="openInfo('plans')"><span>🧠</span><b>Free vs Ultra</b><small>What stays free and what becomes intelligence.</small></button><button class="settings-card" onclick="openInfo('privacy')"><span>🔒</span><b>Privacy & Data</b><small>See exactly what this build can and cannot access.</small></button><button class="settings-card" onclick="openInfo('about')"><span>🌿</span><b>About Plant Daddy</b><small>DCW Grows roots, build and library versions.</small></button></div><div class="section-head"><div><div class="section-title">Local Data Manager</div><div class="section-sub">Portable local data before we ever add accounts or sync.</div></div></div><div class="card"><div class="card-title">🩺 Data Health</div><div class="card-copy">Schema <strong>v${SCHEMA_VERSION}</strong> • Care Library v${state.careLibraryVersion}<br>${state.plants.length} plants • ${state.zones.length} zones • ${state.logs.length} events • ${state.devices.length} staged devices • ${state.photos.length} photos<br>Approx. local data size: <strong>${formatBytes(localDataBytes())}</strong></div><div class="verification-note">${migrationLine}</div></div><div class="card"><div class="card-title">💾 Backup & Restore</div><div class="card-copy">Export one portable JSON file containing this preview's Garden, plants, care history, staged devices, settings and locally saved photos.</div><div class="verification-note">Last manual backup: ${backupLine}</div><div class="actions inline"><button class="button primary" onclick="downloadBackup()">⬇️ Download backup</button><button class="button secondary" onclick="chooseRestoreFile()">⬆️ Restore backup</button></div><input id="restoreFile" type="file" accept="application/json,.json" style="display:none" onchange="restoreBackup(this)"></div><div class="card"><div class="card-title">🛟 Safety Checkpoint</div><div class="card-copy">Before restore/reset, Plant Daddy keeps one local rollback checkpoint.</div><div class="verification-note">${checkpoint?`Checkpoint: ${new Date(checkpoint.exportedAt).toLocaleString()} • ${esc(checkpoint.reason||'safety')}`:'No checkpoint yet.'}</div><button class="button secondary" onclick="restoreCheckpoint()" ${checkpoint?'':'disabled'}>↩️ Restore safety checkpoint</button></div><div class="card privacy-card"><div class="privacy-title">🔒 Hub #0001 stays separate</div><div class="privacy-copy">No network call in this file targets your Mac, Zigbee2MQTT, MQTT, local database or personal plant history.</div></div><button class="danger-button" onclick="resetBuild()">Reset onboarding & Build ${BUILD} local data</button>`);
