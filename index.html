@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#153923" />
   <meta name="color-scheme" content="light dark" />
-  <title>Plant Daddy — Build 0.6</title>
+  <title>Plant Daddy — Build 0.7</title>
   <style>
     :root {
       --bg: #f3f5f0;
@@ -347,6 +347,8 @@
     .verification-note { margin-top:11px; border-radius:14px; padding:10px 11px; background:var(--card-2); border:1px solid var(--line); color:var(--sub); font-size:11px; line-height:1.42; }
     .library-result { width:100%; text-align:left; cursor:pointer; }
     .library-result:hover { border-color:var(--accent); }
+
+    button:disabled { opacity:.45; cursor:not-allowed !important; transform:none !important; }
     @media (max-width:520px) {
       .page { padding-left:14px; padding-right:14px; }
       .topbar-inner { padding-left:14px; padding-right:14px; }
@@ -362,9 +364,11 @@
   <div id="modal" class="modal-wrap" role="dialog" aria-modal="true" aria-hidden="true"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script>
-    const BUILD = '0.6.0';
-    const STORAGE_KEY = 'plantDaddy.build06.state';
-    const MIGRATE_KEYS = ['plantDaddy.build05.state','plantDaddy.build04.state','plantDaddy.build03.state','plantDaddy.build02.state'];
+    const BUILD = '0.7.0';
+    const SCHEMA_VERSION = 7;
+    const STORAGE_KEY = 'plantDaddy.build07.state';
+    const CHECKPOINT_KEY = 'plantDaddy.build07.checkpoint';
+    const MIGRATE_KEYS = ['plantDaddy.build06.state','plantDaddy.build05.state','plantDaddy.build04.state','plantDaddy.build03.state','plantDaddy.build02.state'];
     const caretakers = {
       daddy: { label:'Daddy', pronouns:'He/Him', icon:'💪', line:'Daddy handles the rest.' },
       mama: { label:'Mama', pronouns:'She/Her', icon:'🌺', line:'Mama handles the rest.' },
@@ -376,7 +380,8 @@
       siteName:'Home', zoneName:'My Plants', zones:['My Plants'], screen:'plants', demoMode:false,
       plants:[], devices:[], logs:[], photos:[], selectedPlantTab:'today', historyWindow:7,
       appearance:'system', gardenView:'overview', zoneFocus:null, automationPolicies:{}, ultraPreview:false,
-      libraryQuery:'', libraryCategory:'All', libraryFocus:null, careLibraryVersion:'0.6.0'
+      libraryQuery:'', libraryCategory:'All', libraryFocus:null, careLibraryVersion:'0.6.0',
+      schemaVersion:SCHEMA_VERSION, dataUpdatedAt:null, lastBackupAt:null, migrationHistory:[]
     };
 
     const eventMeta = {
@@ -408,22 +413,32 @@
         if (current) return normalizeState({...defaults, ...current});
         for (const key of MIGRATE_KEYS) {
           const old = JSON.parse(localStorage.getItem(key) || 'null');
-          if (old) return normalizeState(migrateOldState(old));
+          if (old) {
+            const migrated = normalizeState(migrateOldState(old, key));
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated)); } catch (_) {}
+            return migrated;
+          }
         }
       } catch (_) {}
       return normalizeState({...defaults});
     }
 
-    function migrateOldState(old) {
+    function migrateOldState(old, sourceKey='legacy') {
       const migrated = {...defaults, ...old};
       migrated.logs = Array.isArray(old.logs) ? old.logs : [];
       migrated.photos = Array.isArray(old.photos) ? old.photos : [];
-      migrated.selectedPlantTab = 'today';
-      migrated.historyWindow = 7;
+      migrated.selectedPlantTab = old.selectedPlantTab || 'today';
+      migrated.historyWindow = Number(old.historyWindow) || 7;
       migrated.plants = (old.plants || []).map(p => ({...p, moisture: p.moisture ?? null, temp: p.temp ?? null}));
-      migrated.logs = migrated.logs.concat(migrated.plants.filter(p => p.createdAt).map(p => ({
-        id: uid('log'), plantId: p.id, type:'added', date: p.createdAt, note:`Added to ${old.siteName || 'Home'}`, value:null
-      })));
+      if (!migrated.logs.some(l => l.type==='added')) {
+        migrated.logs = migrated.logs.concat(migrated.plants.filter(p => p.createdAt).map(p => ({
+          id: uid('log'), plantId: p.id, type:'added', date: p.createdAt, note:`Added to ${old.siteName || 'Home'}`, value:null
+        })));
+      }
+      migrated.schemaVersion = SCHEMA_VERSION;
+      migrated.dataUpdatedAt = nowIso();
+      migrated.migrationHistory = Array.isArray(old.migrationHistory) ? old.migrationHistory.slice(-9) : [];
+      migrated.migrationHistory.push({from:sourceKey, to:`schema-${SCHEMA_VERSION}`, date:nowIso()});
       return migrated;
     }
 
@@ -445,21 +460,128 @@
       s.libraryCategory = typeof s.libraryCategory==='string' ? s.libraryCategory : 'All';
       s.libraryFocus = typeof s.libraryFocus==='string' ? s.libraryFocus : null;
       s.careLibraryVersion = '0.6.0';
+      s.schemaVersion = SCHEMA_VERSION;
+      s.dataUpdatedAt = s.dataUpdatedAt || null;
+      s.lastBackupAt = s.lastBackupAt || null;
+      s.migrationHistory = Array.isArray(s.migrationHistory) ? s.migrationHistory.slice(-10) : [];
       s.plants = (s.plants || []).map(p => ({...p, careOverrides:(p.careOverrides && typeof p.careOverrides==='object') ? p.careOverrides : {}}));
       s.devices = s.devices.map(d => ({current:d.current !== false, simulated:true, battery:d.battery ?? 100, signal:d.signal || 'Good', ...d}));
       return s;
     }
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    function persistentState() {
+      return {
         onboarded:state.onboarded, onboardingStep:state.onboardingStep, caretaker:state.caretaker,
         draftCaretaker:state.draftCaretaker, siteName:state.siteName, zoneName:state.zoneName,
         zones:state.zones, screen:state.screen, demoMode:state.demoMode, plants:state.plants,
         devices:state.devices, logs:state.logs, photos:state.photos, selectedPlantTab:state.selectedPlantTab,
         historyWindow:state.historyWindow, appearance:state.appearance, gardenView:state.gardenView, zoneFocus:state.zoneFocus,
         automationPolicies:state.automationPolicies, ultraPreview:state.ultraPreview,
-        libraryQuery:state.libraryQuery, libraryCategory:state.libraryCategory, libraryFocus:state.libraryFocus, careLibraryVersion:state.careLibraryVersion
-      }));
+        libraryQuery:state.libraryQuery, libraryCategory:state.libraryCategory, libraryFocus:state.libraryFocus,
+        careLibraryVersion:state.careLibraryVersion, schemaVersion:SCHEMA_VERSION, dataUpdatedAt:state.dataUpdatedAt,
+        lastBackupAt:state.lastBackupAt, migrationHistory:state.migrationHistory
+      };
+    }
+
+    function saveState() {
+      state.schemaVersion = SCHEMA_VERSION;
+      state.dataUpdatedAt = nowIso();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(persistentState()));
+    }
+
+    function formatBytes(bytes) {
+      if (!Number.isFinite(bytes) || bytes < 1) return '0 B';
+      const units=['B','KB','MB','GB']; let i=0, n=bytes;
+      while(n>=1024 && i<units.length-1){n/=1024;i++;}
+      return `${n.toFixed(i?1:0)} ${units[i]}`;
+    }
+
+    function localDataBytes() {
+      try { return new Blob([JSON.stringify(persistentState())]).size; } catch (_) { return 0; }
+    }
+
+    function backupEnvelope(reason='manual') {
+      return {
+        format:'plant-daddy-local-backup', formatVersion:1, schemaVersion:SCHEMA_VERSION,
+        build:BUILD, exportedAt:nowIso(), reason, data:persistentState()
+      };
+    }
+
+    function createCheckpoint(reason='safety checkpoint') {
+      try {
+        const env=backupEnvelope(reason);
+        localStorage.setItem(CHECKPOINT_KEY, JSON.stringify(env));
+        return true;
+      } catch (_) { return false; }
+    }
+
+    function downloadBackup() {
+      try {
+        state.lastBackupAt=nowIso();
+        saveState();
+        const env=backupEnvelope('manual export');
+        const blob=new Blob([JSON.stringify(env,null,2)],{type:'application/json'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+        a.href=url; a.download=`PlantDaddy-backup-${stamp}.json`;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
+        render(); toast('Plant Daddy backup downloaded ✓');
+      } catch (err) { toast('Could not create backup'); }
+    }
+
+    function chooseRestoreFile() { document.getElementById('restoreFile')?.click(); }
+
+    function validateBackupEnvelope(env) {
+      if (!env || typeof env!=='object') throw new Error('That file is not a Plant Daddy backup.');
+      if (env.format!=='plant-daddy-local-backup' || env.formatVersion!==1) throw new Error('Unsupported Plant Daddy backup format.');
+      const schema=Number(env.schemaVersion || env.data?.schemaVersion || 0);
+      if (schema>SCHEMA_VERSION) throw new Error(`This backup uses newer schema ${schema}. Open it with a newer Plant Daddy build.`);
+      if (!env.data || typeof env.data!=='object' || Array.isArray(env.data)) throw new Error('Backup data is missing.');
+      const arrays=['plants','devices','logs','photos','zones'];
+      for(const key of arrays) if(env.data[key]!=null && !Array.isArray(env.data[key])) throw new Error(`Backup field “${key}” is invalid.`);
+      if ((env.data.plants||[]).length>5000 || (env.data.logs||[]).length>100000 || (env.data.photos||[]).length>5000) throw new Error('Backup is larger than this preview safely supports.');
+      return true;
+    }
+
+    function migrateImportedState(data, sourceSchema) {
+      let imported={...defaults, ...data};
+      if(Number(sourceSchema||0)<SCHEMA_VERSION) imported=migrateOldState(imported, `backup-schema-${sourceSchema||'legacy'}`);
+      return normalizeState(imported);
+    }
+
+    async function restoreBackup(input) {
+      const file=input?.files?.[0]; if(!file)return;
+      try {
+        if(file.size>12*1024*1024) throw new Error('Backup is too large for this local preview.');
+        const text=await file.text(); const env=JSON.parse(text); validateBackupEnvelope(env);
+        const incoming=migrateImportedState(env.data, env.schemaVersion);
+        const count=incoming.plants.length;
+        if(!confirm(`Restore this Plant Daddy backup?\n\n${count} plant${count===1?'':'s'} • ${incoming.logs.length} history events • ${incoming.photos.length} photos\n\nYour current local data will be checkpointed first.`)) return;
+        createCheckpoint('before restore');
+        state=incoming; state.schemaVersion=SCHEMA_VERSION; state.dataUpdatedAt=nowIso();
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(persistentState()));
+        selectedPlantId=null; resetAddFlow(false); applyAppearance(); render(); scrollTop();
+        toast('Backup restored locally ✓');
+      } catch(err) { alert(`Plant Daddy could not restore that file.\n\n${err.message||err}`); }
+      finally { input.value=''; }
+    }
+
+    function checkpointInfo() {
+      try { const env=JSON.parse(localStorage.getItem(CHECKPOINT_KEY)||'null'); return env && env.format==='plant-daddy-local-backup' ? env : null; } catch(_){return null;}
+    }
+
+    function restoreCheckpoint() {
+      const env=checkpointInfo(); if(!env){toast('No safety checkpoint yet');return;}
+      try {
+        validateBackupEnvelope(env);
+        if(!confirm(`Restore the safety checkpoint from ${new Date(env.exportedAt).toLocaleString()}?`))return;
+        const current=backupEnvelope('before checkpoint restore');
+        state=migrateImportedState(env.data,env.schemaVersion); saveState();
+        try{localStorage.setItem(CHECKPOINT_KEY,JSON.stringify(current));}catch(_){}
+        selectedPlantId=null; resetAddFlow(false); applyAppearance(); render(); scrollTop(); toast('Safety checkpoint restored ✓');
+      } catch(err){alert(`Checkpoint could not be restored.\n\n${err.message||err}`);}
     }
 
     function esc(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch])); }
@@ -943,8 +1065,23 @@
     }
 
     function switchCaretaker(key) { if(!caretakers[key])return; state.caretaker=key; state.draftCaretaker=key; saveState(); render(); toast(`${caretakers[key].label} is on plant duty 🌱`); }
-    function resetBuild() { if(!confirm(`Reset Build ${BUILD}? This clears only Plant Daddy data created inside this browser preview.`))return; localStorage.removeItem(STORAGE_KEY); state=normalizeState({...defaults,zones:['My Plants'],plants:[],devices:[],logs:[],photos:[],automationPolicies:{},careLibraryVersion:'0.6.0'}); selectedPlantId=null; resetAddFlow(false); applyAppearance(); render(); scrollTop(); }
-    function parentScreen() { return shell(`<div class="eyebrow">Your Plant Parent</div><h1 class="page-title">${parent().label}'s on duty.</h1><p class="page-sub">Switch anytime. Your Garden, plants, history, devices, and photos don't change.</p><div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.caretaker===key?'active':''}" onclick="switchCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="section-head"><div class="section-title">Appearance</div></div><div class="segmented"><button class="${state.appearance==='system'?'active':''}" onclick="setAppearance('system')">◐ System</button><button class="${state.appearance==='light'?'active':''}" onclick="setAppearance('light')">☀️ Light</button><button class="${state.appearance==='dark'?'active':''}" onclick="setAppearance('dark')">🌙 Dark</button></div><div class="card"><div class="card-title">Local-only mode</div><div class="card-copy">${state.plants.length} plant${state.plants.length===1?'':'s'}, ${state.logs.length} history event${state.logs.length===1?'':'s'}, ${state.devices.length} staged device record${state.devices.length===1?'':'s'}, and ${state.photos.length} photo${state.photos.length===1?'':'s'} are stored only in this browser. Care Library v${state.careLibraryVersion} is bundled locally.</div></div><div class="card privacy-card"><div class="privacy-title">🔒 Hub #0001 stays separate</div><div class="privacy-copy">No network call in this file targets your Mac, Zigbee2MQTT, MQTT, local database, or personal plant history.</div></div><button class="danger-button" onclick="resetBuild()">Reset onboarding & Build ${BUILD} local data</button>`); }
+    function resetBuild() { if(!confirm(`Reset Build ${BUILD}? This clears only Plant Daddy data created inside this browser preview. A safety checkpoint will be created first.`))return; createCheckpoint('before reset'); localStorage.removeItem(STORAGE_KEY); state=normalizeState({...defaults,zones:['My Plants'],plants:[],devices:[],logs:[],photos:[],automationPolicies:{},careLibraryVersion:'0.6.0',schemaVersion:SCHEMA_VERSION}); selectedPlantId=null; resetAddFlow(false); applyAppearance(); render(); scrollTop(); toast('Local preview reset — checkpoint saved'); }
+    function parentScreen() {
+      const checkpoint=checkpointInfo();
+      const migrated=(state.migrationHistory||[]).slice(-1)[0];
+      const migrationLine=migrated ? `Migrated ${esc(migrated.from)} → schema ${SCHEMA_VERSION} on ${new Date(migrated.date).toLocaleString()}.` : `Created on local schema ${SCHEMA_VERSION}.`;
+      const backupLine=state.lastBackupAt ? new Date(state.lastBackupAt).toLocaleString() : 'No manual backup yet';
+      return shell(`<div class="eyebrow">Your Plant Parent</div><h1 class="page-title">${parent().label}'s on duty.</h1><p class="page-sub">Switch anytime. Your Garden, plants, history, devices, and photos don't change.</p>
+      <div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.caretaker===key?'active':''}" onclick="switchCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div>
+      <div class="section-head"><div class="section-title">Appearance</div></div><div class="segmented"><button class="${state.appearance==='system'?'active':''}" onclick="setAppearance('system')">◐ System</button><button class="${state.appearance==='light'?'active':''}" onclick="setAppearance('light')">☀️ Light</button><button class="${state.appearance==='dark'?'active':''}" onclick="setAppearance('dark')">🌙 Dark</button></div>
+      <div class="section-head"><div><div class="section-title">Local Data Manager</div><div class="section-sub">Build 0.7 makes your browser data portable before we ever add accounts or cloud sync.</div></div></div>
+      <div class="card"><div class="card-title">🩺 Data Health</div><div class="card-copy">Schema <strong>v${SCHEMA_VERSION}</strong> • Care Library v${state.careLibraryVersion}<br>${state.plants.length} plants • ${state.zones.length} zones • ${state.logs.length} events • ${state.devices.length} staged devices • ${state.photos.length} photos<br>Approx. local data size: <strong>${formatBytes(localDataBytes())}</strong></div><div class="verification-note">${migrationLine}</div></div>
+      <div class="card"><div class="card-title">💾 Backup & Restore</div><div class="card-copy">Export one portable JSON file containing this preview's Garden, plants, care history, staged devices, settings, and locally saved photos. Nothing is uploaded.</div><div class="verification-note">Last manual backup: ${backupLine}</div><div class="actions inline"><button class="button primary" onclick="downloadBackup()">⬇️ Download backup</button><button class="button secondary" onclick="chooseRestoreFile()">⬆️ Restore backup</button></div><input id="restoreFile" type="file" accept="application/json,.json" style="display:none" onchange="restoreBackup(this)"></div>
+      <div class="card"><div class="card-title">🛟 Safety Checkpoint</div><div class="card-copy">Before a restore or reset, Plant Daddy keeps one local rollback checkpoint in this browser.</div><div class="verification-note">${checkpoint ? `Checkpoint: ${new Date(checkpoint.exportedAt).toLocaleString()} • ${esc(checkpoint.reason||'safety')}` : 'No checkpoint yet — one will be created automatically before the first destructive action.'}</div><button class="button secondary" onclick="restoreCheckpoint()" ${checkpoint?'':'disabled'}>↩️ Restore safety checkpoint</button></div>
+      <div class="card"><div class="card-title">Local-only mode</div><div class="card-copy">Everything above lives only in this browser. A downloaded backup exists only wherever you save it. Plant Daddy does not send it anywhere.</div></div>
+      <div class="card privacy-card"><div class="privacy-title">🔒 Hub #0001 stays separate</div><div class="privacy-copy">No network call in this file targets your Mac, Zigbee2MQTT, MQTT, local database, or personal plant history.</div></div>
+      <button class="danger-button" onclick="resetBuild()">Reset onboarding & Build ${BUILD} local data</button>`);
+    }
 
     function renderMain() { if(selectedPlantId)return plantDetailScreen(); const screens={plants:homeScreen, care:careScreen, add:addScreen, garden:gardenMainScreen, parent:parentScreen}; return (screens[state.screen] || homeScreen)(); }
     function render() { applyAppearance(); app.innerHTML = state.onboarded ? renderMain() : renderOnboarding(); }
