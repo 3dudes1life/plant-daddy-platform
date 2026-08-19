@@ -1,25 +1,28 @@
-PLANT DADDY — BUILD 0.2.0
+PLANT DADDY — BUILD 0.3.0
+========================
 
-FRONT-END / LOCAL-ONLY BUILD
-No Cloudflare files. No backend. No Hub connector.
+Upload index.html to the ROOT of the existing GitHub repository and replace the current root index.html.
 
-UPLOAD:
-1. Unzip this folder.
-2. Upload index.html to the ROOT of the existing plant-daddy-platform repo.
-3. Replace the existing root index.html when GitHub asks.
-4. Wait for GitHub Pages to rebuild, then refresh the preview.
+This build is FRONT-END / LOCAL BROWSER ONLY.
 
-WHAT TO TEST:
-- Brand-new welcome screen
-- "I already have an account" local-only message
-- Daddy / Mama / Buddy selection
-- Garden + first Zone creation
-- Refresh: your setup should remain saved in that browser
-- Empty-state Plants / Care screens
-- Demo Garden toggle (synthetic data only)
-- Edit Garden names
-- Switch caretaker after onboarding
-- Reset onboarding from caretaker/settings screen
+NO CLOUDFLARE
+NO ACCOUNT BACKEND
+NO LIVE SENSOR CONNECTIONS
+NO MQTT / ZIGBEE CONNECTIONS
+NO ACCESS TO PLANT DADDY HUB #0001
+NO ACCESS TO THE MAC DATABASE
 
-BUILD 0.3 NEXT:
-Real Add Plant flow + starter Plant Care Library.
+Build 0.3 adds:
+- Searchable/browsable Plant Care Library
+- Real local plant creation
+- Name + optional variety
+- Zone assignment
+- Just my phone / sensor / smart watering setup choices
+- Simulated hardware stored separately from plants
+- Persistent browser storage
+- Plant dashboard
+- Edit, move and delete plant
+- Multiple local Zones
+- Plant detail / care profile preview
+
+The next planned build is 0.4: Care + History.
