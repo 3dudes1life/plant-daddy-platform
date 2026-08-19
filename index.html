@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#153923" />
   <meta name="color-scheme" content="light dark" />
-  <title>Plant Daddy — Consumer Alpha 1.0</title>
+  <title>Plant Daddy — Consumer Alpha 1.1</title>
   <style>
     :root {
       --bg: #f3f5f0;
@@ -372,10 +372,10 @@
     @media(max-width:650px){.home-toolbar{grid-template-columns:1fr}.settings-grid,.compare-grid{grid-template-columns:1fr}.history-insights{grid-template-columns:1fr 1fr}.local-pill{display:none}.topbar-inner{padding-left:14px;padding-right:14px}.plant-avatar{width:52px;height:52px;border-radius:16px}}
 
 
-    /* Consumer Alpha 1.0 freeze */
+    /* Consumer Alpha 1.1 — UI/UX readability pass */
     .alpha-card{border:1px solid var(--accent);background:linear-gradient(135deg,var(--accent-softer),var(--card));border-radius:22px;padding:16px;margin:14px 0}.alpha-head{display:flex;align-items:center;gap:11px}.alpha-mark{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:22px}.alpha-head b{display:block;font-size:16px}.alpha-head span{display:block;color:var(--sub);font-size:12px;margin-top:3px}.alpha-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}.alpha-check{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px;font-size:12px;color:var(--sub)}.alpha-check b{color:var(--text);display:block;margin-bottom:2px}.alpha-note{font-size:11px;color:var(--sub);margin-top:10px;line-height:1.45}.release-pill{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:950;letter-spacing:.07em;border-radius:999px;padding:6px 9px;background:var(--accent-soft);color:var(--accent-strong);margin-bottom:8px}@media(max-width:650px){.alpha-checks{grid-template-columns:1fr}}
 
-    /* Build 1.0 — Consumer Alpha Freeze (includes Demo Lab) */
+    /* Build 1.1 — Full UI/UX + readability pass (includes Demo Lab) */
     .lab-banner{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);background:linear-gradient(135deg,var(--accent-softer),var(--card));border-radius:20px;margin:14px 0}.lab-badge{font-size:11px;font-weight:950;letter-spacing:.08em;padding:7px 10px;border-radius:999px;background:var(--accent);color:#fff;white-space:nowrap}.lab-banner b{display:block}.lab-banner span{display:block;color:var(--sub);font-size:12px;margin-top:3px}
     .scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.scenario-card{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:17px;padding:13px;text-align:left;cursor:pointer}.scenario-card.active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-softer)}.scenario-card .s-icon{font-size:23px;display:block;margin-bottom:7px}.scenario-card b{display:block}.scenario-card small{display:block;color:var(--sub);margin-top:4px;line-height:1.35}
     .lab-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.lab-metric{background:var(--card-2);border:1px solid var(--line);border-radius:16px;padding:12px}.lab-metric span{display:block;color:var(--sub);font-size:11px}.lab-metric b{display:block;font-size:20px;margin-top:4px}.lab-metric.bad{background:var(--danger-soft);border-color:rgba(178,59,56,.25)}.lab-metric.warn{background:var(--warning-soft);border-color:rgba(168,102,18,.25)}
@@ -385,14 +385,203 @@
     .timeline-mini{display:grid;gap:8px}.timeline-mini .item{display:grid;grid-template-columns:auto 1fr;gap:9px;padding:10px;border-radius:14px;background:var(--card-2);border:1px solid var(--line)}.timeline-mini .time{font-size:10px;color:var(--sub);margin-top:3px}.lab-note{font-size:12px;color:var(--sub);line-height:1.5;padding:12px;border-left:3px solid var(--accent);background:var(--accent-softer);border-radius:0 12px 12px 0}
     @media(max-width:650px){.scenario-grid,.lab-controls{grid-template-columns:1fr}.lab-metrics{grid-template-columns:1fr 1fr}.toggle-row{grid-template-columns:1fr 1fr}.segmented{overflow:auto;justify-content:flex-start}.segmented button{white-space:nowrap}}
 
-  </style>
+  
+
+    /* ============================================================
+       BUILD 1.1 — FULL UI/UX READABILITY + ACCESSIBILITY PASS
+       No data/schema/network behavior changes.
+       ============================================================ */
+    :root {
+      --text:#102016;
+      --sub:#445349;
+      --muted:#5f6d63;
+      --line:#bdc9bf;
+      --accent:#176b38;
+      --accent-strong:#10542b;
+      --accent-soft:#dcefe2;
+      --accent-softer:#edf6ef;
+      --field-bg:#ffffff;
+      --field-border:#9eaea1;
+      --placeholder:#5f6d63;
+      --focus:#0b6b36;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text:#f6faf6;
+        --sub:#d2dad4;
+        --muted:#aeb9b0;
+        --line:#465348;
+        --accent:#85e3a6;
+        --accent-strong:#a8efbf;
+        --accent-soft:#24442f;
+        --accent-softer:#1b3223;
+        --field-bg:#121a14;
+        --field-border:#637267;
+        --placeholder:#b6c1b8;
+        --focus:#9ce7b5;
+      }
+    }
+    html[data-theme="light"] {
+      --text:#102016; --sub:#445349; --muted:#5f6d63; --line:#bdc9bf;
+      --accent:#176b38; --accent-strong:#10542b; --accent-soft:#dcefe2; --accent-softer:#edf6ef;
+      --field-bg:#ffffff; --field-border:#9eaea1; --placeholder:#5f6d63; --focus:#0b6b36;
+    }
+    html[data-theme="dark"] {
+      --text:#f6faf6; --sub:#d2dad4; --muted:#aeb9b0; --line:#465348;
+      --accent:#85e3a6; --accent-strong:#a8efbf; --accent-soft:#24442f; --accent-softer:#1b3223;
+      --field-bg:#121a14; --field-border:#637267; --placeholder:#b6c1b8; --focus:#9ce7b5;
+    }
+
+    /* Base legibility */
+    body { line-height:1.35; }
+    .page-sub, .section-sub, .card-copy, .privacy-copy, .parent-line, .parent-pronouns,
+    .dashboard-action span, .settings-card small, .lab-reason, .decision-box span,
+    .notice-copy, .alpha-note, .fineprint, .verification-note, .field-help, .crumb span,
+    .empty p, .sheet p, .help-step .card-copy { color:var(--sub) !important; }
+    .fineprint, .verification-note, .field-help, .settings-card small, .alpha-note { font-size:13px; line-height:1.5; }
+    .eyebrow { color:var(--accent-strong); font-weight:950; letter-spacing:.08em; }
+    .muted { color:var(--sub) !important; }
+    .chev { color:var(--sub); }
+    .local-pill, .release-pill { font-size:11px; letter-spacing:.055em; }
+    .build-ribbon { color:var(--sub); }
+
+    /* Forms — strongest fix for the complaint that text was hard to read/fill out */
+    .field label { color:var(--text); font-size:13px; font-weight:900; margin-bottom:8px; }
+    .field input, .field select, .field textarea,
+    .search-wrap input, input[type="text"], input[type="number"], input[type="search"], select, textarea {
+      color:var(--text);
+      background:var(--field-bg);
+      border-color:var(--field-border);
+      border-width:2px;
+      caret-color:var(--accent);
+    }
+    .field input, .field select { min-height:56px; }
+    .field textarea { min-height:118px; line-height:1.45; }
+    input::placeholder, textarea::placeholder { color:var(--placeholder); opacity:1; }
+    select option { background:var(--card); color:var(--text); }
+    .field input:hover, .field select:hover, .field textarea:hover, .search-wrap input:hover { border-color:var(--accent); }
+    .field input:focus, .field select:focus, .field textarea:focus, .search-wrap input:focus {
+      border-color:var(--focus);
+      box-shadow:0 0 0 4px color-mix(in srgb,var(--focus) 22%,transparent);
+    }
+    input:disabled, select:disabled, textarea:disabled { color:var(--sub); -webkit-text-fill-color:var(--sub); opacity:1; background:var(--card-2); }
+
+    /* Clear action hierarchy */
+    .button { min-height:48px; font-weight:900; }
+    .button.primary { background:var(--accent); color:#fff; border:2px solid var(--accent); }
+    html[data-theme="dark"] .button.primary { color:#07160d; }
+    @media (prefers-color-scheme: dark) { html:not([data-theme]) .button.primary { color:#07160d; } }
+    .button.secondary { background:var(--card); color:var(--text); border:2px solid var(--field-border); }
+    .button.soft { border:1px solid var(--accent); }
+    .button.ghost, .text-button { color:var(--accent-strong); font-weight:900; }
+    .button:disabled { opacity:1; cursor:not-allowed; background:var(--card-2); color:var(--muted); border-color:var(--line); }
+    .danger-button { font-weight:900; border-width:2px; }
+
+    /* Visible focus for keyboard/switch users */
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+    [tabindex]:focus-visible {
+      outline:3px solid var(--focus) !important;
+      outline-offset:3px;
+    }
+
+    /* Cards, choices and tabs need boundary contrast too */
+    .card, .parent-choice, .mode-card, .settings-card, .dashboard-action, .scenario-card,
+    .hierarchy-site, .range-card, .lab-metric, .notice-card, .alpha-check, .plan-card {
+      border-color:var(--line);
+    }
+    .parent-choice.active, .mode-card.active, .scenario-card.active, .segmented button.active,
+    .filter-row button.active, .toggle-btn.on { border-color:var(--accent); }
+    .segmented button, .filter-row button, .toggle-btn { color:var(--sub); font-weight:850; }
+    .segmented button.active, .filter-row button.active, .toggle-btn.on { color:var(--text); font-weight:950; }
+
+    /* Warning/success/danger surfaces: color should reinforce, never carry the message alone */
+    .spotlight { border-left-width:5px; }
+    .lab-result.happy, .lab-result.attention, .lab-result.critical { border-width:2px; }
+    .lab-result h3, .lab-result .decision-box b, .notice-title { color:var(--text); }
+
+    /* Gradient card had intentionally translucent copy; make it plainly readable */
+    .insight-card .card-copy, .insight-card .muted { color:rgba(255,255,255,.94) !important; }
+    .insight-card .card-title { color:#fff; }
+    .insight-card .button.secondary { background:#fff; color:#12361f; border-color:#fff; }
+
+    /* Navigation and tap targets */
+    .nav button, .icon-button, .top-icon, .mini-icon-btn, .filter-row button,
+    .segmented button, .toggle-btn { min-height:44px; }
+    .nav button { color:var(--sub); }
+    .nav button.active { color:var(--accent-strong); font-weight:950; }
+    .dashboard-action, .settings-card, .parent-choice, .mode-card, .scenario-card { min-height:58px; }
+
+    /* Bottom sheets remain usable on small/short screens */
+    .modal-wrap { padding:12px 12px max(12px,env(safe-area-inset-bottom)); align-items:end; }
+    .sheet { max-height:calc(100dvh - 24px); padding:22px 22px max(24px,env(safe-area-inset-bottom)); border:1px solid var(--line); }
+    .sheet h3 { color:var(--text); line-height:1.12; }
+
+    /* Stronger structure in tiny status/data labels */
+    .summary span, .lab-metric span, .timeline-mini .time { color:var(--sub); }
+    .alpha-card, .privacy-card, .dcw-note, .lab-note { border:1px solid var(--line); }
+
+    @media (max-width:650px) {
+      .page { padding-left:16px; padding-right:16px; }
+      .field-stack, .edit-form { gap:19px; }
+      .field label { margin-left:1px; }
+      .actions.inline { gap:9px; }
+      .actions.inline .button { flex:1 1 150px; }
+      .sheet { border-radius:24px 24px 18px 18px; }
+    }
+    @media (max-width:390px) {
+      .page-title { font-size:31px; }
+      .topbar-inner { padding-left:12px; padding-right:12px; }
+      .local-pill { display:none; }
+      .nav { padding-left:4px; padding-right:4px; }
+      .nav button { font-size:10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+    }
+
+    /* Dark-theme contrast exceptions for accent-filled controls/cards */
+    html[data-theme="dark"] .parent-choice.active .selection-check,
+    html[data-theme="dark"] .mode-card.active .selection-check,
+    html[data-theme="dark"] .filter-row button.active,
+    html[data-theme="dark"] .alpha-mark,
+    html[data-theme="dark"] .lab-badge,
+    html[data-theme="dark"] .inline-add button { color:#07160d !important; }
+    html[data-theme="dark"] .insight-card { background:linear-gradient(145deg,#245835,#102a1a); }
+    html[data-theme="dark"] .ultra-card { background:linear-gradient(145deg,#16261b,#245835); }
+    @media (prefers-color-scheme: dark) {
+      html:not([data-theme]) .parent-choice.active .selection-check,
+      html:not([data-theme]) .mode-card.active .selection-check,
+      html:not([data-theme]) .filter-row button.active,
+      html:not([data-theme]) .alpha-mark,
+      html:not([data-theme]) .lab-badge,
+      html:not([data-theme]) .inline-add button { color:#07160d !important; }
+      html:not([data-theme]) .insight-card { background:linear-gradient(145deg,#245835,#102a1a); }
+      html:not([data-theme]) .ultra-card { background:linear-gradient(145deg,#16261b,#245835); }
+    }
+
+    /* Explicit light/default text on filled Add-Zone control; dark exception is below. */
+    .inline-add button { color:#fff; min-height:48px; }
+
+    /* Keep primary navigation labels readable even on narrow phones. */
+    .nav-label { font-size:12px; line-height:1.15; font-weight:850; }
+    .nav-icon { font-size:20px; line-height:1; }
+    @media (max-width:390px) { .nav button { font-size:inherit; } .nav-label { font-size:11px; } }
+
+    /* Tiny-label audit: preserve hierarchy without making supporting copy microscopic. */
+    .summary span, .library-scientific, .library-range, .device-copy span, .dashboard-action span,
+    .history-stat span, .timeline-mini .time { font-size:12px; }
+    .metric span, .care-metric span, .device-meta span, .safety-item span, .library-stat span,
+    .profile-source, .profile-item span, .chart-labels, .lab-metric span { font-size:11.5px; }
+    .dcw-badge, .badge, .coming-chip, .brain-status, .range-labels, .override-badge,
+    .photo-actions button, .build-ribbon { font-size:11px; }
+</style>
 </head>
 <body>
   <main id="app" class="app"></main>
   <div id="modal" class="modal-wrap" role="dialog" aria-modal="true" aria-hidden="true"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script>
-    const BUILD = '1.0.0';
+    const BUILD = '1.1.0';
     const SCHEMA_VERSION = 7;
     const STORAGE_KEY = 'plantDaddy.build10.state';
     const CHECKPOINT_KEY = 'plantDaddy.build10.checkpoint';
@@ -901,7 +1090,7 @@
     function renderOnboarding() { return state.onboardingStep===1?welcomeScreen():state.onboardingStep===2?caretakerScreen():state.onboardingStep===3?gardenScreenOnboarding():finishScreen(); }
 
     function shell(content) {
-      return `<div class="page-shell"><div class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-mark">🌱</div><span>Plant Daddy</span></div><div class="top-actions"><div class="local-pill">🌱 ALPHA 1.0 • LOCAL</div><button class="icon-button" aria-label="Change appearance" title="Appearance: ${state.appearance}" onclick="cycleAppearance()">${themeIcon()}</button></div></div></div><section class="page">${content}</section><nav class="nav">${navButton('plants','🌱','Plants')}${navButton('care','💧','Care')}${navButton('add','➕','Add')}${navButton('garden','📊','Garden')}${navButton('parent','👤', parent().label)}</nav></div>`;
+      return `<div class="page-shell"><div class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-mark">🌱</div><span>Plant Daddy</span></div><div class="top-actions"><div class="local-pill">🌱 ALPHA 1.1 • LOCAL</div><button class="icon-button" aria-label="Change appearance" title="Appearance: ${state.appearance}" onclick="cycleAppearance()">${themeIcon()}</button></div></div></div><section class="page">${content}</section><nav class="nav">${navButton('plants','🌱','Plants')}${navButton('care','💧','Care')}${navButton('add','➕','Add')}${navButton('garden','📊','Garden')}${navButton('parent','👤', parent().label)}</nav></div>`;
     }
 
     function navButton(key, icon, label) { return `<button class="${state.screen===key?'active':''}" onclick="go('${key}')"><span class="nav-icon">${icon}</span><span class="nav-label">${esc(label)}</span></button>`; }
@@ -951,12 +1140,12 @@
     }
     function homeScreen() {
       const counts = appSummary();
-      if (!state.plants.length) return shell(`<div class="release-pill">CONSUMER ALPHA 1.0</div><div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s ready when you are.</h1><p class="page-sub">Start with one plant and your phone. Smart hardware can come later.</p><div class="card empty"><div class="empty-icon">🪴</div><h3>No plants yet.</h3><p>Your Garden is ready. Add your first plant to start care history, or load a synthetic garden to test Build ${BUILD}.</p><div class="actions inline"><button class="button primary" onclick="go('add')">Add a plant</button><button class="button secondary" onclick="loadDemoGarden()">Load Demo Garden</button></div></div><div class="card privacy-card"><div class="privacy-title">🔒 Clean-room build</div><div class="privacy-copy">Everything in this preview stays in this browser. There is no sign-in, cloud backend, live sensor connection, or path to Hub #0001.</div></div>`);
+      if (!state.plants.length) return shell(`<div class="release-pill">CONSUMER ALPHA 1.1</div><div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s ready when you are.</h1><p class="page-sub">Start with one plant and your phone. Smart hardware can come later.</p><div class="card empty"><div class="empty-icon">🪴</div><h3>No plants yet.</h3><p>Your Garden is ready. Add your first plant to start care history, or load a synthetic garden to test Build ${BUILD}.</p><div class="actions inline"><button class="button primary" onclick="go('add')">Add a plant</button><button class="button secondary" onclick="loadDemoGarden()">Load Demo Garden</button></div></div><div class="card privacy-card"><div class="privacy-title">🔒 Clean-room build</div><div class="privacy-copy">Everything in this preview stays in this browser. There is no sign-in, cloud backend, live sensor connection, or path to Hub #0001.</div></div>`);
       const ranked=state.plants.map(p=>[p,plantMetrics(p)]).sort((a,b)=>({critical:0,attention:1,happy:2}[a[1].status]-({critical:0,attention:1,happy:2}[b[1].status])));
       const spotlight=ranked.find(([,m])=>m.status!=='happy');
       const recent=state.logs.slice().sort((a,b)=>+new Date(b.date)-+new Date(a.date))[0];
       const daddyMessage=spotlight ? `${spotlight[0].name}: ${spotlight[1].reasons[0] || 'worth a look.'}` : recent ? `Everything looks calm. Your latest logged activity was ${eventMeta[recent.type]?.[1]?.toLowerCase() || 'plant care'}.` : `Everything looks calm. Add a moisture reading or care event and ${parent().label} will start building context.`;
-      return shell(`<div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s watching ${state.plants.length} plant${state.plants.length===1?'':'s'}.</h1><p class="page-sub">One glance for what matters. Details stay underneath when you want them.</p><div class="summary-row"><div class="summary"><b>${counts.happy}</b><span>Happy</span></div><div class="summary"><b>${counts.attention}</b><span>Needs Attention</span></div><div class="summary"><b>${counts.critical}</b><span>Critical</span></div></div><div class="alpha-card"><div class="alpha-head"><div class="alpha-mark">✓</div><div><b>Consumer Alpha 1.0</b><span>Front-end product loop complete • still local only</span></div></div><div class="alpha-note">Plants, care, history, library, local intelligence, backups and the Demo Lab are all available before we connect accounts, cloud or real hardware.</div></div><div class="card insight-card"><div class="card-title">${parent().icon} ${parent().label} Says</div><div class="card-copy">${esc(daddyMessage)}</div>${state.ultraPreview && state.plants[0] ? `<div class="card-copy" style="margin-top:10px"><b>Ultra preview:</b> ${esc(ultraInsightFor(state.plants[0]))}</div>` : ''}<div class="actions"><button class="button secondary small" onclick="showModal('ultra','${state.plants[0]?.id || ''}')">Preview Ultra intelligence</button></div></div>${spotlight ? `<div class="card spotlight ${spotlight[1].status==='critical'?'critical':''}"><div class="row"><div class="row-icon">${spotlight[0].emoji}</div><div class="grow"><div class="card-title">${spotlight[1].status==='critical'?'Critical':'Needs attention'} — ${esc(spotlight[0].name)}</div><div class="card-copy">${esc(spotlight[1].reasons[0] || 'Worth a look.')}</div></div><button class="button secondary small" onclick="openPlant('${spotlight[0].id}')">View</button></div></div>` : `<div class="card"><div class="card-title">🌱 Everything looks okay.</div><div class="card-copy">Nothing is currently flagged by the local rules engine.</div></div>`}<div class="dashboard-actions"><button class="dashboard-action" onclick="go('add')"><span class="da-icon">➕</span><b>Add plant</b><span>Search the DCW-backed care library.</span></button><button class="dashboard-action" onclick="go('care')"><span class="da-icon">💧</span><b>Log care</b><span>Water, fertilize, read moisture, and more.</span></button><button class="dashboard-action" onclick="setGardenView('overview'); go('garden')"><span class="da-icon">🏡</span><b>Garden</b><span>Sites, Zones, and plant organization.</span></button><button class="dashboard-action" onclick="setGardenView('library'); go('garden')"><span class="da-icon">📚</span><b>Care Library</b><span>Browse structured DCW-backed plant profiles.</span></button></div><div class="section-head"><div class="section-title">Your plants</div><button class="text-button" onclick="go('add')">Add another</button></div>${state.plants.map(plantCard).join('')}`);
+      return shell(`<div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s watching ${state.plants.length} plant${state.plants.length===1?'':'s'}.</h1><p class="page-sub">One glance for what matters. Details stay underneath when you want them.</p><div class="summary-row"><div class="summary"><b>${counts.happy}</b><span>Happy</span></div><div class="summary"><b>${counts.attention}</b><span>Needs Attention</span></div><div class="summary"><b>${counts.critical}</b><span>Critical</span></div></div><div class="alpha-card"><div class="alpha-head"><div class="alpha-mark">✓</div><div><b>Consumer Alpha 1.1</b><span>Front-end product loop complete • still local only</span></div></div><div class="alpha-note">Plants, care, history, library, local intelligence, backups and the Demo Lab are all available before we connect accounts, cloud or real hardware.</div></div><div class="card insight-card"><div class="card-title">${parent().icon} ${parent().label} Says</div><div class="card-copy">${esc(daddyMessage)}</div>${state.ultraPreview && state.plants[0] ? `<div class="card-copy" style="margin-top:10px"><b>Ultra preview:</b> ${esc(ultraInsightFor(state.plants[0]))}</div>` : ''}<div class="actions"><button class="button secondary small" onclick="showModal('ultra','${state.plants[0]?.id || ''}')">Preview Ultra intelligence</button></div></div>${spotlight ? `<div class="card spotlight ${spotlight[1].status==='critical'?'critical':''}"><div class="row"><div class="row-icon">${spotlight[0].emoji}</div><div class="grow"><div class="card-title">${spotlight[1].status==='critical'?'Critical':'Needs attention'} — ${esc(spotlight[0].name)}</div><div class="card-copy">${esc(spotlight[1].reasons[0] || 'Worth a look.')}</div></div><button class="button secondary small" onclick="openPlant('${spotlight[0].id}')">View</button></div></div>` : `<div class="card"><div class="card-title">🌱 Everything looks okay.</div><div class="card-copy">Nothing is currently flagged by the local rules engine.</div></div>`}<div class="dashboard-actions"><button class="dashboard-action" onclick="go('add')"><span class="da-icon">➕</span><b>Add plant</b><span>Search the DCW-backed care library.</span></button><button class="dashboard-action" onclick="go('care')"><span class="da-icon">💧</span><b>Log care</b><span>Water, fertilize, read moisture, and more.</span></button><button class="dashboard-action" onclick="setGardenView('overview'); go('garden')"><span class="da-icon">🏡</span><b>Garden</b><span>Sites, Zones, and plant organization.</span></button><button class="dashboard-action" onclick="setGardenView('library'); go('garden')"><span class="da-icon">📚</span><b>Care Library</b><span>Browse structured DCW-backed plant profiles.</span></button></div><div class="section-head"><div class="section-title">Your plants</div><button class="text-button" onclick="go('add')">Add another</button></div>${state.plants.map(plantCard).join('')}`);
     }
 
     function careScreen() {
@@ -1252,7 +1441,8 @@
     }
     function openInfo(kind){
       const modal=document.getElementById('modal'); let body='';
-      if(kind==='alpha') body=`<div class="eyebrow">Consumer Alpha 1.0</div><h3>The front-end product loop is complete.</h3><p>This build is the local-only alpha checkpoint before accounts, cloud sync, subscriptions, live hardware or Hub #0001 are connected.</p><div class="alpha-checks"><div class="alpha-check"><b>✓ First run</b>Welcome + Daddy/Mama/Buddy + Garden setup.</div><div class="alpha-check"><b>✓ Plants</b>Care Library, add/edit/move/delete and custom plant care.</div><div class="alpha-check"><b>✓ Care history</b>Water, fertilizer, notes, photos, moisture and soil temperature.</div><div class="alpha-check"><b>✓ Local intelligence</b>Thresholds, dry-down and attention logic without an AI API.</div><div class="alpha-check"><b>✓ Data safety</b>Schema migration, backup, restore and rollback checkpoint.</div><div class="alpha-check"><b>✓ Smart UX</b>Fake Hub #0000 tests Observe, Recommend, Approve and Auto safely.</div></div><div class="verification-note">Alpha freeze means the customer experience is ready to be used as the contract for the backend. It does not mean production services are connected.</div>`;
+      if(kind==='alpha') body=`<div class="eyebrow">Consumer Alpha 1.1</div><h3>The front-end product loop is complete.</h3><p>This build is the local-only alpha checkpoint before accounts, cloud sync, subscriptions, live hardware or Hub #0001 are connected.</p><div class="alpha-checks"><div class="alpha-check"><b>✓ First run</b>Welcome + Daddy/Mama/Buddy + Garden setup.</div><div class="alpha-check"><b>✓ Plants</b>Care Library, add/edit/move/delete and custom plant care.</div><div class="alpha-check"><b>✓ Care history</b>Water, fertilizer, notes, photos, moisture and soil temperature.</div><div class="alpha-check"><b>✓ Local intelligence</b>Thresholds, dry-down and attention logic without an AI API.</div><div class="alpha-check"><b>✓ Data safety</b>Schema migration, backup, restore and rollback checkpoint.</div><div class="alpha-check"><b>✓ Smart UX</b>Fake Hub #0000 tests Observe, Recommend, Approve and Auto safely.</div></div><div class="verification-note">Alpha freeze means the customer experience is ready to be used as the contract for the backend. It does not mean production services are connected.</div>`;
+      else if(kind==='readability') body=`<div class="eyebrow">UI / UX 1.1</div><h3>Readable first. Cute second.</h3><p>Build ${BUILD} raises contrast across labels, help text, cards and controls; gives every form field a stronger border and readable placeholder; improves keyboard focus; and increases small tap targets.</p><div class="alpha-checks"><div class="alpha-check"><b>✓ Forms</b>Labels, entered text, placeholders and helper copy are easier to distinguish.</div><div class="alpha-check"><b>✓ Contrast</b>Secondary text no longer relies on faint gray-on-gray combinations.</div><div class="alpha-check"><b>✓ Buttons</b>Primary, secondary and disabled states stay visually distinct.</div><div class="alpha-check"><b>✓ Focus</b>Keyboard focus gets a visible high-contrast ring.</div><div class="alpha-check"><b>✓ Mobile</b>Inputs and key actions use larger touch targets and safer spacing.</div><div class="alpha-check"><b>✓ Modals</b>Sheets remain readable and scroll correctly on shorter screens.</div></div><div class="verification-note">This is a UI-only pass. Local schema v${SCHEMA_VERSION} and the existing local storage key are unchanged, so your 1.0 Garden carries forward.</div>`;
       else if(kind==='privacy') body=`<div class="eyebrow">Privacy</div><h3>Your plant data is yours.</h3><p>Build ${BUILD} is intentionally local-only. It does not have account sync, analytics, ads, cloud storage, MQTT access, Zigbee access, or a connection to Hub #0001.</p><div class="card privacy-card"><div class="privacy-title">🔒 Current data boundary</div><div class="privacy-copy">Plant records, logs, photos, preferences, simulated devices and backups stay in this browser unless you manually download a backup file.</div></div><p>Future cloud features should collect only what is required for the feature the customer explicitly turns on.</p>`;
       else if(kind==='about') body=`<div class="about-lockup"><div class="logo">🌱</div><h3>Plant Daddy</h3><p>Keep It Moist. • ${esc(parent().line)}</p></div><div class="dcw-lockup"><div style="font-size:34px">🌿</div><div><b>Born from DCW Grows</b><div class="card-copy">The Care Library starts with the growing knowledge DCW Grows already built. Plant Daddy adds tracking, intelligence and eventually automation.</div></div></div><div class="verification-note">Consumer Alpha ${BUILD} • Local schema v${SCHEMA_VERSION} • Care Library v${state.careLibraryVersion}</div>`;
       else if(kind==='plans') body=`<div class="eyebrow">Free vs Ultra</div><h3>Basic plant care should stay useful for free.</h3><div class="compare-grid"><div class="plan-card"><h4>🌱 Free</h4><div class="plan-price">$0</div><ul class="plan-list"><li>✓ Add & organize plants</li><li>✓ Care Library</li><li>✓ Manual care history</li><li>✓ Photos & notes</li><li>✓ Manual moisture/temp</li><li>✓ Supported sensor raw data later</li></ul></div><div class="plan-card ultra"><h4>🧠 Ultra</h4><div class="plan-price">$1.99 <small>/ month target</small></div><ul class="plan-list"><li>✓ Plant-specific intelligence</li><li>✓ Predictive watering</li><li>✓ Advanced alerts</li><li>✓ Weather awareness later</li><li>✓ Smart irrigation workflows</li><li>✓ Automatic care later</li></ul></div></div><div class="verification-note">No purchase flow exists in this build. This is product-positioning UX only.</div>`;
@@ -1296,19 +1486,19 @@
 
     function shell(content){
       const noticeCount=notificationItems().length;
-      return `<div class="page-shell"><div class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-mark">🌱</div><span>Plant Daddy</span></div><div class="top-actions topbar-tools"><div class="local-pill">🌱 ALPHA 1.0 • LOCAL</div><button class="icon-button top-icon" aria-label="Notifications" title="Local notifications" onclick="openNotifications()">🔔${noticeCount?`<span class="notice-dot">${noticeCount>9?'9+':noticeCount}</span>`:''}</button><button class="icon-button" aria-label="Help" title="Plant Daddy 101" onclick="openHelp()">?</button><button class="icon-button" aria-label="Change appearance" title="Appearance: ${state.appearance}" onclick="cycleAppearance()">${themeIcon()}</button></div></div></div><section class="page">${content}</section><nav class="nav">${navButton('plants','🌱','Plants')}${navButton('care','💧','Care')}${navButton('add','➕','Add')}${navButton('garden','📊','Garden')}${navButton('parent','👤',parent().label)}</nav></div>`;
+      return `<div class="page-shell"><div class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-mark">🌱</div><span>Plant Daddy</span></div><div class="top-actions topbar-tools"><div class="local-pill">🌱 ALPHA 1.1 • LOCAL</div><button class="icon-button top-icon" aria-label="Notifications" title="Local notifications" onclick="openNotifications()">🔔${noticeCount?`<span class="notice-dot">${noticeCount>9?'9+':noticeCount}</span>`:''}</button><button class="icon-button" aria-label="Help" title="Plant Daddy 101" onclick="openHelp()">?</button><button class="icon-button" aria-label="Change appearance" title="Appearance: ${state.appearance}" onclick="cycleAppearance()">${themeIcon()}</button></div></div></div><section class="page">${content}</section><nav class="nav">${navButton('plants','🌱','Plants')}${navButton('care','💧','Care')}${navButton('add','➕','Add')}${navButton('garden','📊','Garden')}${navButton('parent','👤',parent().label)}</nav></div>`;
     }
     function plantCard(p){
       const lib=libraryItem(p.libraryId),m=plantMetrics(p); const statusClass=m.status==='critical'?'status-critical':m.status==='attention'?'status-attention':'status-happy'; const headline=m.status==='critical'?'Needs help soon':m.status==='attention'?'Needs attention':'Looking good'; const sub=m.moistureValue!=null?`Moisture ${m.moistureValue}%`:`Target ${lib.moisture}`;
       return `<button class="card" style="width:100%;text-align:left" onclick="openPlant('${p.id}')"><div class="row">${avatarForPlant(p)}<div class="grow"><div class="card-title">${esc(p.name)}</div><div class="card-copy">${esc(p.zone)} • ${sub}</div></div><div class="chev">›</div></div><div class="card-copy ${statusClass}" style="margin-top:10px">${headline}</div>${m.reasons[0]?`<div class="card-copy">${esc(m.reasons[0])}</div>`:''}</button>`;
     }
     function homeScreen(){
-      const counts=appSummary(); if(!state.plants.length)return shell(`<div class="release-pill">CONSUMER ALPHA 1.0</div><div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s ready when you are.</h1><p class="page-sub">Start with one plant and your phone. Smart hardware can come later.</p><div class="card empty"><div class="empty-icon">🪴</div><h3>No plants yet.</h3><p>Your Garden is ready. Add your first plant to start care history, or load a synthetic garden to test Build ${BUILD}.</p><div class="actions inline"><button class="button primary" onclick="go('add')">Add a plant</button><button class="button secondary" onclick="loadDemoGarden()">Load Demo Garden</button></div></div><div class="card"><div class="card-title">Need the 30-second tour?</div><div class="card-copy">See how Plants, Care, Garden, devices and Ultra fit together.</div><div class="actions"><button class="button secondary" onclick="openHelp()">Plant Daddy 101</button></div></div><div class="card privacy-card"><div class="privacy-title">🔒 Clean-room build</div><div class="privacy-copy">Everything in this preview stays in this browser. There is no sign-in, cloud backend, live sensor connection, or path to Hub #0001.</div></div>`);
+      const counts=appSummary(); if(!state.plants.length)return shell(`<div class="release-pill">CONSUMER ALPHA 1.1</div><div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s ready when you are.</h1><p class="page-sub">Start with one plant and your phone. Smart hardware can come later.</p><div class="card empty"><div class="empty-icon">🪴</div><h3>No plants yet.</h3><p>Your Garden is ready. Add your first plant to start care history, or load a synthetic garden to test Build ${BUILD}.</p><div class="actions inline"><button class="button primary" onclick="go('add')">Add a plant</button><button class="button secondary" onclick="loadDemoGarden()">Load Demo Garden</button></div></div><div class="card"><div class="card-title">Need the 30-second tour?</div><div class="card-copy">See how Plants, Care, Garden, devices and Ultra fit together.</div><div class="actions"><button class="button secondary" onclick="openHelp()">Plant Daddy 101</button></div></div><div class="card privacy-card"><div class="privacy-title">🔒 Clean-room build</div><div class="privacy-copy">Everything in this preview stays in this browser. There is no sign-in, cloud backend, live sensor connection, or path to Hub #0001.</div></div>`);
       const ranked=state.plants.map(p=>[p,plantMetrics(p)]).sort((a,b)=>statusRank(a[1].status)-statusRank(b[1].status));
       const spotlight=ranked.find(([,m])=>m.status!=='happy'), recent=state.logs.slice().sort((a,b)=>+new Date(b.date)-+new Date(a.date))[0];
       const parentMessage=spotlight?`${spotlight[0].name}: ${spotlight[1].reasons[0]||'worth a look.'}`:recent?`Everything looks calm. Your latest logged activity was ${eventMeta[recent.type]?.[1]?.toLowerCase()||'plant care'}.`:`Everything looks calm. Add a moisture reading or care event and ${parent().label} will start building context.`;
       const results=filteredHomePlants();
-      return shell(`<div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s watching ${state.plants.length} plant${state.plants.length===1?'':'s'}.</h1><p class="page-sub">One glance for what matters. Search, filter, then dive in only when you want to.</p><div class="summary-row"><div class="summary"><b>${counts.happy}</b><span>Happy</span></div><div class="summary"><b>${counts.attention}</b><span>Needs Attention</span></div><div class="summary"><b>${counts.critical}</b><span>Critical</span></div></div><div class="alpha-card"><div class="alpha-head"><div class="alpha-mark">✓</div><div><b>Consumer Alpha 1.0</b><span>Front-end product loop complete • still local only</span></div></div><div class="alpha-note">Plants, care, history, library, local intelligence, backups and the Demo Lab are all available before we connect accounts, cloud or real hardware.</div></div><div class="card insight-card"><div class="card-title">${parent().icon} ${parent().label} Says</div><div class="card-copy">${esc(parentMessage)}</div>${state.ultraPreview&&state.plants[0]?`<div class="card-copy" style="margin-top:10px"><b>Ultra preview:</b> ${esc(ultraInsightFor(state.plants[0]))}</div>`:''}</div><div class="dashboard-actions"><button class="dashboard-action" onclick="go('add')"><span class="da-icon">➕</span><b>Add plant</b><span>Use the local Care Library.</span></button><button class="dashboard-action" onclick="go('care')"><span class="da-icon">💧</span><b>Care queue</b><span>See what needs attention.</span></button><button class="dashboard-action" onclick="setGardenView('overview');go('garden')"><span class="da-icon">🏡</span><b>Garden</b><span>Organize Sites and Zones.</span></button><button class="dashboard-action" onclick="openNotifications()"><span class="da-icon">🔔</span><b>Notices</b><span>${notificationItems().length} local notification${notificationItems().length===1?'':'s'}.</span></button></div><div class="section-head"><div class="section-title">Your plants</div><button class="text-button" onclick="go('add')">Add another</button></div><div class="home-toolbar"><div class="search-wrap"><span class="search-icon">⌕</span><input id="homeSearch" value="${esc(state.homeQuery)}" oninput="setHomeQuery(this.value)" placeholder="Search plants, zones, species…" autocomplete="off"/></div><div class="filter-row">${[['all','All'],['happy','Happy'],['attention','Attention'],['critical','Critical']].map(([k,l])=>`<button class="${state.homeFilter===k?'active':''}" onclick="setHomeFilter('${k}')">${l}</button>`).join('')}</div></div>${results.length?results.map(plantCard).join(''):`<div class="card empty-search"><div class="big">🔎</div><h3>No plants match.</h3><p>Try another search or clear the status filter.</p><button class="button secondary" onclick="state.homeQuery='';state.homeFilter='all';saveState();render()">Clear filters</button></div>`}<div class="build-ribbon">Consumer Alpha ${BUILD} • local-only front-end freeze</div>`);
+      return shell(`<div class="eyebrow">Plant Daddy</div><h1 class="page-title">${parent().label}'s watching ${state.plants.length} plant${state.plants.length===1?'':'s'}.</h1><p class="page-sub">One glance for what matters. Search, filter, then dive in only when you want to.</p><div class="summary-row"><div class="summary"><b>${counts.happy}</b><span>Happy</span></div><div class="summary"><b>${counts.attention}</b><span>Needs Attention</span></div><div class="summary"><b>${counts.critical}</b><span>Critical</span></div></div><div class="alpha-card"><div class="alpha-head"><div class="alpha-mark">✓</div><div><b>Consumer Alpha 1.1</b><span>Front-end product loop complete • still local only</span></div></div><div class="alpha-note">Plants, care, history, library, local intelligence, backups and the Demo Lab are all available before we connect accounts, cloud or real hardware.</div></div><div class="card insight-card"><div class="card-title">${parent().icon} ${parent().label} Says</div><div class="card-copy">${esc(parentMessage)}</div>${state.ultraPreview&&state.plants[0]?`<div class="card-copy" style="margin-top:10px"><b>Ultra preview:</b> ${esc(ultraInsightFor(state.plants[0]))}</div>`:''}</div><div class="dashboard-actions"><button class="dashboard-action" onclick="go('add')"><span class="da-icon">➕</span><b>Add plant</b><span>Use the local Care Library.</span></button><button class="dashboard-action" onclick="go('care')"><span class="da-icon">💧</span><b>Care queue</b><span>See what needs attention.</span></button><button class="dashboard-action" onclick="setGardenView('overview');go('garden')"><span class="da-icon">🏡</span><b>Garden</b><span>Organize Sites and Zones.</span></button><button class="dashboard-action" onclick="openNotifications()"><span class="da-icon">🔔</span><b>Notices</b><span>${notificationItems().length} local notification${notificationItems().length===1?'':'s'}.</span></button></div><div class="section-head"><div class="section-title">Your plants</div><button class="text-button" onclick="go('add')">Add another</button></div><div class="home-toolbar"><div class="search-wrap"><span class="search-icon">⌕</span><input id="homeSearch" value="${esc(state.homeQuery)}" oninput="setHomeQuery(this.value)" placeholder="Search plants, zones, species…" autocomplete="off"/></div><div class="filter-row">${[['all','All'],['happy','Happy'],['attention','Attention'],['critical','Critical']].map(([k,l])=>`<button class="${state.homeFilter===k?'active':''}" onclick="setHomeFilter('${k}')">${l}</button>`).join('')}</div></div>${results.length?results.map(plantCard).join(''):`<div class="card empty-search"><div class="big">🔎</div><h3>No plants match.</h3><p>Try another search or clear the status filter.</p><button class="button secondary" onclick="state.homeQuery='';state.homeFilter='all';saveState();render()">Clear filters</button></div>`}<div class="build-ribbon">Consumer Alpha ${BUILD} • local-only front-end freeze</div>`);
     }
     function careScreen(){
       if(!state.plants.length)return shell(`<div class="eyebrow">Care</div><h1 class="page-title">Nothing to care for yet.</h1><p class="page-sub">Add a plant first, then Plant Daddy can track watering, moisture, fertilizer and history.</p><div class="card empty"><div class="empty-icon">💧</div><h3>Your care queue is empty.</h3><div class="actions"><button class="button primary" onclick="go('add')">Add a plant</button></div></div>`);
@@ -1326,7 +1516,7 @@
     function finishScreen(){return onboardingShell(`<div class="onboarding-card"><div class="hero-icon">${parent().icon}</div><div class="eyebrow">You're ready</div><h2>${parent().label}'s got the garden.</h2><p class="lead">Consumer Alpha ${BUILD} completes the local front-end loop: onboarding, plants, care, history, data safety, local intelligence and the Fake Hub #0000 Demo Lab — without connecting anything external.</p><div class="actions"><button class="button primary" onclick="finishOnboarding()">Open my Garden</button></div></div>`,4);}
     function parentScreen(){
       const checkpoint=checkpointInfo(),migrated=(state.migrationHistory||[]).slice(-1)[0],migrationLine=migrated?`Migrated ${esc(migrated.from)} → schema ${SCHEMA_VERSION} on ${new Date(migrated.date).toLocaleString()}.`:`Created on local schema ${SCHEMA_VERSION}.`,backupLine=state.lastBackupAt?new Date(state.lastBackupAt).toLocaleString():'No manual backup yet';
-      return shell(`<div class="eyebrow">Your Plant Parent</div><h1 class="page-title">${parent().label}'s on duty.</h1><p class="page-sub">Caretaker, preferences, product information and local data controls in one place.</p><div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.caretaker===key?'active':''}" onclick="switchCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="section-head"><div class="section-title">Appearance</div></div><div class="segmented"><button class="${state.appearance==='system'?'active':''}" onclick="setAppearance('system')">◐ System</button><button class="${state.appearance==='light'?'active':''}" onclick="setAppearance('light')">☀️ Light</button><button class="${state.appearance==='dark'?'active':''}" onclick="setAppearance('dark')">🌙 Dark</button></div><div class="section-head"><div class="section-title">Plant Daddy</div></div><div class="settings-grid"><button class="settings-card" onclick="openInfo('alpha')"><span>✅</span><b>Alpha 1.0 Status</b><small>See what is complete before we connect anything external.</small></button><button class="settings-card" onclick="openHelp()"><span>🌱</span><b>Plant Daddy 101</b><small>Quick tour of the product.</small></button><button class="settings-card" onclick="openInfo('plans')"><span>🧠</span><b>Free vs Ultra</b><small>What stays free and what becomes intelligence.</small></button><button class="settings-card" onclick="openInfo('privacy')"><span>🔒</span><b>Privacy & Data</b><small>See exactly what this build can and cannot access.</small></button><button class="settings-card" onclick="openInfo('about')"><span>🌿</span><b>About Plant Daddy</b><small>DCW Grows roots, build and library versions.</small></button></div><div class="section-head"><div><div class="section-title">Local Data Manager</div><div class="section-sub">Portable local data before we ever add accounts or sync.</div></div></div><div class="card"><div class="card-title">🩺 Data Health</div><div class="card-copy">Schema <strong>v${SCHEMA_VERSION}</strong> • Care Library v${state.careLibraryVersion}<br>${state.plants.length} plants • ${state.zones.length} zones • ${state.logs.length} events • ${state.devices.length} staged devices • ${state.photos.length} photos<br>Approx. local data size: <strong>${formatBytes(localDataBytes())}</strong></div><div class="verification-note">${migrationLine}</div></div><div class="card"><div class="card-title">💾 Backup & Restore</div><div class="card-copy">Export one portable JSON file containing this preview's Garden, plants, care history, staged devices, settings and locally saved photos.</div><div class="verification-note">Last manual backup: ${backupLine}</div><div class="actions inline"><button class="button primary" onclick="downloadBackup()">⬇️ Download backup</button><button class="button secondary" onclick="chooseRestoreFile()">⬆️ Restore backup</button></div><input id="restoreFile" type="file" accept="application/json,.json" style="display:none" onchange="restoreBackup(this)"></div><div class="card"><div class="card-title">🛟 Safety Checkpoint</div><div class="card-copy">Before restore/reset, Plant Daddy keeps one local rollback checkpoint.</div><div class="verification-note">${checkpoint?`Checkpoint: ${new Date(checkpoint.exportedAt).toLocaleString()} • ${esc(checkpoint.reason||'safety')}`:'No checkpoint yet.'}</div><button class="button secondary" onclick="restoreCheckpoint()" ${checkpoint?'':'disabled'}>↩️ Restore safety checkpoint</button></div><div class="card privacy-card"><div class="privacy-title">🔒 Hub #0001 stays separate</div><div class="privacy-copy">No network call in this file targets your Mac, Zigbee2MQTT, MQTT, local database or personal plant history.</div></div><button class="danger-button" onclick="resetBuild()">Reset onboarding & Build ${BUILD} local data</button>`);
+      return shell(`<div class="eyebrow">Your Plant Parent</div><h1 class="page-title">${parent().label}'s on duty.</h1><p class="page-sub">Caretaker, preferences, product information and local data controls in one place.</p><div class="parent-grid">${Object.entries(caretakers).map(([key,p])=>`<button class="parent-choice ${state.caretaker===key?'active':''}" onclick="switchCaretaker('${key}')"><span class="parent-avatar">${p.icon}</span><span class="parent-copy"><span class="parent-name">${p.label}</span><span class="parent-pronouns">${p.pronouns}</span><span class="parent-line">${p.line}</span></span><span class="selection-check">✓</span></button>`).join('')}</div><div class="section-head"><div class="section-title">Appearance</div></div><div class="segmented"><button class="${state.appearance==='system'?'active':''}" onclick="setAppearance('system')">◐ System</button><button class="${state.appearance==='light'?'active':''}" onclick="setAppearance('light')">☀️ Light</button><button class="${state.appearance==='dark'?'active':''}" onclick="setAppearance('dark')">🌙 Dark</button></div><div class="section-head"><div class="section-title">Plant Daddy</div></div><div class="settings-grid"><button class="settings-card" onclick="openInfo('alpha')"><span>✅</span><b>Alpha 1.1 Status</b><small>See what is complete before we connect anything external.</small></button><button class="settings-card" onclick="openHelp()"><span>🌱</span><b>Plant Daddy 101</b><small>Quick tour of the product.</small></button><button class="settings-card" onclick="openInfo('readability')"><span>👓</span><b>Readability 1.1</b><small>Contrast, form fields, focus states and tap targets.</small></button><button class="settings-card" onclick="openInfo('plans')"><span>🧠</span><b>Free vs Ultra</b><small>What stays free and what becomes intelligence.</small></button><button class="settings-card" onclick="openInfo('privacy')"><span>🔒</span><b>Privacy & Data</b><small>See exactly what this build can and cannot access.</small></button><button class="settings-card" onclick="openInfo('about')"><span>🌿</span><b>About Plant Daddy</b><small>DCW Grows roots, build and library versions.</small></button></div><div class="section-head"><div><div class="section-title">Local Data Manager</div><div class="section-sub">Portable local data before we ever add accounts or sync.</div></div></div><div class="card"><div class="card-title">🩺 Data Health</div><div class="card-copy">Schema <strong>v${SCHEMA_VERSION}</strong> • Care Library v${state.careLibraryVersion}<br>${state.plants.length} plants • ${state.zones.length} zones • ${state.logs.length} events • ${state.devices.length} staged devices • ${state.photos.length} photos<br>Approx. local data size: <strong>${formatBytes(localDataBytes())}</strong></div><div class="verification-note">${migrationLine}</div></div><div class="card"><div class="card-title">💾 Backup & Restore</div><div class="card-copy">Export one portable JSON file containing this preview's Garden, plants, care history, staged devices, settings and locally saved photos.</div><div class="verification-note">Last manual backup: ${backupLine}</div><div class="actions inline"><button class="button primary" onclick="downloadBackup()">⬇️ Download backup</button><button class="button secondary" onclick="chooseRestoreFile()">⬆️ Restore backup</button></div><input id="restoreFile" type="file" accept="application/json,.json" style="display:none" onchange="restoreBackup(this)"></div><div class="card"><div class="card-title">🛟 Safety Checkpoint</div><div class="card-copy">Before restore/reset, Plant Daddy keeps one local rollback checkpoint.</div><div class="verification-note">${checkpoint?`Checkpoint: ${new Date(checkpoint.exportedAt).toLocaleString()} • ${esc(checkpoint.reason||'safety')}`:'No checkpoint yet.'}</div><button class="button secondary" onclick="restoreCheckpoint()" ${checkpoint?'':'disabled'}>↩️ Restore safety checkpoint</button></div><div class="card privacy-card"><div class="privacy-title">🔒 Hub #0001 stays separate</div><div class="privacy-copy">No network call in this file targets your Mac, Zigbee2MQTT, MQTT, local database or personal plant history.</div></div><button class="danger-button" onclick="resetBuild()">Reset onboarding & Build ${BUILD} local data</button>`);
     }
 
 
