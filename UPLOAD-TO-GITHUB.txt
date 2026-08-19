@@ -1,28 +1,7 @@
-PLANT DADDY — BUILD 0.3.0
-========================
+PLANT DADDY BUILD 0.3.1
 
-Upload index.html to the ROOT of the existing GitHub repository and replace the current root index.html.
+Upload index.html to the ROOT of the plant-daddy-platform GitHub repository, replacing the previous index.html.
 
-This build is FRONT-END / LOCAL BROWSER ONLY.
+This build remains local-only. No Cloudflare, database, accounts, live sensors, Hub connection, or Mac access.
 
-NO CLOUDFLARE
-NO ACCOUNT BACKEND
-NO LIVE SENSOR CONNECTIONS
-NO MQTT / ZIGBEE CONNECTIONS
-NO ACCESS TO PLANT DADDY HUB #0001
-NO ACCESS TO THE MAC DATABASE
-
-Build 0.3 adds:
-- Searchable/browsable Plant Care Library
-- Real local plant creation
-- Name + optional variety
-- Zone assignment
-- Just my phone / sensor / smart watering setup choices
-- Simulated hardware stored separately from plants
-- Persistent browser storage
-- Plant dashboard
-- Edit, move and delete plant
-- Multiple local Zones
-- Plant detail / care profile preview
-
-The next planned build is 0.4: Care + History.
+0.3.1 adds a DCW Grows collection to the built-in Plant Care Library.
