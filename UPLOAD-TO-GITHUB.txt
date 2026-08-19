@@ -1,7 +1,7 @@
-PLANT DADDY BUILD 0.3.1
+PLANT DADDY BUILD 0.3.2
 
-Upload index.html to the ROOT of the plant-daddy-platform GitHub repository, replacing the previous index.html.
+Upload index.html to the ROOT of plant-daddy-platform and replace the existing index.html.
 
-This build remains local-only. No Cloudflare, database, accounts, live sensors, Hub connection, or Mac access.
+No Bash. No Cloudflare. No Mac/Hub access.
 
-0.3.1 adds a DCW Grows collection to the built-in Plant Care Library.
+0.3.2 change: DCW Grows Growing Guide is now the foundation of the local Care Library; DCW store products are separately tagged.
