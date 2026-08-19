@@ -1,9 +1,25 @@
-PLANT DADDY GITHUB PAGES PREVIEW v0.1.1
+PLANT DADDY — BUILD 0.2.0
 
-No Terminal. No Mac Plant Daddy access. No Cloudflare.
+FRONT-END / LOCAL-ONLY BUILD
+No Cloudflare files. No backend. No Hub connector.
 
-Upload index.html into the ROOT of the existing plant-daddy-platform repository (same level as README.md and package.json).
+UPLOAD:
+1. Unzip this folder.
+2. Upload index.html to the ROOT of the existing plant-daddy-platform repo.
+3. Replace the existing root index.html when GitHub asks.
+4. Wait for GitHub Pages to rebuild, then refresh the preview.
 
-GitHub Pages is already serving the repository root, so after GitHub finishes its Pages deployment, the URL will open the interactive Plant Daddy preview instead of rendering README.md.
+WHAT TO TEST:
+- Brand-new welcome screen
+- "I already have an account" local-only message
+- Daddy / Mama / Buddy selection
+- Garden + first Zone creation
+- Refresh: your setup should remain saved in that browser
+- Empty-state Plants / Care screens
+- Demo Garden toggle (synthetic data only)
+- Edit Garden names
+- Switch caretaker after onboarding
+- Reset onboarding from caretaker/settings screen
 
-This preview uses synthetic demo data only.
+BUILD 0.3 NEXT:
+Real Add Plant flow + starter Plant Care Library.
