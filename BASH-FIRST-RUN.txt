@@ -1,0 +1,12 @@
+# FIRST RUN — copy/paste in Terminal after unzipping
+cd ~/Downloads/PlantDaddy-Platform-v0.1.0
+npm install
+npm run privacy:check
+npm run app
+
+# WEB PREVIEW INSTEAD
+# npm run web
+
+# CLOUDFLARE API IN A SECOND TERMINAL
+# cd ~/Downloads/PlantDaddy-Platform-v0.1.0
+# npm run api

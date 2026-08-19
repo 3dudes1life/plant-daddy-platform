@@ -1,0 +1,23 @@
+{
+  "name": "plant-daddy-platform",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/client",
+    "services/api",
+    "packages/domain",
+    "packages/mock-data"
+  ],
+  "scripts": {
+    "app": "npm --workspace @plant-daddy/client run start",
+    "ios": "npm --workspace @plant-daddy/client run ios",
+    "android": "npm --workspace @plant-daddy/client run android",
+    "web": "npm --workspace @plant-daddy/client run web",
+    "api": "npm --workspace @plant-daddy/api run dev",
+    "privacy:check": "node scripts/guard-private-data.mjs",
+    "check": "npm run privacy:check"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

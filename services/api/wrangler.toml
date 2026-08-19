@@ -1,0 +1,11 @@
+name = "plant-daddy-api-dev"
+main = "src/index.ts"
+compatibility_date = "2026-08-18"
+
+# CLEAN-ROOM STARTER:
+# No production D1 binding is enabled by default.
+# Create a brand-new cloud database when ready; never bind the Mac SQLite file.
+
+[vars]
+DATA_MODE = "demo"
+HUB_CONNECTOR_ENABLED = "false"
