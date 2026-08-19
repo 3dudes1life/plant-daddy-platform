@@ -1,16 +1,14 @@
-PLANT DADDY — GITHUB BUILD 0.7.0
+PLANT DADDY — BUILD 0.8.0
 
-LOCAL DATA SAFETY BUILD
+Consumer experience polish build.
 
-Upload index.html to the root of the existing GitHub Pages repository, replacing the prior file.
+UPLOAD:
+Replace the root index.html in the plant-daddy-platform GitHub Pages repo.
 
-Adds:
-- Local schema v7 + automatic migration from 0.6/older preview builds
-- Downloadable JSON backup
-- Validated local restore
-- Automatic safety checkpoint before restore/reset
-- One-click checkpoint rollback
-- Data Health summary + approximate local storage size
-- Existing 0.6 care library/intelligence preserved
+NO BASH REQUIRED.
+NO CLOUDFLARE.
+NO ACCOUNTS.
+NO NETWORK/API CALLS.
+NO CONNECTION TO HUB #0001 OR THE MAC.
 
-No Cloudflare, accounts, APIs, MQTT, Hub, or Mac access.
+Build 0.8 adds plant search/filter, in-app local notices, Help, Privacy/About/Free-vs-Ultra screens, better history ranges and target-band charts, care streaks, photo avatars with resize, Zone ordering/renaming/empty-delete controls, and broader consumer-flow polish.
