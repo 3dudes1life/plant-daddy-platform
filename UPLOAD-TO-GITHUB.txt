@@ -1,0 +1,9 @@
+PLANT DADDY GITHUB PAGES PREVIEW v0.1.1
+
+No Terminal. No Mac Plant Daddy access. No Cloudflare.
+
+Upload index.html into the ROOT of the existing plant-daddy-platform repository (same level as README.md and package.json).
+
+GitHub Pages is already serving the repository root, so after GitHub finishes its Pages deployment, the URL will open the interactive Plant Daddy preview instead of rendering README.md.
+
+This preview uses synthetic demo data only.

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#173E2A" />
+  <title>Plant Daddy — Clean Room Preview</title>
+  <style>
+    :root{
+      --bg:#F4F6F1; --card:#fff; --text:#162217; --sub:#687169; --border:#E2E7DF;
+      --accent:#2E7D4F; --accentSoft:#E3F3E8; --success:#2E7D4F; --warning:#A66516; --demo:#173E2A;
+      --shadow:0 10px 30px rgba(24,50,31,.07);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{--bg:#0E1410;--card:#17201A;--text:#F1F5F1;--sub:#A7B2A9;--border:#2A352D;--accent:#78D49A;--accentSoft:#203D2B;--success:#78D49A;--warning:#F1B862;--demo:#295F3F;--shadow:none}
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Segoe UI,sans-serif}
+    button{font:inherit;color:inherit}
+    .app{min-height:100vh;padding-bottom:94px}
+    .demo{position:sticky;top:0;z-index:20;background:var(--demo);color:#fff;text-align:center;font-size:11px;font-weight:900;letter-spacing:1.25px;padding:9px 16px}
+    .page{width:min(760px,100%);margin:0 auto;padding:22px 20px 36px}
+    .eyebrow{font-size:12px;font-weight:900;letter-spacing:1.55px;color:var(--sub);margin-top:4px}
+    h1{font-size:clamp(30px,7vw,42px);line-height:1.08;margin:10px 0 0;font-weight:900;letter-spacing:-1.2px}
+    .subtitle{font-size:16px;line-height:1.45;color:var(--sub);margin:10px 0 20px}
+    .summary-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 26px}
+    .summary,.card,.plant-card,.metric,.hero,.row-card,.parent-option{background:var(--card);box-shadow:var(--shadow)}
+    .summary{border-radius:18px;padding:15px}.summary b{display:block;font-size:27px}.summary span{font-size:12px;color:var(--sub);font-weight:700}
+    .section-title{font-size:19px;font-weight:850;margin:18px 0 12px}
+    .plant-card{border:0;width:100%;text-align:left;border-radius:20px;padding:16px;margin:0 0 12px;cursor:pointer;transition:.16s transform,.16s box-shadow}
+    .plant-card:hover{transform:translateY(-1px)}
+    .plant-top{display:flex;align-items:center;gap:12px}.emoji{font-size:34px}.grow{flex:1}.name{font-size:17px;font-weight:850}.species,.body{font-size:14px;line-height:1.45;color:var(--sub)}
+    .moisture{font-size:27px;font-weight:900}.good{color:var(--success)}.attention{color:var(--warning)}
+    .plant-bottom{display:flex;justify-content:space-between;margin-top:14px;gap:12px}
+    .card{border-radius:20px;padding:18px;margin:0 0 12px}.card-title{font-size:17px;font-weight:850;margin:0 0 4px}.link-btn{border:0;background:none;color:var(--accent);font-weight:850;padding:12px 0 0;cursor:pointer}
+    .add-icon{font-size:32px;margin-bottom:8px}.ultra-price{font-size:30px;font-weight:900;margin:10px 0}
+    .parent-option{width:100%;border:1.5px solid var(--border);border-radius:20px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left}
+    .parent-option.active{background:var(--accentSoft);border-color:var(--accent)}.parent-icon{font-size:34px}.check{margin-left:auto;color:var(--accent);font-size:22px;font-weight:900}
+    .hero{border-radius:24px;padding:22px;margin-bottom:12px}.hero .big-emoji{font-size:58px}.status{color:var(--success);font-weight:850;margin-top:7px}
+    .back{border:0;background:none;color:var(--accent);font-weight:850;font-size:17px;padding:0;margin:0 0 12px;cursor:pointer}
+    .metric-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.metric{border-radius:18px;padding:18px}.metric .label{font-size:12px;color:var(--sub);font-weight:700}.metric .value{font-size:28px;font-weight:900;margin-top:4px}
+    .row-card{border-radius:16px;padding:17px;margin-bottom:9px;display:flex;align-items:center;cursor:pointer}.chev{margin-left:auto;color:var(--sub);font-size:26px}
+    .nav{position:fixed;z-index:30;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--card) 94%,transparent);border-top:1px solid var(--border);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(5,1fr);padding:8px max(8px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+    .nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:3px 1px;cursor:pointer;color:var(--sub)}.nav button.active{color:var(--accent)}.nav .nicon{font-size:20px;line-height:1.1}.nav .nlabel{font-size:10px;font-weight:750}
+    .toast{position:fixed;left:50%;bottom:106px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--text);color:var(--bg);font-weight:750;border-radius:999px;padding:11px 16px;transition:.2s;z-index:50;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .build-pill{display:inline-flex;align-items:center;gap:7px;background:var(--accentSoft);color:var(--accent);font-size:12px;font-weight:800;border-radius:999px;padding:7px 10px;margin-top:14px}
+    @media (max-width:480px){.page{padding:18px 14px 30px}.summary-row{gap:8px}.summary{padding:13px}.summary b{font-size:23px}.plant-card{padding:15px}}
+  </style>
+</head>
+<body>
+  <main id="app" class="app"></main>
+  <div id="toast" class="toast"></div>
+  <script>
+    const caretakers={
+      daddy:{label:'Daddy',pronouns:'He/Him',icon:'💪'},
+      mama:{label:'Mama',pronouns:'She/Her',icon:'🌺'},
+      buddy:{label:'Buddy',pronouns:'They/Them',icon:'🌱'}
+    };
+    const plants=[
+      {id:'coconut',name:'Coconut Palm',species:'Cocos nucifera',emoji:'🌴',status:'happy',moisture:46,temp:81,says:'Daddy says everything looks good. Moisture is dropping at its normal demo rate.'},
+      {id:'plumeria',name:'Plumeria Bed West',species:'Plumeria rubra',emoji:'🌺',status:'attention',moisture:24,temp:94,says:'Daddy noticed the soil is running hot and moisture is approaching the preferred watering point.'},
+      {id:'hibiscus',name:'Hibiscus Red',species:'Hibiscus rosa-sinensis',emoji:'🌺',status:'happy',moisture:55,temp:84,says:'Daddy says she is happy and comfortably moist.'},
+      {id:'mona',name:'Mona',species:'Monstera deliciosa',emoji:'🪴',status:'happy',moisture:41,temp:76,says:'Daddy says no drama here. Mona is chilling.'}
+    ];
+    let state={screen:'plants',caretaker:'daddy',selected:null};
+    const app=document.getElementById('app');
+    const parent=()=>caretakers[state.caretaker];
+    const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    const parentize=s=>s.replace(/^Daddy/,parent().label);
+    function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),1800)}
+    function nav(){return `<nav class="nav">
+      ${navBtn('plants','🌱','Plants')}${navBtn('care','💧','Care')}${navBtn('add','＋','Add')}${navBtn('garden','📊','Garden')}${navBtn('parent',parent().icon,parent().label)}
+    </nav>`}
+    function navBtn(screen,icon,label){return `<button class="${state.screen===screen&&!state.selected?'active':''}" onclick="go('${screen}')"><span class="nicon">${icon}</span><span class="nlabel">${esc(label)}</span></button>`}
+    function go(screen){state.screen=screen;state.selected=null;render();window.scrollTo({top:0,behavior:'smooth'})}
+    function openPlant(id){state.selected=plants.find(p=>p.id===id);render();window.scrollTo({top:0,behavior:'smooth'})}
+    function chooseCaretaker(k){state.caretaker=k;localStorage.setItem('pd-caretaker',k);render();toast(`${caretakers[k].label} is on plant duty 🌱`)}
+    function shell(content,withNav=true){return `<div class="demo">DEMO DATA • CLEAN ROOM BUILD • v0.1.1</div><section class="page">${content}</section>${withNav?nav():''}`}
+    function plantsScreen(){const happy=plants.filter(p=>p.status==='happy').length, att=plants.filter(p=>p.status==='attention').length, crit=plants.filter(p=>p.status==='critical').length;return shell(`
+      <div class="eyebrow">PLANT DADDY</div><h1>${parent().label}'s watching ${plants.length} plants.</h1>
+      <p class="subtitle">No Mac data. No live sensors. Just the new platform.</p>
+      <div class="summary-row"><div class="summary"><b>${happy}</b><span>Happy</span></div><div class="summary"><b>${att}</b><span>Attention</span></div><div class="summary"><b>${crit}</b><span>Critical</span></div></div>
+      <div class="section-title">Your plants</div>${plants.map(plantCard).join('')}`)}
+    function plantCard(p){return `<button class="plant-card" onclick="openPlant('${p.id}')"><div class="plant-top"><span class="emoji">${p.emoji}</span><div class="grow"><div class="name">${esc(p.name)}</div><div class="species">${esc(p.species)}</div></div><div class="moisture ${p.status==='attention'?'attention':'good'}">${p.moisture}%</div></div><div class="plant-bottom"><span class="body">Soil ${p.temp}°F</span><span class="body ${p.status==='attention'?'attention':'good'}">${p.status==='attention'?'Needs attention':'Good'}</span></div></button>`}
+    function careScreen(){return shell(`<h1>Needs Attention</h1><p class="subtitle">The stuff worth looking at — not every number.</p>${plants.filter(p=>p.status!=='happy').map(p=>`<div class="card"><div class="card-title">${p.emoji} ${esc(p.name)}</div><div class="body">${esc(parentize(p.says))}</div><button class="link-btn" onclick="openPlant('${p.id}')">View plant →</button></div>`).join('')}<div class="card"><div class="card-title">${parent().label}'s got it. 🌱</div><div class="body">Anything healthy stays out of the way.</div></div>`)}
+    function addScreen(){const cards=[['🌱','Add a plant','Just a phone is enough.'],['📡','Add a sensor','Assign hardware to a plant — never the other way around.'],['💦','Add smart watering','Supported irrigation comes later behind explicit setup.'],['📷','Scan a plant','Future Ultra identification path.']];return shell(`<h1>Add Something</h1><p class="subtitle">Start manual. Add technology whenever you want.</p>${cards.map(c=>`<button class="plant-card" onclick="toast('${c[1]} is staged for the next build')"><div class="add-icon">${c[0]}</div><div class="card-title">${c[1]}</div><div class="body">${c[2]}</div></button>`).join('')}`)}
+    function gardenScreen(){return shell(`<h1>Garden</h1><p class="subtitle">Sites, zones, patterns and the bigger picture.</p><div class="card"><div class="card-title">🏠 Demo Home</div><div class="body">Tropical Patio • Living Room</div></div><div class="card"><div class="section-title" style="margin-top:0">Ultra preview 🧠</div><div class="body">Your plants already generate data. Ultra understands it.</div><div class="ultra-price">$1.99/month</div><div class="body">Predictive watering • plant-specific intelligence • weather awareness • smart irrigation • automatic care</div><div class="build-pill">🌱 Intelligence, not a data paywall</div></div>`)}
+    function parentScreen(){return shell(`<h1>Your Plant Parent</h1><p class="subtitle">Pick whoever makes you happy. Your plant data never changes.</p>${Object.entries(caretakers).map(([k,v])=>`<button class="parent-option ${state.caretaker===k?'active':''}" onclick="chooseCaretaker('${k}')"><span class="parent-icon">${v.icon}</span><span class="grow"><span class="name">${v.label}</span><span class="species" style="display:block">${v.pronouns}</span></span><span class="check">${state.caretaker===k?'✓':''}</span></button>`).join('')}<div class="card"><div class="card-title">Privacy boundary</div><div class="body">This preview cannot discover or read your local Plant Daddy Hub. A future Hub connection must be explicitly enabled and authenticated.</div></div>`)}
+    function detail(){const p=state.selected;return shell(`<button class="back" onclick="state.selected=null;render()">‹ Plants</button><div class="hero"><div class="big-emoji">${p.emoji}</div><h1>${esc(p.name)}</h1><div class="status">${p.status==='attention'?'Needs attention':'Happy'} 🌱</div></div><div class="metric-row"><div class="metric"><div class="label">Moisture</div><div class="value">${p.moisture}%</div></div><div class="metric"><div class="label">Soil Temp</div><div class="value">${p.temp}°F</div></div></div><div class="card"><div class="section-title" style="margin-top:0">${parent().label} Says</div><div class="body">${esc(parentize(p.says))}</div></div>${['Today','History','Care','Devices','Automation','Photos'].map(x=>`<div class="row-card" onclick="toast('${x} is staged for a later build')"><div class="name">${x}</div><div class="chev">›</div></div>`).join('')}`,false)}
+    function render(){if(state.selected){app.innerHTML=detail();return} app.innerHTML=({plants:plantsScreen,care:careScreen,add:addScreen,garden:gardenScreen,parent:parentScreen}[state.screen]||plantsScreen)()}
+    const saved=localStorage.getItem('pd-caretaker');if(saved&&caretakers[saved])state.caretaker=saved;render();
+  </script>
+</body>
+</html>
